@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* 配色：主色用圖標的深藍（專注、穩定），金色只用在經驗值與獎勵，暖橘用在情境與提醒，
    每一章一個柔和的代表色幫助分辨；答錯用柔和珊瑚色，避免刺眼的紅造成壓力 */
@@ -24,14 +24,14 @@
 }
 .c0{--cc:#2f6bd8;--cc-bg:#e8effc} .c1{--cc:#13968a;--cc-bg:#e1f4f1} .c2{--cc:#7458d0;--cc-bg:#efebfb} .c3{--cc:#cf7a22;--cc-bg:#fcf0e2} .c4{--cc:#c9517a;--cc-bg:#fbe9f0}
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
+  :root:not([data-theme]){
     --bg:#0d1424; --surface:#151f35; --ink:#e4eaf6; --muted:#97a4bd; --line:#26324c;
     --accent:#6b9cf5; --accent-bg:#1b2b4d; --pink:#f0a061; --pink-bg:#3a2a1c;
     --gold:#f0bf4c; --gold-bg:#3a3018; --head1:#0a1430; --head2:#18306a; --head-ink:#ffffff;
     --good:#55cf8c; --good-bg:#15301f; --bad:#f08a78; --bad-bg:#3a201c; --warn:#e8b54a;
     color-scheme:dark;
   }
-  :root:not([data-theme="light"]) .c0{--cc:#6b9cf5;--cc-bg:#1b2b4d} :root:not([data-theme="light"]) .c1{--cc:#4fcfc0;--cc-bg:#123430} :root:not([data-theme="light"]) .c2{--cc:#a690f2;--cc-bg:#272046} :root:not([data-theme="light"]) .c3{--cc:#f0a961;--cc-bg:#38291a} :root:not([data-theme="light"]) .c4{--cc:#ee8db0;--cc-bg:#3a1d2a}
+  :root:not([data-theme]) .c0{--cc:#6b9cf5;--cc-bg:#1b2b4d} :root:not([data-theme]) .c1{--cc:#4fcfc0;--cc-bg:#123430} :root:not([data-theme]) .c2{--cc:#a690f2;--cc-bg:#272046} :root:not([data-theme]) .c3{--cc:#f0a961;--cc-bg:#38291a} :root:not([data-theme]) .c4{--cc:#ee8db0;--cc-bg:#3a1d2a}
 }
 :root[data-theme="dark"]{
   --bg:#0d1424; --surface:#151f35; --ink:#e4eaf6; --muted:#97a4bd; --line:#26324c;
@@ -68,6 +68,60 @@
 .tabs button.on svg{background:var(--accent-bg);border-radius:10px;padding:2px 10px;width:44px;box-sizing:content-box}
 .chips .book.on{border-color:var(--cc);background:var(--cc-bg);color:var(--cc)}
 .big{color:var(--accent)}
+/* ===== 外觀主題：忍者、貓咪、狗狗（固定淺色，不跟系統深色） ===== */
+:root[data-theme="ninja"]{--bg:#e9dfc8;--surface:#f8f1e1;--ink:#1d1a17;--muted:#6f6455;--line:#d6c6a2;--accent:#c8361d;--accent-bg:#f5dccd;--pink:#3a4f7a;--pink-bg:#e2e3ea;--gold:#b8862b;--gold-bg:#f1e0b5;--head1:#1d1a17;--head2:#2e2823;--good:#3f7d3a;--good-bg:#e1ead2;--bad:#b3341f;--bad-bg:#f4d9cf;--warn:#b8862b;--display:"Noto Serif TC","LXGW WenKai TC",serif;color-scheme:light}
+:root[data-theme="ninja"] .c0{--cc:#c8361d;--cc-bg:#f5dccd} :root[data-theme="ninja"] .c1{--cc:#3a4f7a;--cc-bg:#e2e3ea} :root[data-theme="ninja"] .c2{--cc:#5b6e3a;--cc-bg:#e4e8d3} :root[data-theme="ninja"] .c3{--cc:#a87420;--cc-bg:#f1e0b5} :root[data-theme="ninja"] .c4{--cc:#7a3f5c;--cc-bg:#ecdbe1}
+:root[data-theme="ninja"] body{background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='xMidYMax slice'%3E%3Ccircle cx='310' cy='170' r='70' fill='%23c8361d' fill-opacity='.12'/%3E%3Cpath d='M0 640 L70 560 L120 600 L190 500 L250 580 L300 540 L400 620 L400 800 L0 800Z' fill='%231d1a17' fill-opacity='.07'/%3E%3Cpath d='M0 700 L60 650 L140 690 L220 630 L300 680 L360 650 L400 670 L400 800 L0 800Z' fill='%231d1a17' fill-opacity='.1'/%3E%3C/svg%3E") center bottom/cover no-repeat fixed}
+:root[data-theme="ninja"] .top{border-bottom:3px solid var(--accent)}
+:root[data-theme="ninja"] .card,:root[data-theme="ninja"] .ch,:root[data-theme="ninja"] .lesson-item{border:2px solid var(--ink);border-radius:6px;box-shadow:4px 4px 0 var(--ink)}
+:root[data-theme="ninja"] .ch{border-left:6px solid var(--cc)!important}
+:root[data-theme="ninja"] .card h3::before{content:"忍";display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;font-size:13px;color:#f8f1e1;background:var(--accent);border-radius:3px;transform:rotate(-6deg);vertical-align:2px}
+:root[data-theme="ninja"] .btn,:root[data-theme="ninja"] .opt,:root[data-theme="ninja"] .book,:root[data-theme="ninja"] .chip{border-radius:4px}
+:root[data-theme="ninja"] .opt{border-color:var(--ink)}
+:root[data-theme="ninja"] .tabs{background:#1d1a17;border-top:3px solid var(--accent)}
+:root[data-theme="ninja"] .tabs button{color:#bfb39a}
+:root[data-theme="ninja"] .tabs button.on{color:#f8f1e1}
+:root[data-theme="ninja"] .tabs button.on svg{background:var(--accent)}
+:root[data-theme="ninja"] .lv-name::before{content:"";display:inline-block;width:18px;height:18px;margin-right:6px;vertical-align:-3px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cpath fill='%23f8f1e1' d='M0-48 L9-9 L48 0 L9 9 L0 48 L-9 9 L-48 0 L-9-9Z'/%3E%3Ccircle r='7' fill='%231d1a17'/%3E%3C/svg%3E") center/contain no-repeat;animation:spin 6s linear infinite}
+:root[data-theme="ninja"] .today-card{position:relative}
+:root[data-theme="ninja"] .today-card::after{content:"";position:absolute;right:-12px;top:-12px;width:40px;height:40px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cpath fill='%231d1a17' d='M0-48 L9-9 L48 0 L9 9 L0 48 L-9 9 L-48 0 L-9-9Z'/%3E%3Ccircle r='7' fill='%23f8f1e1'/%3E%3C/svg%3E") center/contain no-repeat;animation:spin 6s linear infinite;pointer-events:none}
+
+:root[data-theme="cat"]{--bg:#fff4f1;--surface:#ffffff;--ink:#4b3440;--muted:#8c7380;--line:#f4d9e1;--accent:#d9668b;--accent-bg:#fde6ee;--pink:#ef9255;--pink-bg:#fff0e3;--gold:#eaa52f;--gold-bg:#fff4da;--head1:#d9668b;--head2:#ec92ae;--good:#3a9e70;--good-bg:#e3f5ec;--bad:#e06d67;--bad-bg:#fdecea;color-scheme:light}
+:root[data-theme="cat"] body{background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%23d9668b' fill-opacity='.08'%3E%3Cg transform='translate(34 38) rotate(-15)'%3E%3Cellipse cx='0' cy='6' rx='9' ry='7.5'/%3E%3Ccircle cx='-9' cy='-6' r='3.6'/%3E%3Ccircle cx='-3' cy='-11' r='3.6'/%3E%3Ccircle cx='4' cy='-11' r='3.6'/%3E%3Ccircle cx='10' cy='-6' r='3.6'/%3E%3C/g%3E%3Cg transform='translate(104 104) rotate(20)'%3E%3Cellipse cx='0' cy='6' rx='9' ry='7.5'/%3E%3Ccircle cx='-9' cy='-6' r='3.6'/%3E%3Ccircle cx='-3' cy='-11' r='3.6'/%3E%3Ccircle cx='4' cy='-11' r='3.6'/%3E%3Ccircle cx='10' cy='-6' r='3.6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+:root[data-theme="cat"] .card,:root[data-theme="cat"] .ch,:root[data-theme="cat"] .lesson-item{border-radius:22px;border-width:2px}
+:root[data-theme="cat"] .btn,:root[data-theme="cat"] .book,:root[data-theme="cat"] .chip{border-radius:999px}
+:root[data-theme="cat"] .opt{border-radius:18px}
+:root[data-theme="cat"] .ch-no{border-radius:50%}
+:root[data-theme="cat"] .lv-name::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M3 2.5l5 4.5h8l5-4.5V13a9 8 0 0 1-18 0z'/%3E%3Ccircle cx='8.5' cy='12.5' r='1.3' fill='%23d9668b'/%3E%3Ccircle cx='15.5' cy='12.5' r='1.3' fill='%23d9668b'/%3E%3Cpath d='M10.8 15h2.4L12 16.3z' fill='%23d9668b'/%3E%3Cpath d='M2 14.5h5M2.5 17l4.5-1M22 14.5h-5M21.5 17l-4.5-1' stroke='%23fff' stroke-width='.8'/%3E%3C/svg%3E") center/contain no-repeat}
+:root[data-theme="cat"] .today-card{position:relative;margin-top:14px}
+:root[data-theme="cat"] .today-card::before{content:"";position:absolute;left:28px;top:-17px;width:72px;height:20px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 20'%3E%3Cpath d='M2 20 L12 1 L24 20Z M48 20 L60 1 L70 20Z' fill='%23fde6ee' stroke='%23f4d9e1' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M8 20 L12 9 L18 20Z M54 20 L60 9 L64 20Z' fill='%23f6b3c8'/%3E%3C/svg%3E") center/contain no-repeat}
+
+:root[data-theme="dog"]{--bg:#f7f1e6;--surface:#fffdf8;--ink:#3d3027;--muted:#7d6d5e;--line:#eadcc5;--accent:#b0692f;--accent-bg:#f6e7d4;--pink:#3a86c9;--pink-bg:#e3f0fb;--gold:#e09d24;--gold-bg:#fbf0d6;--head1:#7b4f2c;--head2:#a8703f;--good:#3a9a5b;--good-bg:#e3f3e7;--bad:#d4614f;--bad-bg:#fbe8e4;color-scheme:light}
+:root[data-theme="dog"] body{background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Cg fill='%23b0692f' fill-opacity='.08'%3E%3Cg transform='translate(40 40) rotate(-25)'%3E%3Crect x='-14' y='-3.5' width='28' height='7' rx='3'/%3E%3Ccircle cx='-14' cy='-4' r='4.5'/%3E%3Ccircle cx='-14' cy='4' r='4.5'/%3E%3Ccircle cx='14' cy='-4' r='4.5'/%3E%3Ccircle cx='14' cy='4' r='4.5'/%3E%3C/g%3E%3Cg transform='translate(110 108) rotate(15)'%3E%3Cellipse cx='0' cy='6' rx='9' ry='7.5'/%3E%3Ccircle cx='-9' cy='-6' r='3.6'/%3E%3Ccircle cx='-3' cy='-11' r='3.6'/%3E%3Ccircle cx='4' cy='-11' r='3.6'/%3E%3Ccircle cx='10' cy='-6' r='3.6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+:root[data-theme="dog"] .card,:root[data-theme="dog"] .ch,:root[data-theme="dog"] .lesson-item{border-radius:18px;border-width:2px}
+:root[data-theme="dog"] .btn,:root[data-theme="dog"] .opt{border-radius:16px}
+:root[data-theme="dog"] .book,:root[data-theme="dog"] .chip{border-radius:999px}
+:root[data-theme="dog"] .lv-name::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cellipse cx='4.8' cy='10.5' rx='2.8' ry='5.5' fill='%23e8c8a2' transform='rotate(18 4.8 10.5)'/%3E%3Cellipse cx='19.2' cy='10.5' rx='2.8' ry='5.5' fill='%23e8c8a2' transform='rotate(-18 19.2 10.5)'/%3E%3Cellipse cx='12' cy='13' rx='6.8' ry='7.2' fill='%23fff'/%3E%3Ccircle cx='9.4' cy='11.8' r='1.15' fill='%237b4f2c'/%3E%3Ccircle cx='14.6' cy='11.8' r='1.15' fill='%237b4f2c'/%3E%3Cellipse cx='12' cy='15.4' rx='1.7' ry='1.2' fill='%237b4f2c'/%3E%3Cpath d='M12 16.6v1.4' stroke='%237b4f2c' stroke-width='.8'/%3E%3C/svg%3E") center/contain no-repeat}
+:root[data-theme="dog"] .today-card{position:relative}
+:root[data-theme="dog"] .today-card::after{content:"";position:absolute;right:14px;top:-14px;width:46px;height:24px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-26 -12 52 24'%3E%3Cg fill='%23f6e7d4' stroke='%23b0692f' stroke-width='1.6'%3E%3Cpath d='M-16-4.5h32a5.5 5.5 0 1 1 0 9h-32a5.5 5.5 0 1 1 0-9z'/%3E%3C/g%3E%3Cg fill='%23f6e7d4'%3E%3Ccircle cx='-18' cy='-5' r='5'/%3E%3Ccircle cx='-18' cy='5' r='5'/%3E%3Ccircle cx='18' cy='-5' r='5'/%3E%3Ccircle cx='18' cy='5' r='5'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;transform:rotate(-12deg);pointer-events:none}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ===== 設定、新功能、更新提示 ===== */
+.gear{cursor:pointer;padding:4px 8px}
+.gear svg{width:18px;height:18px}
+.sheet-back{position:fixed;inset:0;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+.sheet-back.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:720px;margin:0 auto;background:var(--surface);color:var(--ink);border-radius:22px 22px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .3s;z-index:41;max-height:85vh;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.sheet.show{transform:none}
+.sheet-head{display:flex;gap:12px;align-items:center}
+.sheet-head img{width:52px;height:52px;border-radius:13px;flex:none}
+.themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.themes button{border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-weight:700;font-size:14px}
+.themes button.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.sw{display:flex;gap:3px}.sw i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.12)}
+.wn-ver{font-size:13px;color:var(--muted);font-weight:700;margin-top:4px}
+.wn-list ul{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.updbar{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%);z-index:20;border:0;font:inherit;font-weight:700;font-size:14px;background:var(--accent);color:#fff;padding:9px 16px;border-radius:999px;box-shadow:0 8px 22px -8px rgba(0,0,0,.45);cursor:pointer;max-width:92vw}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
 body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
@@ -99,7 +153,7 @@ button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outl
 
 .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;min-height:48px;font-size:16px}
 :root[data-theme="dark"] .btn{color:#06201c}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#06201c}}
+@media (prefers-color-scheme:dark){:root:not([data-theme]) .btn{color:#06201c}}
 .btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
 .btn.pink{background:var(--pink)}
 .btn.soft{background:var(--accent-bg);color:var(--accent)}
@@ -257,6 +311,7 @@ const LEVELS=['記帳新手','小出納','記帳員','會計助理','會計專�
 const BOX_DAYS=[0,1,2,4,7,14];
 function defState(){return {xp:0,streak:0,last:'',today:{d:'',n:0},goal:10,done:{},wrong:{},cards:{},exams:[],seen:{},custom:[],book:'acc3'}}
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');return Object.assign(defState(),s)}catch(e){return defState()}}
+const RETURNING=(()=>{try{return localStorage.getItem(KEY)!==null}catch(e){return false}})();
 let S=load();
 /* 題庫改版：舊的錯題、閃卡、出題紀錄編號已經不對應，清掉（課程進度和經驗值保留） */
 if(!S.v2){S.wrong={};S.seen={};S.cards={};S.v2=1;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
@@ -286,7 +341,7 @@ function numOk(v,a){return !isNaN(v)&&Math.abs(v-a)<=0.5}
 function answerText(q){if(q.t==='n')return fmt(q.a)+(q.unit||'');if(q.t==='j')return q.lines.map(l=>l[0]+' '+l[1]+' '+fmt(l[2])).join('；');if(q.t==='t'){const v=[];q.rows.forEach(r=>r.forEach(c=>{if(c&&typeof c==='object')v.push(fmt(c.b))}));return '空格依序：'+v.join('、')}return q.o[q.a]}
 function typeTag(q){return {m:'選擇題',n:'計算填空',j:'分錄題',t:'表格填空'}[q.t]||''}
 function jeTable(lines){return '<table class="je">'+lines.map(r=>'<tr class="'+(r[0]==='貸'?'cr':'')+'"><td>'+r[0]+'</td><td>'+esc(r[1])+'</td><td>'+fmt(r[2])+'</td></tr>').join('')+'</table>'}
-function fbHTML(ok,q,extra){return '<div class="fb '+(ok?'ok':'no')+'"><b class="t">'+(ok?pick(['答對了！','漂亮！','完全正確！','你越來越懂了！']):'差一點！')+'</b>'+(ok||q.t==='j'?'':'<span>正確答案：'+esc(answerText(q))+'</span>')+(extra||'')+'<span>'+esc(q.e||'')+'</span></div>'}
+function fbHTML(ok,q,extra){return '<div class="fb '+(ok?'ok':'no')+'"><b class="t">'+(ok?pick(praise()):'差一點！')+'</b>'+(ok||q.t==='j'?'':'<span>正確答案：'+esc(answerText(q))+'</span>')+(extra||'')+'<span>'+esc(q.e||'')+'</span></div>'}
 /* renderQ 回傳 {el, answered(), grade(), reveal(), yours()}；練習模式送出後立刻回饋並呼叫 onDone(ok) */
 function renderQ(q,mode,onDone){
  const w=h('<div class="qv"><span class="qtype">'+typeTag(q)+'</span><p class="q-text">'+esc(q.q).replace(/\n/g,'<br>')+'</p><div class="qbody"></div><div class="qact"></div><div class="fbx"></div></div>');
@@ -331,9 +386,9 @@ function svg(k,fill){return '<svg viewBox="0 0 24 24" fill="'+(fill?'currentColo
 const TABS=[['home','首頁'],['quiz','練習'],['cards','閃卡'],['exam','模擬考'],['wrong','錯題本']];
 let view='home';
 function renderTop(){const lv=level(),name=LEVELS[Math.min(lv,LEVELS.length-1)],pct=S.xp%100;const t=today();const n=S.today.d===t?S.today.n:0;
- document.getElementById('top').innerHTML='<div class="lv"><span class="lv-name">'+esc(book().title)+'・Lv.'+(lv+1)+' '+name+'</span><div class="bar"><i style="width:'+pct+'%"></i></div><span class="small muted num">'+pct+' / 100 經驗</span></div><button class="chip swap" data-shelf>換課本</button><span class="chip num"><span class="flame">'+svg('flame',1)+'</span>'+curStreak()+' 天</span><span class="chip num today">今日 '+Math.min(n,S.goal)+'/'+S.goal+'</span>'}
+ document.getElementById('top').innerHTML='<div class="lv"><span class="lv-name">Lv.'+(lv+1)+' '+name+'</span><div class="bar"><i style="width:'+pct+'%"></i></div><span class="small muted num">'+pct+' / 100 經驗</span></div><button class="chip swap" data-shelf>換課本</button><button class="chip gear" data-settings aria-label="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span class="chip num"><span class="flame">'+svg('flame',1)+'</span>'+curStreak()+' 天</span><span class="chip num today">今日 '+Math.min(n,S.goal)+'/'+S.goal+'</span>'}
 function renderTabs(){document.getElementById('tabs').innerHTML=TABS.map(t=>'<button class="'+(view===t[0]?'on':'')+'" data-go="'+t[0]+'">'+svg(t[0])+t[1]+'</button>').join('')}
-document.getElementById('top').addEventListener('click',e=>{if(e.target.closest('[data-shelf]'))go('shelf')});
+document.getElementById('top').addEventListener('click',e=>{if(e.target.closest('[data-shelf]'))go('shelf');if(e.target.closest('[data-settings]'))openSettings()});
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 let timer=null;
 function go(v,arg){clearInterval(timer);view=v;renderTabs();const app=document.getElementById('app');app.className='wrap';app.innerHTML='';window.scrollTo(0,0);
@@ -386,7 +441,7 @@ function mergeState(a,b){a=Object.assign(defState(),a);b=Object.assign(defState(
  const ids=new Set();o.custom=a.custom.concat(b.custom).filter(c=>{if(ids.has(c.id))return false;ids.add(c.id);return true});
  return o}
 async function cloudPull(){if(!CLOUD.user)return;CLOUD.syncing=true;
- try{const ref=CLOUD.db.collection('progress').doc(CLOUD.user.uid);const d=await ref.get();if(d.exists){const c=JSON.parse(d.data().state||'{}');S=mergeState(S,c);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+ try{const ref=CLOUD.db.collection('progress').doc(CLOUD.user.uid);const d=await ref.get();if(d.exists){const c=JSON.parse(d.data().state||'{}');S=mergeState(S,c);applyTheme();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
   await cloudPush(true);toast('進度已同步到 Google 帳號')}catch(e){toast('同步失敗，進度先存在這台裝置')}
  CLOUD.syncing=false}
 let pushT=null;
@@ -441,7 +496,7 @@ function mcq(q,onAnswer){const list=shuffle(q.o.map((t,i)=>({t,ok:i===q.a})));
  w.querySelector('.opts').addEventListener('click',e=>{const bt=e.target.closest('.opt');if(!bt||bt.disabled)return;const i=+bt.dataset.i,ok=list[i].ok;
   w.querySelectorAll('.opt').forEach((x,j)=>{x.disabled=true;if(list[j].ok)x.classList.add('right');else if(j===i)x.classList.add('wrong')});
   const right=list.find(o=>o.ok).t;
-  w.querySelector('.fbx').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><b class="t">'+(ok?pick(['答對了！','漂亮！','完全正確！','你越來越懂了！']):'差一點！正確答案是「'+esc(right)+'」')+'</b><span>'+esc(q.e||'')+'</span></div>';
+  w.querySelector('.fbx').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><b class="t">'+(ok?pick(praise()):'差一點！正確答案是「'+esc(right)+'」')+'</b><span>'+esc(q.e||'')+'</span></div>';
   if(ok)gotRight();onAnswer(ok)});
  return w}
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
@@ -576,7 +631,39 @@ function vBooks(app){
  if(S.custom.length){const c=h('<section class="card"><h3>你加入的課本</h3></section>');S.custom.forEach(bk=>{const row=h('<div class="row between"><b>'+esc(bk.title)+'</b><button class="link" style="color:var(--bad)">刪除</button></div>');const del=row.querySelector('button');del.onclick=()=>{if(del.dataset.sure){S.custom=S.custom.filter(x=>x.id!==bk.id);if(S.book===bk.id)S.book=allBooks()[0].id;save();go('books')}else{del.dataset.sure=1;del.textContent='再按一次確認刪除'}};c.appendChild(row)});app.appendChild(c)}
  app.appendChild(h('<p class="small muted">進度、經驗值和加入的課本都存在這支手機的瀏覽器裡，換裝置不會同步。</p>'))}
 
-renderTop();go('shelf');cloudInit();
+/* ===================== 外觀、設定、新功能說明、有新版本提示（同台股小幫手的做法） ===================== */
+const THEMES=[['auto','跟隨系統',['#f2f5fb','#1f3c7a','#2f6bd8']],['light','淺色',['#f2f5fb','#ffffff','#2f6bd8']],['dark','深色',['#0d1424','#151f35','#6b9cf5']],['ninja','忍者',['#e9dfc8','#1d1a17','#c8361d']],['cat','貓咪',['#fff4f1','#ec92ae','#d9668b']],['dog','狗狗',['#f7f1e6','#a8703f','#3a86c9']]];
+function applyTheme(){const t=S.theme||'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t)}
+function praise(){const t=S.theme;return t==='cat'?['喵～答對了！','貓咪幫你按讚！','喵嗚，好厲害！']:t==='dog'?['汪！答對了！','狗狗開心搖尾巴！','汪汪，太棒了！']:t==='ninja'?['一擊命中！','忍術成功！','身手不凡！']:['答對了！','漂亮！','完全正確！','你越來越懂了！']}
+function sheet(id){let b=document.getElementById(id+'Back'),s=document.getElementById(id);if(!s){b=h('<div class="sheet-back" id="'+id+'Back"></div>');s=h('<div class="sheet" id="'+id+'" role="dialog" aria-modal="true"></div>');document.body.append(b,s);b.onclick=()=>closeSheet(id)}return s}
+function openSheet(id){document.getElementById(id).classList.add('show');document.getElementById(id+'Back').classList.add('show')}
+function closeSheet(id){const s=document.getElementById(id);if(!s)return;s.classList.remove('show');document.getElementById(id+'Back').classList.remove('show');if(id==='wnSheet')markNewsSeen()}
+function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
+ s.innerHTML='<h2>設定</h2><div><h3 style="margin-bottom:10px">外觀</h3><div class="themes">'+THEMES.map(t=>'<button data-t="'+t[0]+'" class="'+(t[0]===cur?'on':'')+'"><span class="sw">'+t[2].map(c=>'<i style="background:'+c+'"></i>').join('')+'</span>'+t[1]+'</button>').join('')+'</div></div><button class="btn soft block" data-wn>看這次更新了什麼</button><button class="btn block" data-close>完成</button>';
+ s.querySelector('.themes').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;S.theme=b.dataset.t;save();applyTheme();s.querySelectorAll('.themes button').forEach(x=>x.classList.toggle('on',x===b));toast(b.textContent+' 外觀')};
+ s.querySelector('[data-wn]').onclick=()=>{closeSheet('setSheet');setTimeout(()=>showWhatsNew(true),300)};
+ s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
+/* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
+const NEWS=[
+ {id:'2026-11-18',items:['新外觀：忍者、貓咪、狗狗。按上方的齒輪 → 外觀就能換','題庫變成 1,080 題，每個單元 40 題','新題型：計算填空、分錄題、表格填空（調節表、帳齡分析、折舊表…）','補充 6 個老師常教的單元，例如現金短溢、票據拒付、存貨估計','模擬考可以複選單元、選題數，題目不重複','有新版本時，上方會出現「點這裡更新」']}
+];
+const NEWS_KEY='acc-news-seen';
+function markNewsSeen(){try{localStorage.setItem(NEWS_KEY,NEWS[0].id)}catch(e){}}
+function showWhatsNew(all){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}catch(e){}
+ const items=all?NEWS.slice(0,3):NEWS.filter(n=>!seen||n.id>seen).slice(0,3);if(!items.length)return false;
+ const s=sheet('wnSheet');s.innerHTML='<div class="sheet-head"><img src="icons/icon-192.png" alt=""><div><h2>更新了！這次有什麼新功能</h2><div class="small muted">會計學闖關讀書站已經是最新版本</div></div></div><div class="wn-list">'+items.map(n=>'<div class="wn-ver">'+n.id.replace(/-/g,'/')+'</div><ul>'+n.items.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>').join('')+'</div><button class="btn block" data-ok>知道了</button>';
+ s.querySelector('[data-ok]').onclick=()=>closeSheet('wnSheet');openSheet('wnSheet');return true}
+function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}catch(e){}
+ if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
+/* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
+const UPD_FILES=['index.html','firebase-config.js','books/helpers.js','books/accounting-3.js','books/accounting-3-ch1.js','books/accounting-3-ch2.js','books/accounting-3-ch3.js','books/accounting-3-ch4.js','books/accounting-3-ch5.js'];
+let updBase=null;
+async function updSig(){const out=[];for(const f of UPD_FILES){try{const r=await fetch(f+'?v='+Date.now(),{method:'HEAD',cache:'no-store'});out.push(r.headers.get('etag')||r.headers.get('last-modified')||'')}catch(e){out.push('')}}return out.join('|')}
+async function checkUpdate(){if(location.protocol==='file:'||!location.hostname.endsWith('github.io'))return;const s=await updSig();if(!s.replace(/\|/g,''))return;if(updBase===null){updBase=s;return}if(s!==updBase&&!document.getElementById('updBar')){const b=h('<button class="updbar" id="updBar">有新版本，點這裡更新</button>');b.onclick=async()=>{b.textContent='更新中…';try{await Promise.all(UPD_FILES.map(f=>fetch(f,{cache:'reload'})));if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}}catch(e){}location.reload()};document.body.appendChild(b)}}
+setTimeout(checkUpdate,3000);setInterval(checkUpdate,30*60e3);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
+
+applyTheme();renderTop();go('shelf');cloudInit();initWhatsNew();
 </script>
 </body>
 </html>
