@@ -310,6 +310,9 @@ html,body{height:100%;overflow:hidden}
 .hintswipe{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 86px);transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:13px;padding:7px 14px;border-radius:999px;z-index:9;opacity:0;pointer-events:none;transition:opacity .4s}
 .hintswipe.show{opacity:.92;animation:nudge 1.4s ease-in-out 2}
 @keyframes nudge{50%{transform:translateX(calc(-50% - 14px))}}
+body.pick-book .pager{overflow-x:hidden;scroll-snap-type:none}
+body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:none}
+.tabs{transition:transform .35s cubic-bezier(.3,1.2,.5,1),opacity .25s}
 </style>
 </head>
 <body>
@@ -421,7 +424,7 @@ function renderTabs(){const el=document.getElementById('tabs');if(!document.getE
 document.getElementById('top').addEventListener('click',e=>{if(e.target.closest('[data-shelf]'))go('shelf');if(e.target.closest('[data-settings]'))openSettings()});
 document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b)tabClick(+b.dataset.i)});
 let timer=null;
-function go(v,arg){if((VIEW_TAB[v]||'home')==='exam')clearInterval(timer);setView(v);const app=document.getElementById('app');app.className='wrap inner';app.innerHTML='';pageTop();
+function go(v,arg){if((VIEW_TAB[v]||'home')==='exam')clearInterval(timer);document.body.classList.toggle('pick-book',v==='shelf'||v==='books');setView(v);const app=document.getElementById('app');app.className='wrap inner';app.innerHTML='';pageTop();
  ({shelf:vShelf,home:vHome,chapter:vChapter,lesson:vLesson,quiz:vQuizPick,cards:vCardsPick,exam:vExamIntro,wrong:vWrong,books:vBooks})[v](app,arg)}
 function h(html){const d=document.createElement('div');d.innerHTML=html;return d.firstElementChild}
 
@@ -429,23 +432,28 @@ function h(html){const d=document.createElement('div');d.innerHTML=html;return d
 const TAB_IDS=['home','quiz','cards','exam','wrong'];
 const VIEW_TAB={shelf:'home',home:'home',chapter:'home',lesson:'home',books:'home',quiz:'quiz',cards:'cards',exam:'exam',wrong:'wrong'};
 const pager=document.getElementById('pager'),pages=[...pager.querySelectorAll('.page')];
-const pageView={};let curPage=0,tabW=0;
+const pageView={};let curPage=0,tabW=0,progScroll=false;
 function bindApp(i){pages.forEach((p,j)=>{const inn=p.firstElementChild;if(j===i)inn.id='app';else inn.removeAttribute('id')})}
 function setView(v){const i=TAB_IDS.indexOf(VIEW_TAB[v]||'home');view=v;pageView[TAB_IDS[i]]=v;bindApp(i);
- if(i!==curPage){curPage=i;const smooth=!matchMedia('(prefers-reduced-motion: reduce)').matches;pager.scrollTo({left:i*pager.clientWidth,behavior:smooth?'smooth':'auto'})}renderTabs()}
+ if(i!==curPage){curPage=i;progScroll=true;const smooth=!matchMedia('(prefers-reduced-motion: reduce)').matches;pager.scrollTo({left:i*pager.clientWidth,behavior:smooth?'smooth':'auto'})}renderTabs()}
 function pageTop(){pages[curPage].scrollTop=0}
 function layoutInd(){const t=document.getElementById('tabsIn'),ind=document.getElementById('ind');if(!t||!ind)return;tabW=t.clientWidth/TAB_IDS.length;ind.style.width=tabW+'px'}
 function onPagerScroll(){const w=pager.clientWidth||1,x=pager.scrollLeft/w,ind=document.getElementById('ind');if(ind)ind.style.transform='translateX('+(x*tabW)+'px)';
  pages.forEach((p,i)=>{const d=Math.min(1,Math.abs(x-i)),inn=p.firstElementChild;inn.style.transform=d<.002?'':'scale('+(1-d*.07)+') translateY('+(d*14)+'px)';inn.style.opacity=d<.002?'':String(1-d*.45)});
+ if(progScroll){if(Math.abs(x-curPage)<.02)progScroll=false;return}
  const n=Math.round(x);if(Math.abs(x-n)<.02&&n!==curPage)activatePage(n)}
 function activatePage(n){curPage=n;const tab=TAB_IDS[n];bindApp(n);try{localStorage.setItem('acc-swiped','1')}catch(e){}
  if(!pageView[tab]||!pages[n].firstElementChild.childElementCount)go(tab);else{view=pageView[tab];renderTabs()}}
 pager.addEventListener('scroll',()=>requestAnimationFrame(onPagerScroll),{passive:true});
 addEventListener('resize',()=>{layoutInd();pager.scrollLeft=curPage*pager.clientWidth;onPagerScroll()});
-document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test((e.target.tagName||''))||document.querySelector('.sheet.show'))return;if(e.key==='ArrowRight'&&curPage<4)tabClick(curPage+1);if(e.key==='ArrowLeft'&&curPage>0)tabClick(curPage-1)});
-function tabClick(i){const tab=TAB_IDS[i];if(i===curPage||!pageView[tab])go(tab);else setView(pageView[tab])}
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test((e.target.tagName||''))||document.querySelector('.sheet.show'))return;if(document.body.classList.contains('pick-book'))return;if(e.key==='ArrowRight'&&curPage<4)tabClick(curPage+1);if(e.key==='ArrowLeft'&&curPage>0)tabClick(curPage-1)});
+function tabClick(i){if(document.body.classList.contains('pick-book'))return;const tab=TAB_IDS[i];if(i===curPage||!pageView[tab])go(tab);else setView(pageView[tab])}
 function swipeHint(){let done=false;try{done=!!localStorage.getItem('acc-swiped')}catch(e){}if(done)return;const el=h('<div class="hintswipe">← 左右滑動換頁 →</div>');document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),2600);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),500)},6800)}
 
+/* 選好課本後才能滑到其他頁；換課本時清掉其他頁的內容，讓它們用新課本重新產生 */
+function chooseBook(id){const changed=S.book!==id;S.book=id;save();renderTop();
+ if(changed){clearInterval(timer);E=null;Q=null;CQ=null;examSel=null;['quiz','cards','exam','wrong'].forEach(t=>{delete pageView[t];pages[TAB_IDS.indexOf(t)].firstElementChild.innerHTML=''})}
+ go('home');swipeHint()}
 /* ===================== 首頁 ===================== */
 function lessonKey(ci,li){return S.book+':'+ci+':'+li}
 function dueCards(b,chi){const t=today(),out=[];b.chapters.forEach((c,ci)=>{if(chi!=null&&ci!==chi)return;(c.cards||[]).forEach((cd,i)=>{const k=b.id+':'+ci+':'+i,st=S.cards[k];if(!st||st.due<=t)out.push({k,f:cd[0],b:cd[1],ch:ci,box:st?st.box:0})})});return out}
@@ -515,7 +523,7 @@ function vShelf(app){
  app.appendChild(h('<div class="row"><img src="icons/icon-192.png" alt="" width="56" height="56" style="border-radius:14px"><h1>選擇課本</h1></div>'));app.appendChild(h('<p class="muted">選一本開始讀。之後可以按上方的「換課本」切換。</p>'));if(ac)app.appendChild(ac);
  allBooks().forEach(b=>{const L=b.chapters.reduce((n,c)=>n+(c.lessons||[]).length,0);const d=b.chapters.reduce((n,c,ci)=>n+(c.lessons||[]).filter((l,li)=>S.done[b.id+':'+ci+':'+li]).length,0);
   const el=h(`<button class="ch shelf-book${b.id===S.book?' on':''}" style="--cc:var(--gold);--cc-bg:var(--gold-bg)"><span class="ch-no cover">${esc(b.title.slice(0,2))}</span><span class="ch-body"><span class="ch-title">${esc(b.title)}</span><span class="small muted" style="display:block">${esc(b.subtitle||'')}</span><span class="small muted" style="display:block">${b.chapters.length} 章・課程 ${d}/${L}</span><span class="bar"><i style="width:${L?d/L*100:0}%"></i></span></span><span class="muted">›</span></button>`);
-  el.onclick=()=>{S.book=b.id;save();renderTop();go('home')};app.appendChild(el)});
+  el.onclick=()=>{chooseBook(b.id)};app.appendChild(el)});
  const add=h('<button class="btn ghost block">＋ 加入新課本</button>');add.onclick=()=>go('books');app.appendChild(add)}
 
 /* ===================== 章節與課程 ===================== */
@@ -757,7 +765,7 @@ async function checkUpdate(){if(location.protocol==='file:'||!location.hostname.
 setTimeout(checkUpdate,3000);setInterval(checkUpdate,30*60e3);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
 
-applyTheme();renderTop();renderTabs();go('shelf');cloudInit();initWhatsNew();swipeHint();
+applyTheme();renderTop();renderTabs();go('shelf');cloudInit();initWhatsNew();
 </script>
 </body>
 </html>
