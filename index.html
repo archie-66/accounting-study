@@ -110,6 +110,11 @@ button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outl
 .books{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
 .book{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 14px;cursor:pointer;font-weight:700}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
+.unitgrp{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:1px dashed var(--line)}
+.chhead{display:flex;align-items:center;gap:8px;background:none;border:0;padding:4px 0;font-weight:700;color:var(--cc);cursor:pointer;text-align:left;font-size:16px}
+.chhead .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--cc);display:grid;place-items:center;font-size:13px;flex:none}
+.chhead.all .box,.chhead.some .box{background:var(--cc);color:#fff}
+.unitgrp .chips .book{font-weight:500;font-size:14px;padding:6px 12px}
 .chips .book{flex:0 1 auto;max-width:100%;text-align:left}
 .swap{cursor:pointer;color:var(--accent);font-weight:700;border-color:var(--accent)}
 .shelf-book.on{border-color:var(--accent)}
@@ -225,7 +230,7 @@ const EXAMPLE_BOOK={title:'經濟學（一）',subtitle:'範例：自己加課�
 const KEY='acc-study-v1';
 const LEVELS=['記帳新手','小出納','記帳員','會計助理','會計專員','資深會計','會計主任','財務經理','財務長','會計大師'];
 const BOX_DAYS=[0,1,2,4,7,14];
-function defState(){return {xp:0,streak:0,last:'',today:{d:'',n:0},goal:10,done:{},wrong:{},cards:{},exams:[],custom:[],book:'acc3'}}
+function defState(){return {xp:0,streak:0,last:'',today:{d:'',n:0},goal:10,done:{},wrong:{},cards:{},exams:[],seen:{},custom:[],book:'acc3'}}
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');return Object.assign(defState(),s)}catch(e){return defState()}}
 let S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
@@ -241,7 +246,9 @@ function book(){return allBooks().find(b=>b.id===S.book)||allBooks()[0]}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function allQs(b,chi){const out=[];b.chapters.forEach((c,ci)=>{if(chi!=null&&ci!==chi)return;(c.questions||[]).forEach((q,qi)=>out.push(Object.assign({id:b.id+':'+ci+':'+qi,ch:ci},q)))});return out}
-function findQ(id){const p=id.split(':');const b=allBooks().find(x=>x.id===p[0]);if(!b)return null;const c=b.chapters[+p[1]];if(!c||!c.questions[+p[2]])return null;return Object.assign({id,ch:+p[1],book:b},c.questions[+p[2]])}
+function findQ(id){const p=id.split(':');const b=allBooks().find(x=>x.id===p[0]);if(!b)return null;const ci=+p[1],c=b.chapters[ci];if(!c)return null;
+ if(p[2][0]==='L'){const li=+p[2].slice(1),l=(c.lessons||[])[li];if(!l||!l.check)return null;return Object.assign({id,ch:ci,u:li,book:b},l.check)}
+ if(!c.questions[+p[2]])return null;return Object.assign({id,ch:ci,book:b},c.questions[+p[2]])}
 
 /* ===================== 經驗值與回饋 ===================== */
 function level(){return Math.floor(S.xp/100)}
@@ -388,15 +395,41 @@ function drawCard(){const app=document.getElementById('app');app.innerHTML='';wi
   app.appendChild(r);app.appendChild(h('<p class="small muted" style="text-align:center">「還不熟」的卡會在這一輪最後再出現一次</p>'))}}
 
 /* ===================== 模擬考 ===================== */
-let examSel=null;
-function vExamIntro(app){const b=book();if(!examSel||examSel.b!==b.id)examSel={b:b.id,on:b.chapters.map(()=>true)};
+let examSel=null,examN=15;
+function unitsOf(c){return (c.lessons&&c.lessons.length)?c.lessons.map(l=>l.title):['全章']}
+/* 依選取的單元收集題目：章節題目＋每課的小檢查，題目文字相同的只留一題 */
+function examPool(b){const out=[],txt=new Set();
+ b.chapters.forEach((c,ci)=>{const sel=examSel.on[ci],any=sel.some(Boolean);
+  const add=(q,id,u)=>{if(txt.has(q.q))return;const ok=(typeof u==='number'&&u>=0&&u<sel.length)?sel[u]:any;if(!ok)return;txt.add(q.q);out.push(Object.assign({},q,{id,ch:ci,u}))};
+  (c.questions||[]).forEach((q,qi)=>add(q,b.id+':'+ci+':'+qi,q.u));
+  (c.lessons||[]).forEach((l,li)=>{if(l.check)add(l.check,b.id+':'+ci+':L'+li,li)})});
+ return out}
+/* 優先出考過次數最少的題目，同一份考卷不會重複 */
+function pickFresh(pool,n){return shuffle(pool.map(q=>({q,k:(S.seen&&S.seen[q.id]||0)+Math.random()*.9})).sort((a,c)=>a.k-c.k).slice(0,n).map(x=>x.q))}
+function rerenderExam(){const y=window.scrollY;go('exam');window.scrollTo(0,y)}
+function vExamIntro(app){const b=book();
+ if(!examSel||examSel.b!==b.id)examSel={b:b.id,on:b.chapters.map(c=>unitsOf(c).map(()=>true))};
  app.appendChild(h('<h1>模擬考</h1>'));
- const pick=h('<section class="card"><h3>考試範圍</h3><p class="small muted">點章節可以加入或取消。</p><div class="chips">'+b.chapters.map((c,ci)=>'<button class="book c'+(ci%5)+(examSel.on[ci]?' on':'')+'" data-c="'+ci+'">第 '+(ci+1)+' 章 '+esc(c.title)+'</button>').join('')+'</div><div class="row"><button class="link" data-all>全選</button></div></section>');
- pick.onclick=e=>{const c=e.target.closest('[data-c]');if(c){examSel.on[+c.dataset.c]=!examSel.on[+c.dataset.c];go('exam')}if(e.target.closest('[data-all]')){examSel.on=examSel.on.map(()=>true);go('exam')}};app.appendChild(pick);
- const pool=allQs(b).filter(q=>examSel.on[q.ch]),n=Math.min(15,pool.length),mins=Math.max(5,Math.round(n*4/3));
- app.appendChild(h('<section class="card"><p>從選好的章節隨機出 <b class="num">'+n+'</b> 題，限時 <b class="num">'+mins+'</b> 分鐘。</p><p>作答時<b>不會</b>馬上告訴你對錯，交卷後才看成績和每一章的答對率。</p></section>'));
- const st=h('<button class="btn block"'+(n?'':' disabled')+'>'+(n?'開始考試':'請至少選一章')+'</button>');st.onclick=()=>startExam(shuffle(pool).slice(0,n),mins);app.appendChild(st);
- if(S.exams.length){const hist=S.exams.filter(e=>e.b===b.id).slice(-5).reverse();if(hist.length)app.appendChild(h('<section class="card"><h3>最近成績</h3>'+hist.map(e=>'<div class="row between"><span class="muted small num">'+e.d+'</span><b class="num">'+e.s+' 分</b></div>').join('')+'</section>'))}}
+ const units=examSel.on.reduce((n,a)=>n+a.filter(Boolean).length,0);
+ const pick=h('<section class="card"><div class="row between"><h3>選擇單元</h3><span class="small muted">已選 '+units+' 個</span></div><p class="small muted">可以複選。點章節名稱會選取或取消整章。</p>'+
+  b.chapters.map((c,ci)=>{const sel=examSel.on[ci],k=sel.filter(Boolean).length;
+   return '<div class="unitgrp c'+(ci%5)+'"><button class="chhead'+(k===sel.length?' all':k?' some':'')+'" data-ch="'+ci+'"><span class="box">'+(k===sel.length?'✓':k?'–':'')+'</span>第 '+(ci+1)+' 章　'+esc(c.title)+'</button><div class="chips">'+
+   unitsOf(c).map((t,li)=>'<button class="book c'+(ci%5)+(sel[li]?' on':'')+'" data-u="'+ci+':'+li+'">'+(sel[li]?'✓ ':'')+esc(t)+'</button>').join('')+'</div></div>'}).join('')+
+  '<div class="row"><button class="link" data-all>全部選取</button><button class="link" data-none style="color:var(--muted)">全部取消</button></div></section>');
+ pick.onclick=e=>{const u=e.target.closest('[data-u]'),c=e.target.closest('[data-ch]');
+  if(u){const [ci,li]=u.dataset.u.split(':').map(Number);examSel.on[ci][li]=!examSel.on[ci][li];rerenderExam()}
+  else if(c){const ci=+c.dataset.ch,all=examSel.on[ci].every(Boolean);examSel.on[ci]=examSel.on[ci].map(()=>!all);rerenderExam()}
+  else if(e.target.closest('[data-all]')){examSel.on=examSel.on.map(a=>a.map(()=>true));rerenderExam()}
+  else if(e.target.closest('[data-none]')){examSel.on=examSel.on.map(a=>a.map(()=>false));rerenderExam()}};
+ app.appendChild(pick);
+ const pool=examPool(b);const opts=[10,15,20,0];
+ const cnt=h('<section class="card"><h3>題數</h3><div class="chips">'+opts.map(o=>'<button class="book'+(examN===o?' on':'')+'" data-n="'+o+'">'+(o?o+' 題':'全部')+'</button>').join('')+'</div></section>');
+ cnt.onclick=e=>{const x=e.target.closest('[data-n]');if(x){examN=+x.dataset.n;rerenderExam()}};app.appendChild(cnt);
+ const n=examN?Math.min(examN,pool.length):pool.length,mins=Math.max(5,Math.round(n*4/3));
+ const fresh=pool.filter(q=>!(S.seen&&S.seen[q.id])).length;
+ app.appendChild(h('<section class="card"><p>選好的單元共有 <b class="num">'+pool.length+'</b> 題，這次出 <b class="num">'+n+'</b> 題，限時 <b class="num">'+mins+'</b> 分鐘。</p><p class="small muted">同一份考卷不會出現重複的題目，而且會先出你還沒考過的題目（還有 '+fresh+' 題沒考過）。'+(examN&&pool.length<examN?'選的單元題目比較少，所以只出 '+pool.length+' 題。':'')+'</p><p>作答時不會馬上告訴你對錯，交卷後才看成績和每一章的答對率。</p></section>'));
+ const st=h('<button class="btn block"'+(n?'':' disabled')+'>'+(n?'開始考試':'請至少選一個單元')+'</button>');st.onclick=()=>startExam(pickFresh(pool,n),mins);app.appendChild(st);
+ const hist=S.exams.filter(e=>e.b===b.id).slice(-5).reverse();if(hist.length)app.appendChild(h('<section class="card"><h3>最近成績</h3>'+hist.map(e=>'<div class="row between"><span class="muted small num">'+e.d+'</span><b class="num">'+e.s+' 分</b></div>').join('')+'</section>'))}
 let E=null;
 function startExam(items,mins){E={items:items.map(q=>Object.assign({},q,{list:shuffle(q.o.map((t,i)=>({t,ok:i===q.a})))})),ans:{},i:0,end:Date.now()+(mins||20)*60*1000};view='exam';renderTabs();drawExam();clearInterval(timer);timer=setInterval(()=>{const el=document.getElementById('tm');if(!el)return;const s=Math.max(0,Math.round((E.end-Date.now())/1000));el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');el.classList.toggle('low',s<120);if(s<=0){clearInterval(timer);examDone()}},500)}
 function drawExam(){const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);const q=E.items[E.i];
@@ -411,7 +444,7 @@ function drawExam(){const app=document.getElementById('app');app.innerHTML='';wi
  app.appendChild(nav);const s=Math.max(0,Math.round((E.end-Date.now())/1000));document.getElementById('tm').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function examDone(){const b=book(),app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);let r=0;const per={};const wrongs=[];
  E.items.forEach((q,i)=>{const ok=E.ans[i]!=null&&q.list[E.ans[i]].ok;per[q.ch]=per[q.ch]||[0,0];per[q.ch][1]++;if(ok){r++;per[q.ch][0]++;gotRight()}else{S.wrong[q.id]=(S.wrong[q.id]||0)+1;wrongs.push({q,pick:E.ans[i]!=null?q.list[E.ans[i]].t:'沒有作答'})}});
- const score=Math.round(r/E.items.length*100);S.exams.push({b:b.id,d:today(),s:score});touch();save();addXP(r*5+20,'模擬考');if(score>=80)celebrate();
+ S.seen=S.seen||{};E.items.forEach(q=>{S.seen[q.id]=(S.seen[q.id]||0)+1});const score=Math.round(r/E.items.length*100);S.exams.push({b:b.id,d:today(),s:score});touch();save();addXP(r*5+20,'模擬考');if(score>=80)celebrate();
  let weak=null,wv=2;Object.keys(per).forEach(k=>{const v=per[k][0]/per[k][1];if(v<wv){wv=v;weak=+k}});
  app.appendChild(h('<section class="card" style="align-items:center;text-align:center"><span class="muted">模擬考成績</span><span class="big num">'+score+' 分</span><span class="muted num">答對 '+r+' / '+E.items.length+'</span></section>'));
  const pc=h('<section class="card"><h3>各章答對率</h3>'+Object.keys(per).sort((a,c)=>a-c).map(k=>{const v=per[k];return '<div class="chbar"><span>第 '+(+k+1)+' 章</span><span class="bar"><i style="width:'+(v[0]/v[1]*100)+'%;background:'+(v[0]/v[1]<.6?'var(--bad)':v[0]/v[1]<.8?'var(--warn)':'var(--good)')+'"></i></span><span class="num small">'+v[0]+'/'+v[1]+'</span></div>'}).join('')+'</section>');app.appendChild(pc);
