@@ -314,6 +314,11 @@ body.pick-book .pager{overflow-x:hidden;scroll-snap-type:none}
 body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:none}
 .tabs{transition:transform .35s cubic-bezier(.3,1.2,.5,1),opacity .25s}
 /* 連續天數的火 */
+.fire .ring.r2{animation:spin 11s linear infinite}
+.fire .hue2{animation:hue 12s ease-in-out infinite alternate}
+.fire .halo{transform-box:fill-box;transform-origin:center;animation:halo 2.4s ease-in-out infinite}
+.fire .crack{animation:coal 1.8s ease-in-out infinite}
+@keyframes halo{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
 .fire{overflow:visible}
 .fire .glow{transform-box:fill-box;transform-origin:center}
 .fire .glow.pulse{animation:glowP 2.2s ease-in-out infinite}
@@ -792,9 +797,12 @@ function addMascot(card){const t=S.theme;if(t!=='cat'&&t!=='dog')return;const m=
 
 /* ===================== 連續天數的火：每 10 天換一種火，提醒今天續火 ===================== */
 const FIRES=[
- {min:0,key:'ember',name:'熄滅的火種'},{min:1,key:'spark',name:'小火花'},{min:10,key:'candle',name:'燭火'},{min:20,key:'torch',name:'火把'},
- {min:30,key:'camp',name:'篝火'},{min:40,key:'blaze',name:'熊熊烈火'},{min:50,key:'blue',name:'藍色火焰'},{min:60,key:'purple',name:'紫色火焰'},
- {min:70,key:'gold',name:'黃金火焰'},{min:80,key:'rainbow',name:'彩虹火焰'},{min:90,key:'star',name:'星火'},{min:100,key:'phoenix',name:'鳳凰之火'}];
+ {min:0,key:'ember',name:'熄滅的火種'},{min:1,key:'spark',name:'小火花'},{min:5,key:'match',name:'火柴'},{min:10,key:'candle',name:'燭火'},
+ {min:15,key:'lamp',name:'油燈'},{min:20,key:'torch',name:'火把'},{min:25,key:'camp',name:'篝火'},{min:30,key:'blaze',name:'熊熊烈火'},
+ {min:35,key:'lava',name:'熔岩之火'},{min:40,key:'blue',name:'藍色火焰'},{min:45,key:'ice',name:'冰晶火焰'},{min:50,key:'purple',name:'紫色火焰'},
+ {min:55,key:'emerald',name:'翡翠火焰'},{min:60,key:'gold',name:'黃金火焰'},{min:65,key:'platinum',name:'白金火焰'},{min:70,key:'rainbow',name:'彩虹火焰'},
+ {min:75,key:'aurora',name:'極光火焰'},{min:80,key:'star',name:'星火'},{min:85,key:'galaxy',name:'銀河火焰'},{min:90,key:'sun',name:'太陽之火'},
+ {min:95,key:'holy',name:'聖火'},{min:100,key:'phoenix',name:'鳳凰之火'}];
 function fireOf(d){let f=FIRES[0];FIRES.forEach(x=>{if(d>=x.min)f=x});return f}
 function nextFire(d){return FIRES.find(x=>x.min>d)}
 function doneToday(){return S.last===today()}
@@ -805,32 +813,43 @@ function fireSVG(key,size){const id='fg'+(++fireUid),C=[14,17];
  const LG=(gid,stops)=>'<linearGradient id="'+gid+'" x1="0" y1="1" x2="0" y2="0">'+stops.map(s=>'<stop offset="'+s[0]+'" stop-color="'+s[1]+'"/>').join('')+'</linearGradient>';
  const T={
   spark:{sc:.72,ty:-2,o:'#ff9a3c',i:'#ffd56a',sp:1},
-  candle:{sc:.5,ty:-11,o:'#ff9a3c',i:'#ffd56a',glow:'#ffb347',under:'<rect x="10.5" y="15" width="7" height="11" rx="1.6" fill="#f3e7d3" stroke="#d9c9ad" stroke-width=".8"/><path d="M14 15v-2.2" stroke="#4a4038" stroke-width="1"/>'},
+  match:{sc:.46,ty:-12.5,o:'#ff8a2e',i:'#ffd56a',glow:'#ffb347',under:'<rect x="13" y="14.5" width="2.2" height="12.5" rx=".8" fill="#e8c48a"/><ellipse cx="14.1" cy="14.6" rx="2" ry="2.3" fill="#a8322a"/>'},
+  candle:{sc:.5,ty:-11,o:'#ff9a3c',i:'#ffd56a',glow:'#ffb347',sp:1,under:'<rect x="10.5" y="15" width="7" height="11" rx="1.6" fill="#f3e7d3" stroke="#d9c9ad" stroke-width=".8"/><path d="M14 15v-2.2" stroke="#4a4038" stroke-width="1"/>'},
+  lamp:{sc:.5,ty:-10,o:'#ff7a2e',m:'#ffa94d',i:'#ffe07a',glow:'#ffb347',sp:1,under:'<path d="M5 25c0-4 4-6 9-6s9 2 9 6z" fill="#c9a35a"/><path d="M22 23l5-3-1 3.5z" fill="#b38b42"/><path d="M5.5 22c-3 0-3 4 0 4" fill="none" stroke="#b38b42" stroke-width="1.4"/><rect x="9" y="25" width="10" height="2" rx="1" fill="#9a7634"/><path d="M14 19v-1.6" stroke="#4a4038" stroke-width="1"/>'},
   torch:{sc:.66,ty:-9,o:'#ff5a24',m:'#ff9a3c',i:'#ffe07a',sp:2,glow:'#ff8a3c',under:'<path d="M12 27l1-11h2l1 11z" fill="#6b4a2b"/><rect x="11" y="15" width="6" height="2.6" rx=".7" fill="#c9a35a"/><path d="M12 19.5h4" stroke="#8a6a3e" stroke-width=".7"/>'},
   camp:{sc:.8,ty:-4,o:'#ff5a24',m:'#ff9a3c',i:'#ffe58a',sp:3,glow:'#ff7a2e',pulse:1,coal:1,over:'<g stroke-linecap="round"><path d="M5 25.5L23 20.8" stroke="#6e4527" stroke-width="3.4"/><path d="M5 20.8L23 25.5" stroke="#9a6a3e" stroke-width="3.4"/></g>'},
   blaze:{o:'#ff2e1f',m:'#ff7a2e',i:'#ffe58a',side:1,sp:4,glow:'#ff4d24',pulse:1},
-  blue:{o:'#2a6cff',m:'#55a8ff',i:'#eaf7ff',side:1,sp:4,glow:'#4d9bff',pulse:1,ring:'#9fd2ff',spc:'#bfe3ff'},
-  purple:{o:'#7a2cff',m:'#ad6dff',i:'#f6edff',side:1,sp:4,glow:'#9a52ff',pulse:1,ring:'#d6b8ff',orbit:2,orbC:'#ead9ff',spc:'#e3ccff'},
-  gold:{o:'#e09600',m:'#ffc23a',i:'#fff8d6',side:1,sp:5,glow:'#ffc933',pulse:1,rays:8,rayC:'#ffd75e',orbit:2,orbC:'#fff1a8',twk:2},
-  rainbow:{grad:[[0,'#ff3d3d'],[.22,'#ff9a3c'],[.42,'#ffd24d'],[.6,'#4cc38a'],[.8,'#3d8bff'],[1,'#a35cff']],m:null,i:'#ffffff',side:1,sp:5,glow:'#ff8ad8',pulse:1,rays:12,rayC:'#ffffff',hue:1,orbit:3,orbC:'#ffffff',twk:2},
-  star:{o:'#3d4bff',m:'#7f8cff',i:'#ffffff',side:1,sp:5,glow:'#6b7bff',pulse:1,ring:'#c9cfff',orbit:4,orbStar:1,orbC:'#ffe27a',twk:4,rays:6,rayC:'#c9cfff'},
-  phoenix:{grad:[[0,'#ff2e1f'],[.55,'#ff8a2e'],[1,'#ffd24d']],m:'#ffb347',i:'#fff4bf',side:1,sp:6,glow:'#ff6a24',pulse:1,rays:12,rayC:'#ffd24d',wings:1,orbit:3,orbC:'#ffd24d',twk:3}};
+  lava:{o:'#b3121b',m:'#ff4d1f',i:'#ffc04d',side:1,sp:5,spc:'#ff7a2e',glow:'#ff3d1f',pulse:1,under:'<ellipse cx="14" cy="26" rx="10" ry="2.4" fill="#5a1410"/><path class="crack" d="M7 26h3l1-.8 2 .8h3l1.5-.6L20 26" fill="none" stroke="#ff8a2e" stroke-width=".8"/>'},
+  blue:{o:'#2a6cff',m:'#55a8ff',i:'#eaf7ff',side:1,sp:4,glow:'#4d9bff',pulse:1,ring:'#7fbfff',spc:'#8cc8ff'},
+  ice:{o:'#1aa7dd',m:'#6fdcff',i:'#ffffff',side:1,sp:4,glow:'#5fd2ff',pulse:1,ring:'#7fdcff',spc:'#a8ecff',twk:2,twkC:'#7fdcff'},
+  purple:{o:'#7a2cff',m:'#ad6dff',i:'#f6edff',side:1,sp:4,glow:'#9a52ff',pulse:1,ring:'#c49cff',orbit:2,orbC:'#b57bff',spc:'#d2b8ff',twk:2,twkC:'#c49cff'},
+  emerald:{o:'#0b8f63',m:'#36c98f',i:'#eafff6',side:1,sp:5,glow:'#2fd39a',pulse:1,ring:'#7fe3bd',orbit:3,orbC:'#2fd39a',spc:'#8ff0c8',twk:2,twkC:'#5fe0ad'},
+  gold:{o:'#e09600',m:'#ffc23a',i:'#fff8d6',side:1,sp:5,glow:'#ffc933',pulse:1,rays:8,rayC:'#ffc933',orbit:2,orbC:'#ffb300',twk:3},
+  platinum:{grad:[[0,'#6f84a0'],[1,'#d7e2ee']],m:'#b8c8db',i:'#ffffff',side:1,sp:5,spc:'#c9d6e6',glow:'#9fb6d1',pulse:1,rays:10,rayC:'#a9bcd2',ring:'#a9bcd2',orbit:3,orbC:'#8aa2c0',twk:3,twkC:'#8aa2c0'},
+  rainbow:{grad:[[0,'#ff3d3d'],[.22,'#ff9a3c'],[.42,'#ffd24d'],[.6,'#4cc38a'],[.8,'#3d8bff'],[1,'#a35cff']],m:null,i:'#ffffff',side:1,sp:5,glow:'#ff8ad8',pulse:1,rays:12,rayC:'#ff9ad9',hue:1,orbit:3,orbC:'#ff5fbf',twk:3,twkC:'#ff9a3c'},
+  aurora:{grad:[[0,'#1fd391'],[.5,'#2bb8ff'],[1,'#a35cff']],m:null,i:'#ffffff',side:1,sp:5,spc:'#7cf3d0',glow:'#3fd3c9',pulse:1,rays:12,rayC:'#5fe0d8',ring:'#7fd8ff',orbit:3,orbC:'#1fd391',twk:3,twkC:'#2bb8ff',hue:2},
+  star:{o:'#3d4bff',m:'#7f8cff',i:'#ffffff',side:1,sp:5,glow:'#6b7bff',pulse:1,ring:'#9aa6ff',orbit:4,orbStar:1,orbC:'#ffcc33',twk:4,rays:6,rayC:'#9aa6ff'},
+  galaxy:{grad:[[0,'#24125e'],[.5,'#5b3bd6'],[1,'#d08bff']],m:'#7a5cff',i:'#ffffff',side:1,sp:6,spc:'#e3ccff',glow:'#7a5cff',pulse:1,ring:'#b79cff',ring2:'#7fb0ff',orbit:5,orbStar:1,orbC:'#ffd24d',twk:4,rays:8,rayC:'#b79cff'},
+  sun:{o:'#ff5a00',m:'#ffae00',i:'#fff3b0',side:1,sp:6,glow:'#ffa000',pulse:1,rays:16,rayC:'#ffb300',ring:'#ffc04d',ring2:'#ff8a2e',orbit:3,orbC:'#ff8a00',twk:4},
+  holy:{o:'#f2b705',m:'#ffe27a',i:'#ffffff',side:1,sp:6,glow:'#ffd24d',pulse:1,rays:14,rayC:'#ffcf3a',halo:1,orbit:4,orbC:'#ffb300',twk:4,ring:'#ffdf7a'},
+  phoenix:{grad:[[0,'#ff2e1f'],[.55,'#ff8a2e'],[1,'#ffd24d']],m:'#ffb347',i:'#fff4bf',side:1,sp:6,glow:'#ff6a24',pulse:1,rays:16,rayC:'#ffb300',wings:1,ring:'#ffc04d',orbit:4,orbC:'#ff8a00',twk:4}};
  if(key==='ember')return '<svg class="fire ember" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true"><path class="smoke" d="M14 17c-2-3 2-5 0-8s2-5 0-7" fill="none" stroke="#a9a3a0" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="14" cy="23" rx="6" ry="2.6" fill="#6b6560"/><circle class="coal" cx="14" cy="22.4" r="1.6" fill="#ff8a3c"/></svg>';
  const c=T[key]||T.spark,sc=c.sc||1,ty=c.ty||0;let defs='',back='',front='';
  const oFill=c.grad?(defs+=LG(id+'o',c.grad),'url(#'+id+'o)'):c.o;
  if(c.glow){defs+='<radialGradient id="'+id+'g"><stop offset="0" stop-color="'+c.glow+'" stop-opacity=".6"/><stop offset=".55" stop-color="'+c.glow+'" stop-opacity=".18"/><stop offset="1" stop-color="'+c.glow+'" stop-opacity="0"/></radialGradient>';back+='<circle class="glow'+(c.pulse?' pulse':'')+'" cx="14" cy="17" r="'+(c.rays?15:13)+'" fill="url(#'+id+'g)"/>'}
  if(c.rays){let p='';for(let k=0;k<c.rays;k++){const a=k/c.rays*Math.PI*2,w=.09,R=15;const P=(t,r)=>(C[0]+Math.cos(t)*r).toFixed(2)+','+(C[1]+Math.sin(t)*r).toFixed(2);p+='<polygon points="'+P(a-w,4)+' '+P(a,R)+' '+P(a+w,4)+'"/>'}back='<g class="rays" fill="'+c.rayC+'" opacity=".55">'+p+'</g>'+back}
  if(c.ring)back+='<circle class="ring" cx="14" cy="17" r="12" fill="none" stroke="'+c.ring+'" stroke-width=".8" stroke-dasharray="2.2 3.2" opacity=".9"/>';
+ if(c.ring2)back+='<circle class="ring r2" cx="14" cy="17" r="14.2" fill="none" stroke="'+c.ring2+'" stroke-width=".6" stroke-dasharray="1 2.6" opacity=".85"/>';
  if(c.wings){defs+=LG(id+'w',[[0,'#d8261a'],[.5,'#ff7a24'],[1,'#ffd24d']]);const wing='M14 18C10 17 6 14 3 8c2 .4 3 1.4 4 2.6C6.6 8 6.8 6 7.6 4.6c1 2 2 3.6 3 4.6.2-2 .8-3.4 1.6-4.4.4 3 1.2 6.4 2.8 9.2z';
   const wp='<path d="'+wing+'" fill="url(#'+id+'w)" stroke="#fff1b8" stroke-width=".45" stroke-linejoin="round"/>';
   back+='<g class="wing l"><g transform="translate(14 17) scale(1.45) translate(-14 -17)">'+wp+'</g></g><g class="wing r"><g transform="translate(28 0) scale(-1 1) translate(14 17) scale(1.45) translate(-14 -17)">'+wp+'</g></g>'}
  const flame=(cls,s,x,y,rot)=>'<g transform="translate('+x+' '+y+') rotate('+rot+') scale('+s+') translate(-14 -28)"><g class="'+cls+'"><path class="fl-o" d="'+FL_O+'" fill="'+oFill+'"/>'+(c.m?'<path class="fl-m" d="M14 7c1 4 5.5 6 5.5 11a5.5 5.5 0 0 1-11 0c0-2.8 1.8-4.3 2.8-5.5 .2 1.7 1 2.7 1.9 2.7 0-3.4-1-5.5.8-8.2z" fill="'+c.m+'"/>':'')+'<path class="fl-i" d="'+FL_I+'" fill="'+c.i+'"/></g></g>';
  let body=(c.under||'');
  if(c.side)body+=flame('side l',.52*sc,14-5.5*sc,28+ty-1,-20)+flame('side r',.52*sc,14+5.5*sc,28+ty-1,20);
- body+=flame('main'+(c.hue?' hue':''),sc,14,28+ty,0)+(c.over||'');
+ body+=flame('main'+(c.hue===1?' hue':c.hue===2?' hue2':''),sc,14,28+ty,0)+(c.over||'');if(c.halo)body+='<ellipse class="halo" cx="14" cy="1.8" rx="5" ry="1.6" fill="none" stroke="#ffc61a" stroke-width="1.1"/>';
  if(c.coal)body+='<ellipse class="coal" cx="14" cy="23.2" rx="3" ry="1.2" fill="#ffb347"/>';
- if(c.orbit){let o='';for(let k=0;k<c.orbit;k++){const a=k/c.orbit*Math.PI*2,x=(C[0]+Math.cos(a)*11.5).toFixed(2),y=(C[1]+Math.sin(a)*11.5).toFixed(2);o+=c.orbStar?'<path d="M'+x+' '+(y-2.2)+'l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z" fill="'+c.orbC+'"/>':'<circle cx="'+x+'" cy="'+y+'" r="1.1" fill="'+c.orbC+'"/>'}front+='<g class="orbit">'+o+'</g>'}
- if(c.twk){const pos=[[4,6],[24,4],[3,20],[25,19]];for(let k=0;k<c.twk;k++){const [x,y]=pos[k];front+='<path class="tw t'+k+'" d="M'+x+' '+(y-2)+'l.55 1.45 1.45.55-1.45.55-.55 1.45-.55-1.45-1.45-.55 1.45-.55z" fill="#fff6c8"/>'}}
+ if(c.orbit){let o='';for(let k=0;k<c.orbit;k++){const a=k/c.orbit*Math.PI*2,x=(C[0]+Math.cos(a)*11.5).toFixed(2),y=(C[1]+Math.sin(a)*11.5).toFixed(2);o+=c.orbStar?'<path d="M'+x+' '+(y-2.6)+'l.75 1.85 1.85.75-1.85.75-.75 1.85-.75-1.85-1.85-.75 1.85-.75z" fill="'+c.orbC+'" stroke="#fff" stroke-width=".4" stroke-linejoin="round"/>':'<circle cx="'+x+'" cy="'+y+'" r="1.35" fill="'+c.orbC+'" stroke="#fff" stroke-width=".45"/>'}front+='<g class="orbit">'+o+'</g>'}
+ if(c.twk){const pos=[[3.5,6],[24.5,4.5],[2.5,20],[25.5,19]],tc=c.twkC||'#ffc61a';for(let k=0;k<c.twk;k++){const [x,y]=pos[k];front+='<path class="tw t'+k+'" d="M'+x+' '+(y-3.2)+'l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z" fill="'+tc+'" stroke="#fff" stroke-width=".45" stroke-linejoin="round"/>'}}
  const sx=[10,18,14,8,20,12],spc=c.spc||'#ffc04d';for(let k=0;k<(c.sp||0);k++)front+='<circle class="sp s'+k+'" cx="'+sx[k]+'" cy="'+(ty+13)+'" r="'+(k%2?.8:1.1)+'" fill="'+spc+'"/>';
  return '<svg class="fire '+key+'" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true">'+(defs?'<defs>'+defs+'</defs>':'')+back+body+front+'</svg>'}
 function streakChip(){const d=curStreak(),f=fireOf(d),dt=doneToday();return '<button class="chip streak'+(dt?'':' cold')+'" data-streak aria-label="連續 '+d+' 天，'+f.name+'">'+fireSVG(f.key,22)+'<span class="num">'+d+' 天</span></button>'}
@@ -866,8 +885,9 @@ function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
+ {id:'2026-11-18g',items:['火改成每 5 天升級一次，到 100 天共 21 種火：新增火柴、油燈、熔岩、冰晶、翡翠、白金、極光、銀河、太陽、聖火','小星星和光點改成有顏色、加白邊，淺色背景也看得清楚']},
  {id:'2026-11-18f',items:['火把和篝火換了順序：20 天是火把、30 天是篝火','燭火之後的火變得更華麗，而且越高級越閃：光暈、火星、旋轉光環、繞圈的光點、光芒，鳳凰之火還會拍翅膀']},
- {id:'2026-11-18e',items:['右上角的火會動了，而且每連續 10 天換一種火：小火花 → 燭火 → 火把 → 篝火 → 熊熊烈火 → 藍色、紫色、黃金、彩虹、星火 → 鳳凰之火','只有做題目或複習閃卡才會續火，只打開網站不算','今天還沒續火時，火會提醒你；點右上角的火可以看全部的火和還差幾天升級','第一次滑到下一頁不會再卡頓']},
+ {id:'2026-11-18e',items:['右上角的火會動了，而且每連續 5 天換一種火：小火花 → 燭火 → 火把 → 篝火 → 熊熊烈火 → 藍色、紫色、黃金、彩虹、星火 → 鳳凰之火','只有做題目或複習閃卡才會續火，只打開網站不算','今天還沒續火時，火會提醒你；點右上角的火可以看全部的火和還差幾天升級','第一次滑到下一頁不會再卡頓']},
  {id:'2026-11-18d',items:['可以左右滑動換頁了，下方的分頁列會跟著手指移動','貓咪外觀有一隻黑貓、狗狗外觀有一隻柴犬，趴在「今天的任務」上休息：會呼吸、眨眼、轉耳朵、搖尾巴','換外觀：按上方的齒輪 → 外觀']},
  {id:'2026-11-18',items:['新外觀：忍者、貓咪、狗狗。按上方的齒輪 → 外觀就能換','題庫變成 1,080 題，每個單元 40 題','新題型：計算填空、分錄題、表格填空（調節表、帳齡分析、折舊表…）','補充 6 個老師常教的單元，例如現金短溢、票據拒付、存貨估計','模擬考可以複選單元、選題數，題目不重複','有新版本時，上方會出現「點這裡更新」']}
 ];
