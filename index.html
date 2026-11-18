@@ -64,8 +64,6 @@
 .btn.soft{background:var(--accent-bg)}
 .btn.ghost{background:transparent}
 .btn.pink{background:var(--pink)}
-.tabs button.on{color:var(--accent)}
-.tabs button.on svg{background:var(--accent-bg);border-radius:10px;padding:2px 10px;width:44px;box-sizing:content-box}
 .chips .book.on{border-color:var(--cc);background:var(--cc-bg);color:var(--cc)}
 .big{color:var(--accent)}
 /* ===== 外觀主題：忍者、貓咪、狗狗（固定淺色，不跟系統深色） ===== */
@@ -78,10 +76,6 @@
 :root[data-theme="ninja"] .card h3::before{content:"忍";display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;font-size:13px;color:#f8f1e1;background:var(--accent);border-radius:3px;transform:rotate(-6deg);vertical-align:2px}
 :root[data-theme="ninja"] .btn,:root[data-theme="ninja"] .opt,:root[data-theme="ninja"] .book,:root[data-theme="ninja"] .chip{border-radius:4px}
 :root[data-theme="ninja"] .opt{border-color:var(--ink)}
-:root[data-theme="ninja"] .tabs{background:#1d1a17;border-top:3px solid var(--accent)}
-:root[data-theme="ninja"] .tabs button{color:#bfb39a}
-:root[data-theme="ninja"] .tabs button.on{color:#f8f1e1}
-:root[data-theme="ninja"] .tabs button.on svg{background:var(--accent)}
 :root[data-theme="ninja"] .lv-name::before{content:"";display:inline-block;width:18px;height:18px;margin-right:6px;vertical-align:-3px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cpath fill='%23f8f1e1' d='M0-48 L9-9 L48 0 L9 9 L0 48 L-9 9 L-48 0 L-9-9Z'/%3E%3Ccircle r='7' fill='%231d1a17'/%3E%3C/svg%3E") center/contain no-repeat;animation:spin 6s linear infinite}
 :root[data-theme="ninja"] .today-card{position:relative}
 :root[data-theme="ninja"] .today-card::after{content:"";position:absolute;right:-12px;top:-12px;width:40px;height:40px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cpath fill='%231d1a17' d='M0-48 L9-9 L48 0 L9 9 L0 48 L-9 9 L-48 0 L-9-9Z'/%3E%3Ccircle r='7' fill='%23f8f1e1'/%3E%3C/svg%3E") center/contain no-repeat;animation:spin 6s linear infinite;pointer-events:none}
@@ -102,26 +96,30 @@
 :root[data-theme="dog"] .lv-name::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cellipse cx='4.8' cy='10.5' rx='2.8' ry='5.5' fill='%23e8c8a2' transform='rotate(18 4.8 10.5)'/%3E%3Cellipse cx='19.2' cy='10.5' rx='2.8' ry='5.5' fill='%23e8c8a2' transform='rotate(-18 19.2 10.5)'/%3E%3Cellipse cx='12' cy='13' rx='6.8' ry='7.2' fill='%23fff'/%3E%3Ccircle cx='9.4' cy='11.8' r='1.15' fill='%237b4f2c'/%3E%3Ccircle cx='14.6' cy='11.8' r='1.15' fill='%237b4f2c'/%3E%3Cellipse cx='12' cy='15.4' rx='1.7' ry='1.2' fill='%237b4f2c'/%3E%3Cpath d='M12 16.6v1.4' stroke='%237b4f2c' stroke-width='.8'/%3E%3C/svg%3E") center/contain no-repeat}
 
 @keyframes spin{to{transform:rotate(360deg)}}
-/* 小夥伴（貓咪、狗狗） */
-:root[data-theme="cat"] .today-card,:root[data-theme="dog"] .today-card{position:relative;margin-top:56px}
-.mascot{position:absolute;right:18px;top:-72px;width:120px;height:80px;pointer-events:none;z-index:1}
+/* 小夥伴（貓咪、狗狗）：平塗、無外框；動作慢、有停頓 */
+:root[data-theme="cat"] .today-card,:root[data-theme="dog"] .today-card{position:relative;margin-top:50px}
+.mascot{position:absolute;right:10px;top:-62px;width:150px;height:92px;pointer-events:none;z-index:1}
 .mascot svg{display:block;overflow:visible}
-.mascot .m-head{transform-box:fill-box;transform-origin:50% 92%;animation:mHead 7s ease-in-out infinite}
-.mascot .m-eyes{transform-box:fill-box;transform-origin:50% 50%;animation:mBlink 4.6s ease-in-out infinite}
-.mascot.cat .m-ear.r{transform-box:fill-box;transform-origin:30% 100%;animation:mFlickR 6.3s ease-out infinite}
-.mascot.cat .m-ear.l{transform-box:fill-box;transform-origin:70% 100%;animation:mFlickL 9.1s ease-out infinite}
-.mascot.dog .m-head{animation:mTilt 6s ease-in-out infinite}
-.mascot.dog .m-ear{transform-box:fill-box;transform-origin:50% 8%;animation:mFlop 6s ease-in-out infinite}
-.mascot.dog .m-ear.r{animation-name:mFlopR}
-.mascot.dog .m-tongue{transform-box:fill-box;transform-origin:50% 0;animation:mPant .5s ease-in-out infinite alternate}
-@keyframes mHead{0%,100%{transform:rotate(0)}18%,34%{transform:rotate(-6deg)}50%{transform:rotate(0)}68%,80%{transform:rotate(5deg)}}
-@keyframes mBlink{0%,90%,100%{transform:scaleY(1)}93%{transform:scaleY(.08)}96%{transform:scaleY(1)}}
-@keyframes mFlickR{0%,74%,100%{transform:rotate(0)}76%{transform:rotate(16deg)}79%{transform:rotate(0)}81%{transform:rotate(10deg)}84%{transform:rotate(0)}}
-@keyframes mFlickL{0%,40%,100%{transform:rotate(0)}42%{transform:rotate(-14deg)}46%{transform:rotate(0)}}
-@keyframes mTilt{0%,52%,100%{transform:rotate(0)}60%,80%{transform:rotate(-11deg)}88%{transform:rotate(1.5deg)}93%{transform:rotate(0)}}
-@keyframes mFlop{0%,52%,100%{transform:rotate(0)}60%{transform:rotate(9deg)}66%{transform:rotate(4deg)}80%{transform:rotate(6deg)}88%{transform:rotate(-5deg)}93%{transform:rotate(2deg)}97%{transform:rotate(0)}}
-@keyframes mFlopR{0%,52%,100%{transform:rotate(0)}60%{transform:rotate(5deg)}66%{transform:rotate(1deg)}80%{transform:rotate(3deg)}88%{transform:rotate(-6deg)}93%{transform:rotate(2deg)}97%{transform:rotate(0)}}
-@keyframes mPant{from{transform:scaleY(.75)}to{transform:scaleY(1.12)}}
+.mascot .m-breath{transform-box:fill-box;transform-origin:50% 100%;animation:mBreath 3.6s ease-in-out infinite}
+.mascot .m-head{transform-box:fill-box;transform-origin:60% 95%;animation:mLook 11s ease-in-out infinite}
+.mascot .m-eyes{transform-box:fill-box;transform-origin:50% 50%}
+.mascot.cat .m-eyes{animation:mSlowBlink 7s ease-in-out infinite}
+.mascot.dog .m-eyes{animation:mBlink 5.3s ease-in-out infinite}
+.mascot .m-ear{transform-box:fill-box}
+.mascot.cat .m-ear.r{transform-origin:20% 100%;animation:mEarR 8.5s ease-out infinite}
+.mascot.cat .m-ear.l{transform-origin:80% 100%;animation:mEarL 13s ease-out infinite}
+.mascot.dog .m-ear.l{transform-origin:70% 100%;animation:mPerkL 9s ease-in-out infinite}
+.mascot.dog .m-ear.r{transform-origin:30% 100%;animation:mPerkR 9s ease-in-out infinite}
+.mascot.dog .m-tail{transform-box:fill-box;transform-origin:85% 95%;animation:mWag 4.5s ease-in-out infinite}
+@keyframes mBreath{0%,100%{transform:scaleY(1)}45%{transform:scaleY(1.035)}}
+@keyframes mLook{0%,30%,100%{transform:rotate(0)}36%,52%{transform:rotate(-5deg) translateY(-.5px)}60%,92%{transform:rotate(0)}}
+@keyframes mSlowBlink{0%,58%,100%{transform:scaleY(1)}62%,70%{transform:scaleY(.12)}76%{transform:scaleY(1)}}
+@keyframes mBlink{0%,88%,100%{transform:scaleY(1)}91%{transform:scaleY(.1)}94%{transform:scaleY(1)}}
+@keyframes mEarR{0%,78%,100%{transform:rotate(0)}80%{transform:rotate(18deg)}83%,88%{transform:rotate(12deg)}93%{transform:rotate(0)}}
+@keyframes mEarL{0%,40%,100%{transform:rotate(0)}42%{transform:rotate(-12deg)}46%{transform:rotate(0)}}
+@keyframes mPerkL{0%,34%,100%{transform:rotate(0)}38%,58%{transform:rotate(-7deg)}64%{transform:rotate(0)}}
+@keyframes mPerkR{0%,36%,100%{transform:rotate(0)}40%,58%{transform:rotate(7deg)}64%{transform:rotate(0)}}
+@keyframes mWag{0%,100%{transform:rotate(0)}4%{transform:rotate(9deg)}8%{transform:rotate(-7deg)}12%{transform:rotate(9deg)}16%{transform:rotate(-7deg)}20%{transform:rotate(8deg)}24%{transform:rotate(-5deg)}28%{transform:rotate(0)}}
 
 /* ===== 設定、新功能、更新提示 ===== */
 .gear{cursor:pointer;padding:4px 8px}
@@ -141,7 +139,6 @@
 .updbar{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%);z-index:20;border:0;font:inherit;font-weight:700;font-size:14px;background:var(--accent);color:#fff;padding:9px 16px;border-radius:999px;box-shadow:0 8px 22px -8px rgba(0,0,0,.45);cursor:pointer;max-width:92vw}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
-body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
 h1,h2,h3{font-family:var(--display);line-height:1.3;text-wrap:balance;margin:0}
 h1{font-size:26px} h2{font-size:21px} h3{font-size:18px}
 p{margin:0}
@@ -285,11 +282,6 @@ details summary{cursor:pointer;font-weight:700}
 details .why{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 details .why div{font-size:15px}
 
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.tabs-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
-.tabs button{background:none;border:0;padding:8px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--muted);cursor:pointer;min-height:58px}
-.tabs button svg{width:24px;height:24px}
-.tabs button.on{color:var(--accent);font-weight:700}
 
 #toast{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:30;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -297,12 +289,33 @@ details .why div{font-size:15px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media (max-width:440px){.chip.today{display:none}}
 @media (max-width:380px){.opts.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ===== 滑動換頁與浮動分頁列 ===== */
+html,body{height:100%;overflow:hidden}
+.top{position:fixed;left:0;right:0;top:0}
+.pager{position:fixed;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.pager::-webkit-scrollbar{display:none}
+.page{flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top) + 74px) 0 calc(env(safe-area-inset-bottom) + 100px);-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+.inner{transform-origin:center top;will-change:transform,opacity}
+.tabs{position:fixed;left:50%;right:auto;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 10px);z-index:10;width:min(94vw,560px);background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:22px;padding:6px;box-shadow:0 10px 30px -12px rgba(0,0,0,.3)}
+.tabs-in{position:relative;display:grid;grid-template-columns:repeat(5,1fr);max-width:none;margin:0}
+.tabs .ind{position:absolute;top:0;bottom:0;left:0;border-radius:16px;background:var(--accent);will-change:transform}
+.tabs button{position:relative;z-index:1;background:none;border:0;min-height:52px;padding:6px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;color:var(--muted);cursor:pointer;transition:color .25s}
+.tabs button svg{width:22px;height:22px;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.tabs button.on{color:#fff;font-weight:700}
+.tabs button.on svg{transform:translateY(-1px) scale(1.1)}
+:root[data-theme="ninja"] .tabs{background:#1d1a17;border:2px solid #1d1a17;border-radius:8px}
+:root[data-theme="ninja"] .tabs .ind{border-radius:5px}
+:root[data-theme="ninja"] .tabs button{color:#bfb39a}
+:root[data-theme="ninja"] .tabs button.on{color:#f8f1e1}
+.hintswipe{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 86px);transform:translateX(-50%);background:var(--ink);color:var(--bg);font-size:13px;padding:7px 14px;border-radius:999px;z-index:9;opacity:0;pointer-events:none;transition:opacity .4s}
+.hintswipe.show{opacity:.92;animation:nudge 1.4s ease-in-out 2}
+@keyframes nudge{50%{transform:translateX(calc(-50% - 14px))}}
 </style>
 </head>
 <body>
 <header class="top"><div class="top-in" id="top"></div></header>
-<main class="wrap" id="app"></main>
-<nav class="tabs"><div class="tabs-in" id="tabs"></div></nav>
+<main class="pager" id="pager"><section class="page" data-tab="home"><div class="wrap inner" id="app"></div></section><section class="page" data-tab="quiz"><div class="wrap inner"></div></section><section class="page" data-tab="cards"><div class="wrap inner"></div></section><section class="page" data-tab="exam"><div class="wrap inner"></div></section><section class="page" data-tab="wrong"><div class="wrap inner"></div></section></main>
+<nav class="tabs" id="tabs"></nav>
 <div id="toast" role="status" aria-live="polite"></div>
 <canvas id="fx"></canvas>
 
@@ -404,13 +417,34 @@ const TABS=[['home','首頁'],['quiz','練習'],['cards','閃卡'],['exam','模�
 let view='home';
 function renderTop(){const lv=level(),name=LEVELS[Math.min(lv,LEVELS.length-1)],pct=S.xp%100;const t=today();const n=S.today.d===t?S.today.n:0;
  document.getElementById('top').innerHTML='<div class="lv"><span class="lv-name">Lv.'+(lv+1)+' '+name+'</span><div class="bar"><i style="width:'+pct+'%"></i></div><span class="small muted num">'+pct+' / 100 經驗</span></div><button class="chip swap" data-shelf>換課本</button><button class="chip gear" data-settings aria-label="設定"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span class="chip num"><span class="flame">'+svg('flame',1)+'</span>'+curStreak()+' 天</span><span class="chip num today">今日 '+Math.min(n,S.goal)+'/'+S.goal+'</span>'}
-function renderTabs(){document.getElementById('tabs').innerHTML=TABS.map(t=>'<button class="'+(view===t[0]?'on':'')+'" data-go="'+t[0]+'">'+svg(t[0])+t[1]+'</button>').join('')}
+function renderTabs(){const el=document.getElementById('tabs');if(!document.getElementById('ind')){el.innerHTML='<div class="tabs-in" id="tabsIn"><span class="ind" id="ind"></span>'+TABS.map((t,i)=>'<button data-i="'+i+'" aria-label="'+t[1]+'">'+svg(t[0])+t[1]+'</button>').join('')+'</div>';layoutInd()}el.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===curPage))}
 document.getElementById('top').addEventListener('click',e=>{if(e.target.closest('[data-shelf]'))go('shelf');if(e.target.closest('[data-settings]'))openSettings()});
-document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b)tabClick(+b.dataset.i)});
 let timer=null;
-function go(v,arg){clearInterval(timer);view=v;renderTabs();const app=document.getElementById('app');app.className='wrap';app.innerHTML='';window.scrollTo(0,0);
+function go(v,arg){if((VIEW_TAB[v]||'home')==='exam')clearInterval(timer);setView(v);const app=document.getElementById('app');app.className='wrap inner';app.innerHTML='';pageTop();
  ({shelf:vShelf,home:vHome,chapter:vChapter,lesson:vLesson,quiz:vQuizPick,cards:vCardsPick,exam:vExamIntro,wrong:vWrong,books:vBooks})[v](app,arg)}
 function h(html){const d=document.createElement('div');d.innerHTML=html;return d.firstElementChild}
+
+/* ===================== 滑動換頁（同台股小幫手：左右滑、下方色塊跟著手指移動） ===================== */
+const TAB_IDS=['home','quiz','cards','exam','wrong'];
+const VIEW_TAB={shelf:'home',home:'home',chapter:'home',lesson:'home',books:'home',quiz:'quiz',cards:'cards',exam:'exam',wrong:'wrong'};
+const pager=document.getElementById('pager'),pages=[...pager.querySelectorAll('.page')];
+const pageView={};let curPage=0,tabW=0;
+function bindApp(i){pages.forEach((p,j)=>{const inn=p.firstElementChild;if(j===i)inn.id='app';else inn.removeAttribute('id')})}
+function setView(v){const i=TAB_IDS.indexOf(VIEW_TAB[v]||'home');view=v;pageView[TAB_IDS[i]]=v;bindApp(i);
+ if(i!==curPage){curPage=i;const smooth=!matchMedia('(prefers-reduced-motion: reduce)').matches;pager.scrollTo({left:i*pager.clientWidth,behavior:smooth?'smooth':'auto'})}renderTabs()}
+function pageTop(){pages[curPage].scrollTop=0}
+function layoutInd(){const t=document.getElementById('tabsIn'),ind=document.getElementById('ind');if(!t||!ind)return;tabW=t.clientWidth/TAB_IDS.length;ind.style.width=tabW+'px'}
+function onPagerScroll(){const w=pager.clientWidth||1,x=pager.scrollLeft/w,ind=document.getElementById('ind');if(ind)ind.style.transform='translateX('+(x*tabW)+'px)';
+ pages.forEach((p,i)=>{const d=Math.min(1,Math.abs(x-i)),inn=p.firstElementChild;inn.style.transform=d<.002?'':'scale('+(1-d*.07)+') translateY('+(d*14)+'px)';inn.style.opacity=d<.002?'':String(1-d*.45)});
+ const n=Math.round(x);if(Math.abs(x-n)<.02&&n!==curPage)activatePage(n)}
+function activatePage(n){curPage=n;const tab=TAB_IDS[n];bindApp(n);try{localStorage.setItem('acc-swiped','1')}catch(e){}
+ if(!pageView[tab]||!pages[n].firstElementChild.childElementCount)go(tab);else{view=pageView[tab];renderTabs()}}
+pager.addEventListener('scroll',()=>requestAnimationFrame(onPagerScroll),{passive:true});
+addEventListener('resize',()=>{layoutInd();pager.scrollLeft=curPage*pager.clientWidth;onPagerScroll()});
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test((e.target.tagName||''))||document.querySelector('.sheet.show'))return;if(e.key==='ArrowRight'&&curPage<4)tabClick(curPage+1);if(e.key==='ArrowLeft'&&curPage>0)tabClick(curPage-1)});
+function tabClick(i){const tab=TAB_IDS[i];if(i===curPage||!pageView[tab])go(tab);else setView(pageView[tab])}
+function swipeHint(){let done=false;try{done=!!localStorage.getItem('acc-swiped')}catch(e){}if(done)return;const el=h('<div class="hintswipe">← 左右滑動換頁 →</div>');document.body.appendChild(el);setTimeout(()=>el.classList.add('show'),2600);setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),500)},6800)}
 
 /* ===================== 首頁 ===================== */
 function lessonKey(ci,li){return S.book+':'+ci+':'+li}
@@ -527,8 +561,8 @@ function vQuizPick(app){const b=book();
  b.chapters.forEach((c,ci)=>{const el=h('<button class="ch c'+(ci%5)+'"><span class="ch-no">'+(ci+1)+'</span><span class="ch-body"><span class="ch-title">'+esc(c.title)+'</span><span class="small muted" style="display:block">'+(c.questions||[]).length+' 題</span></span></button>');el.onclick=()=>startQuiz(pickFresh(allQs(b,ci),10),'第 '+(ci+1)+' 章練習');app.appendChild(el)})}
 
 let Q=null;
-function startQuiz(items,title,mode){if(!items.length){toast('這裡還沒有題目');return}Q={items:items.map(inst),title,i:0,right:0,combo:0,xp:0,mode:mode||'normal',wrongs:[]};view='quiz';renderTabs();drawQuiz()}
-function drawQuiz(){const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);const q=Q.items[Q.i],b=book();
+function startQuiz(items,title,mode){if(!items.length){toast('這裡還沒有題目');return}Q={items:items.map(inst),title,i:0,right:0,combo:0,xp:0,mode:mode||'normal',wrongs:[]};setView('quiz');drawQuiz()}
+function drawQuiz(){const app=document.getElementById('app');app.innerHTML='';pageTop();const q=Q.items[Q.i],b=book();
  app.appendChild(h('<div class="q-top"><span>'+esc(Q.title)+'</span><span class="num">'+(Q.i+1)+' / '+Q.items.length+'</span></div>'));
  app.appendChild(h('<div class="bar pink"><i style="width:'+(Q.i/Q.items.length*100)+'%"></i></div>'));
  const card=h('<section class="card q-card c'+(q.ch%5)+'"><span class="small chtag">第 '+(q.ch+1)+' 章・'+esc((b.chapters[q.ch]||{}).title||'')+'</span></section>');
@@ -557,8 +591,8 @@ function vCardsPick(app){const b=book();
 let CQ=null;
 function startCards(chi){const b=book();let list=dueCards(b,chi);
  if(!list.length){toast('這裡的閃卡今天都複習完了！');if(view!=='cards')go('cards');return}
- CQ={list:shuffle(list).slice(0,20),i:0,known:0,flip:false};view='cards';renderTabs();drawCard()}
-function drawCard(){const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);const c=CQ.list[CQ.i];
+ CQ={list:shuffle(list).slice(0,20),i:0,known:0,flip:false};setView('cards');drawCard()}
+function drawCard(){const app=document.getElementById('app');app.innerHTML='';pageTop();const c=CQ.list[CQ.i];
  if(!c){celebrate();addXP(CQ.known*3,'閃卡複習');app.appendChild(h('<section class="card" style="align-items:center;text-align:center"><h2>這一輪複習完成</h2><p>記住了 '+CQ.known+' 張。明天記得回來，到期的卡會自動出現。</p></section>'));const bb=h('<button class="btn block">回首頁</button>');bb.onclick=()=>go('home');app.appendChild(bb);return}
  app.appendChild(h('<div class="q-top"><span>閃卡</span><span class="num">剩 '+(CQ.list.length-CQ.i)+' 張</span></div>'));
  const fc=h('<button class="flash c'+(c.ch%5)+(CQ.flip?' back':'')+'"><span class="side">'+(CQ.flip?'答案':'題目・先想一想再點我翻面')+'</span><span class="face">'+esc(CQ.flip?c.b:c.f)+'</span>'+(CQ.flip?'<span class="small muted">'+esc(c.f)+'</span>':'')+'</button>');
@@ -580,7 +614,7 @@ function examPool(b){const out=[],txt=new Set();
  return out}
 /* 優先出考過次數最少的題目，同一份考卷不會重複 */
 function pickFresh(pool,n){return shuffle(pool.map(q=>({q,k:(S.seen&&S.seen[q.id]||0)+Math.random()*.9})).sort((a,c)=>a.k-c.k).slice(0,n).map(x=>x.q))}
-function rerenderExam(){const y=window.scrollY;go('exam');window.scrollTo(0,y)}
+function rerenderExam(){const p=pages[curPage],y=p.scrollTop;go('exam');p.scrollTop=y}
 function vExamIntro(app){const b=book();
  if(!examSel||examSel.b!==b.id)examSel={b:b.id,on:b.chapters.map(c=>unitsOf(c).map(()=>true))};
  app.appendChild(h('<h1>模擬考</h1>'));
@@ -605,8 +639,8 @@ function vExamIntro(app){const b=book();
  const st=h('<button class="btn block"'+(n?'':' disabled')+'>'+(n?'開始考試':'請至少選一個單元')+'</button>');st.onclick=()=>startExam(pickFresh(pool,n),mins);app.appendChild(st);
  const hist=S.exams.filter(e=>e.b===b.id).slice(-5).reverse();if(hist.length)app.appendChild(h('<section class="card"><h3>最近成績</h3>'+hist.map(e=>'<div class="row between"><span class="muted small num">'+e.d+'</span><b class="num">'+e.s+' 分</b></div>').join('')+'</section>'))}
 let E=null;
-function startExam(items,mins){const its=items.map(inst);E={items:its,views:its.map(q=>renderQ(q,'exam')),i:0,end:Date.now()+(mins||20)*60*1000};view='exam';renderTabs();drawExam();clearInterval(timer);timer=setInterval(()=>{const el=document.getElementById('tm');if(!el)return;const s=Math.max(0,Math.round((E.end-Date.now())/1000));el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');el.classList.toggle('low',s<120);if(s<=0){clearInterval(timer);examDone()}},500)}
-function drawExam(){const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);const q=E.items[E.i];
+function startExam(items,mins){const its=items.map(inst);E={items:its,views:its.map(q=>renderQ(q,'exam')),i:0,end:Date.now()+(mins||20)*60*1000};setView('exam');drawExam();clearInterval(timer);timer=setInterval(()=>{const el=document.getElementById('tm');if(!el)return;const s=Math.max(0,Math.round((E.end-Date.now())/1000));el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');el.classList.toggle('low',s<120);if(s<=0){clearInterval(timer);examDone()}},500)}
+function drawExam(){const app=document.getElementById('app');app.innerHTML='';pageTop();const q=E.items[E.i];
  app.appendChild(h('<div class="q-top"><span>模擬考・第 <span class="num">'+(E.i+1)+'/'+E.items.length+'</span> 題</span><span class="timer" id="tm">--:--</span></div>'));
  const dots=h('<div class="dots">'+E.items.map((x,i)=>'<button class="num '+(E.views[i].answered()?'ans ':'')+(i===E.i?'cur':'')+'" data-j="'+i+'">'+(i+1)+'</button>').join('')+'</div>');
  dots.onclick=e=>{const b=e.target.closest('[data-j]');if(b){E.i=+b.dataset.j;drawExam()}};app.appendChild(dots);
@@ -614,7 +648,7 @@ function drawExam(){const app=document.getElementById('app');app.innerHTML='';wi
  const last=E.i===E.items.length-1;const nav=h('<div class="grid2"><button class="btn soft"'+(E.i===0?' disabled':'')+'>← 上一題</button><button class="btn'+(last?' pink':'')+'">'+(last?'交卷':'下一題 →')+'</button></div>');
  nav.children[0].onclick=()=>{E.i--;drawExam()};nav.children[1].onclick=()=>{if(last){const un=E.views.filter(v=>!v.answered()).length;if(un&&!E.warned){E.warned=1;toast('還有 '+un+' 題沒寫完，再按一次交卷');return}clearInterval(timer);examDone()}else{E.i++;drawExam()}};
  app.appendChild(nav);const s=Math.max(0,Math.round((E.end-Date.now())/1000));document.getElementById('tm').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-function examDone(){const b=book(),app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);let r=0;const per={};const wrongs=[];
+function examDone(){const b=book(),app=document.getElementById('app');app.innerHTML='';pageTop();let r=0;const per={};const wrongs=[];
  E.items.forEach((q,i)=>{const v=E.views[i],ok=v.answered()&&v.grade();per[q.ch]=per[q.ch]||[0,0];per[q.ch][1]++;if(ok){r++;per[q.ch][0]++;gotRight()}else{S.wrong[q.id]=(S.wrong[q.id]||0)+1;wrongs.push({q,pick:v.yours()})}markSeen(q)});
  const score=Math.round(r/E.items.length*100);S.exams.push({b:b.id,d:today(),s:score});touch();save();addXP(r*5+20,'模擬考');if(score>=80)celebrate();
  let weak=null,wv=2;Object.keys(per).forEach(k=>{const v=per[k][0]/per[k][1];if(v<wv){wv=v;weak=+k}});
@@ -649,46 +683,42 @@ function vBooks(app){
  if(S.custom.length){const c=h('<section class="card"><h3>你加入的課本</h3></section>');S.custom.forEach(bk=>{const row=h('<div class="row between"><b>'+esc(bk.title)+'</b><button class="link" style="color:var(--bad)">刪除</button></div>');const del=row.querySelector('button');del.onclick=()=>{if(del.dataset.sure){S.custom=S.custom.filter(x=>x.id!==bk.id);if(S.book===bk.id)S.book=allBooks()[0].id;save();go('books')}else{del.dataset.sure=1;del.textContent='再按一次確認刪除'}};c.appendChild(row)});app.appendChild(c)}
  app.appendChild(h('<p class="small muted">進度、經驗值和加入的課本都存在這支手機的瀏覽器裡，換裝置不會同步。</p>'))}
 
-/* 貓咪、狗狗外觀的小夥伴：趴在「今天的任務」卡片上探頭。每個部位分開動，動作之間會停頓 */
-const SP=(n)=>Array(n).fill('.42 0 .58 1').join(';');
+/* 貓咪、狗狗外觀的小夥伴：平塗風格，趴在「今天的任務」卡片上緣。
+   動作參考真的動物：呼吸、慢慢眨眼、耳朵偶爾轉一下、尾巴垂在卡片邊緣晃；動作之間有長停頓 */
+const SPL=(n)=>Array(n).fill('.45 0 .55 1').join(';');
 function mascotSVG(t){
- if(t==='cat'){const F='#fbd5b5',L='#c98a6c',S='#e7a27c',P='#f6b3c8';
-  const A='M88 70 C108 66 114 46 102 36',B='M88 70 C111 63 121 43 113 29',C='M88 70 C105 68 106 50 95 43';
-  return '<svg viewBox="0 0 120 80" width="120" height="80">'
-  +'<path fill="none" stroke="'+S+'" stroke-width="8" stroke-linecap="round" d="'+A+'"><animate attributeName="d" dur="4.2s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.22;.45;.62;.8;1" keySplines="'+SP(5)+'" values="'+[A,B,A,A,C,A].join(';')+'"/></path>'
-  +'<ellipse cx="74" cy="72" rx="24" ry="12" fill="'+F+'" stroke="'+L+'" stroke-width="2"/>'
+ if(t==='cat'){const K='#2d2930',E='#f2c14e',P='#e99ab0';
+  const A='M126 58 C136 62 138 76 133 86 C130 92 123 93 121 89',B='M126 58 C137 63 143 77 140 87 C138 94 131 96 128 92',C='M126 58 C134 63 133 77 126 86 C122 91 115 91 114 87';
+  return '<svg viewBox="0 0 150 92" width="150" height="92">'
+  +'<ellipse cx="80" cy="62" rx="50" ry="3.5" fill="#000" opacity=".08"/>'
+  +'<path fill="none" stroke="'+K+'" stroke-width="6.5" stroke-linecap="round" d="'+A+'"><animate attributeName="d" dur="7s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.18;.36;.5;.68;.86;1" keySplines="'+SPL(6)+'" values="'+[A,B,A,A,C,A,A].join(';')+'"/></path>'
+  +'<g class="m-breath"><path d="M44 62 C44 42 64 34 90 34 C114 34 128 44 128 62Z" fill="'+K+'"/></g>'
   +'<g class="m-head">'
-  +'<g class="m-ear l"><path d="M29 39 L31 15 L47 29Z" fill="'+F+'" stroke="'+L+'" stroke-width="2" stroke-linejoin="round"/><path d="M33 33 L34 21 L42 29Z" fill="'+P+'"/></g>'
-  +'<g class="m-ear r"><path d="M53 29 L69 15 L71 39Z" fill="'+F+'" stroke="'+L+'" stroke-width="2" stroke-linejoin="round"/><path d="M58 29 L66 21 L67 33Z" fill="'+P+'"/></g>'
-  +'<ellipse cx="50" cy="49" rx="24" ry="20" fill="'+F+'" stroke="'+L+'" stroke-width="2"/>'
-  +'<path d="M44 31 q2 5 0 8 M50 30 v8 M56 31 q-2 5 0 8" stroke="'+S+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>'
-  +'<g class="m-eyes"><ellipse cx="41" cy="49" rx="2.8" ry="3.4" fill="#4b3440"/><ellipse cx="59" cy="49" rx="2.8" ry="3.4" fill="#4b3440"/><circle cx="42" cy="47.6" r=".95" fill="#fff"/><circle cx="60" cy="47.6" r=".95" fill="#fff"/></g>'
-  +'<ellipse cx="34" cy="56" rx="4.2" ry="2.4" fill="#f29bb5" opacity=".55"/><ellipse cx="66" cy="56" rx="4.2" ry="2.4" fill="#f29bb5" opacity=".55"/>'
-  +'<path d="M48 54.4 h4 l-2 2.3z" fill="#e0698f"/><path d="M46 58.4 q2 2 4 0 q2 2 4 0" fill="none" stroke="#4b3440" stroke-width="1.3" stroke-linecap="round"/>'
-  +'<path d="M21 52 l9 2 M21 58 l9 -1 M79 52 l-9 2 M79 58 l-9 -1" stroke="'+L+'" stroke-width="1" stroke-linecap="round"/>'
+  +'<path class="m-ear l" d="M22 36 Q18 18 22 16 Q29 19 36 28Z" fill="'+K+'"/>'
+  +'<path class="m-ear r" d="M40 27 Q46 15 51 16 Q55 24 54 35Z" fill="'+K+'"/>'
+  +'<path d="M25 31 Q23 22 25 21 Q29 24 32 28Z M44 27 Q47 21 50 21 Q51 26 51 31Z" fill="'+P+'" opacity=".85"/>'
+  +'<ellipse cx="37" cy="45" rx="18.5" ry="16.5" fill="'+K+'"/>'
+  +'<g class="m-eyes"><ellipse cx="30" cy="44" rx="4" ry="3.3" fill="'+E+'"/><ellipse cx="44" cy="44" rx="4" ry="3.3" fill="'+E+'"/><ellipse cx="30.4" cy="44" rx="1" ry="2.8" fill="#141116"/><ellipse cx="44.4" cy="44" rx="1" ry="2.8" fill="#141116"/></g>'
+  +'<path d="M35.4 50.2 h3.2 l-1.6 1.8z" fill="'+P+'"/>'
   +'</g>'
-  +'<g fill="'+F+'" stroke="'+L+'" stroke-width="2"><ellipse cx="39" cy="73" rx="7.5" ry="5"/><ellipse cx="61" cy="73" rx="7.5" ry="5"/></g>'
-  +'<path d="M37 72v3 M41 72v3 M59 72v3 M63 72v3" stroke="'+L+'" stroke-width="1" stroke-linecap="round"/>'
+  +'<g fill="'+K+'"><ellipse cx="30" cy="62" rx="6.5" ry="3.8"/><ellipse cx="43" cy="62" rx="6" ry="3.6"/></g>'
   +'</svg>'}
- if(t==='dog'){const F='#f2d3a8',L='#b8743f',E='#b8743f';
-  const A='M90 70 C102 62 106 52 104 42',B='M90 70 C105 66 114 59 118 50';
-  return '<svg viewBox="0 0 120 80" width="120" height="80">'
-  +'<path fill="none" stroke="#d29a5e" stroke-width="8" stroke-linecap="round" d="'+A+'"><animate attributeName="d" dur="3s" repeatCount="indefinite" calcMode="spline" keyTimes="0;.07;.14;.21;.28;.35;.42;.49;1" keySplines="'+SP(8)+'" values="'+[A,B,A,B,A,B,A,B,A].join(';')+'"/></path>'
-  +'<ellipse cx="74" cy="72" rx="25" ry="12" fill="'+F+'" stroke="'+L+'" stroke-width="2"/>'
+ if(t==='dog'){const O='#d98b4b',C='#f6e3c8',D='#2b2420';
+  return '<svg viewBox="0 0 150 92" width="150" height="92">'
+  +'<ellipse cx="82" cy="62" rx="50" ry="3.5" fill="#000" opacity=".08"/>'
+  +'<g class="m-breath"><path d="M42 62 C44 42 64 36 92 36 C116 36 130 46 130 62Z" fill="'+O+'"/><path d="M60 62 C62 54 72 51 84 52 C76 55 72 58 72 62Z" fill="'+C+'" opacity=".7"/></g>'
+  +'<g class="m-tail"><path d="M120 46 C130 36 124 22 111 26 C102 29 105 40 112 38" fill="none" stroke="'+O+'" stroke-width="8" stroke-linecap="round"/><path d="M112 38 C108 39 106 35 108 32" fill="none" stroke="'+C+'" stroke-width="5" stroke-linecap="round"/></g>'
   +'<g class="m-head">'
-  +'<ellipse cx="50" cy="47" rx="22" ry="20" fill="'+F+'" stroke="'+L+'" stroke-width="2"/>'
-  +'<ellipse cx="59" cy="43" rx="6.5" ry="5.5" fill="#e3b47e" opacity=".75"/>'
-  +'<g class="m-ear l"><path d="M31 32 C20 34 17 53 23 62 C29 66 35 53 35 40Z" fill="'+E+'"/></g>'
-  +'<g class="m-ear r"><path d="M69 32 C80 34 83 53 77 62 C71 66 65 53 65 40Z" fill="'+E+'"/></g>'
-  +'<g class="m-eyes"><ellipse cx="42" cy="45" rx="2.8" ry="3.2" fill="#3d3027"/><ellipse cx="58" cy="45" rx="2.8" ry="3.2" fill="#3d3027"/><circle cx="43" cy="43.7" r=".95" fill="#fff"/><circle cx="59" cy="43.7" r=".95" fill="#fff"/></g>'
-  +'<ellipse cx="50" cy="56" rx="11" ry="8" fill="#fff4e4" stroke="'+L+'" stroke-width="1.5"/>'
-  +'<path class="m-tongue" d="M47.4 58.6 h5.2 v3.2 a2.6 2.6 0 0 1 -5.2 0z" fill="#ef7f8f"/>'
-  +'<ellipse cx="50" cy="52.5" rx="3.8" ry="2.8" fill="#3d3027"/>'
-  +'<path d="M50 55.3 v2.4 M45.6 57.6 q4.4 3.4 4.4 0 q0 3.4 4.4 0" stroke="#3d3027" stroke-width="1.3" fill="none" stroke-linecap="round"/>'
-  +'<ellipse cx="35.5" cy="54" rx="3.6" ry="2.2" fill="#f29b8a" opacity=".45"/><ellipse cx="64.5" cy="54" rx="3.6" ry="2.2" fill="#f29b8a" opacity=".45"/>'
+  +'<path class="m-ear l" d="M23 40 L25 21 Q30 24 36 33Z" fill="'+O+'"/>'
+  +'<path class="m-ear r" d="M44 33 Q50 24 55 21 L57 40Z" fill="'+O+'"/>'
+  +'<path d="M26.5 36 L27.5 26 Q30 28 32.5 32.5Z M47.5 32.5 Q50 28 52.5 26 L53.5 36Z" fill="'+C+'" opacity=".9"/>'
+  +'<ellipse cx="40" cy="48" rx="19" ry="16" fill="'+O+'"/>'
+  +'<path d="M24 53 C26 62 34 65 40 65 C46 65 54 62 56 53 C50 49 45 50 40 52 C35 50 30 49 24 53Z" fill="'+C+'"/>'
+  +'<ellipse cx="33.5" cy="40.5" rx="2.2" ry="1.4" fill="'+C+'"/><ellipse cx="46.5" cy="40.5" rx="2.2" ry="1.4" fill="'+C+'"/>'
+  +'<g class="m-eyes"><ellipse cx="33.5" cy="45.5" rx="1.9" ry="2.2" fill="'+D+'"/><ellipse cx="46.5" cy="45.5" rx="1.9" ry="2.2" fill="'+D+'"/></g>'
+  +'<ellipse cx="40" cy="52.5" rx="2.8" ry="2" fill="'+D+'"/><path d="M40 54.5 v2 M37 57 q3 2 3 -.5 q0 2.5 3 .5" fill="none" stroke="'+D+'" stroke-width="1.1" stroke-linecap="round"/>'
   +'</g>'
-  +'<g fill="'+F+'" stroke="'+L+'" stroke-width="2"><ellipse cx="39" cy="73" rx="7.5" ry="5"/><ellipse cx="61" cy="73" rx="7.5" ry="5"/></g>'
-  +'<path d="M37 72v3 M41 72v3 M59 72v3 M63 72v3" stroke="'+L+'" stroke-width="1" stroke-linecap="round"/>'
+  +'<g fill="'+C+'"><ellipse cx="31" cy="62.5" rx="6.5" ry="3.6"/><ellipse cx="49" cy="62.5" rx="6.5" ry="3.6"/></g>'
   +'</svg>'}
  return ''}
 function addMascot(card){const t=S.theme;if(t!=='cat'&&t!=='dog')return;const m=h('<div class="mascot '+t+'" aria-hidden="true">'+mascotSVG(t)+'</div>');card.prepend(m);
@@ -708,7 +738,7 @@ function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
- {id:'2026-11-18c',items:['貓咪和狗狗外觀多了小夥伴：一隻小貓、一隻小狗趴在「今天的任務」上探頭','小貓會眨眼、偶爾抖耳朵、慢慢甩尾巴；小狗會歪頭、耳朵跟著晃、吐舌頭，還會一陣一陣猛搖尾巴','換外觀：按上方的齒輪 → 外觀']},
+ {id:'2026-11-18d',items:['可以左右滑動換頁了，下方的分頁列會跟著手指移動','貓咪外觀有一隻黑貓、狗狗外觀有一隻柴犬，趴在「今天的任務」上休息：會呼吸、眨眼、轉耳朵、搖尾巴','換外觀：按上方的齒輪 → 外觀']},
  {id:'2026-11-18',items:['新外觀：忍者、貓咪、狗狗。按上方的齒輪 → 外觀就能換','題庫變成 1,080 題，每個單元 40 題','新題型：計算填空、分錄題、表格填空（調節表、帳齡分析、折舊表…）','補充 6 個老師常教的單元，例如現金短溢、票據拒付、存貨估計','模擬考可以複選單元、選題數，題目不重複','有新版本時，上方會出現「點這裡更新」']}
 ];
 const NEWS_KEY='acc-news-seen';
@@ -727,7 +757,7 @@ async function checkUpdate(){if(location.protocol==='file:'||!location.hostname.
 setTimeout(checkUpdate,3000);setInterval(checkUpdate,30*60e3);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
 
-applyTheme();renderTop();go('shelf');cloudInit();initWhatsNew();
+applyTheme();renderTop();renderTabs();go('shelf');cloudInit();initWhatsNew();swipeHint();
 </script>
 </body>
 </html>
