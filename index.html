@@ -902,11 +902,16 @@ function showWhatsNew(all){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||
 function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}catch(e){}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
-const UPD_FILES=['index.html','firebase-config.js','books/helpers.js','books/accounting-3.js','books/accounting-3-ch1.js','books/accounting-3-ch2.js','books/accounting-3-ch3.js','books/accounting-3-ch4.js','books/accounting-3-ch5.js'];
-let updBase=null;
-async function updSig(){const out=[];for(const f of UPD_FILES){try{const r=await fetch(f+'?v='+Date.now(),{method:'HEAD',cache:'no-store'});out.push(r.headers.get('etag')||r.headers.get('last-modified')||'')}catch(e){out.push('')}}return out.join('|')}
-async function checkUpdate(){if(location.protocol==='file:'||!location.hostname.endsWith('github.io'))return;const s=await updSig();if(!s.replace(/\|/g,''))return;if(updBase===null){updBase=s;return}if(s!==updBase&&!document.getElementById('updBar')){const b=h('<button class="updbar" id="updBar">有新版本，點這裡更新</button>');b.onclick=async()=>{b.textContent='更新中…';try{await Promise.all(UPD_FILES.map(f=>fetch(f,{cache:'reload'})));if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}}catch(e){}location.reload()};document.body.appendChild(b)}}
-setTimeout(checkUpdate,3000);setInterval(checkUpdate,30*60e3);
+/* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
+const APP_VER='2026-11-18-2250';
+/* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
+let updBusy=false;
+async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
+ try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});const j=await r.json();
+  if(j&&j.v&&j.v!==APP_VER){const b=h('<button class="updbar" id="updBar">有新版本，點這裡更新</button>');
+   b.onclick=async()=>{b.textContent='更新中…';try{if(window.caches){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}}catch(e){}location.replace(location.pathname+'?v='+encodeURIComponent(j.v))};document.body.appendChild(b)}}catch(e){}
+ updBusy=false}
+setTimeout(checkUpdate,1500);setInterval(checkUpdate,30*60e3);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
 
 applyTheme();renderTop();renderTabs();go('shelf');cloudInit();initWhatsNew();setTimeout(streakTip,2500);
