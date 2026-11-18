@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>會計學闖關讀書站</title>
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 帳本感：青綠墨色 + 封面的粉紅點綴；上方狀態列、中間單欄內容、下方五個分頁 */
+:root{
+  --bg:#eef4f2; --surface:#ffffff; --ink:#15302c; --muted:#5a726d; --line:#d5e3df;
+  --accent:#0d8578; --accent-bg:#e1f3f0; --pink:#d4437a; --pink-bg:#fbe8ef;
+  --good:#1d8f4e; --good-bg:#e4f5ea; --bad:#c93c3c; --bad-bg:#fbe9e9; --warn:#b7791f;
+  --display:"LXGW WenKai TC","Noto Sans TC",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1716; --surface:#16211f; --ink:#e2eeeb; --muted:#93aaa5; --line:#273835;
+    --accent:#3cc3b2; --accent-bg:#173430; --pink:#f0719f; --pink-bg:#3a1f2a;
+    --good:#4fcf86; --good-bg:#16301f; --bad:#f07171; --bad-bg:#3a1c1c; --warn:#e3b04b;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1716; --surface:#16211f; --ink:#e2eeeb; --muted:#93aaa5; --line:#273835;
+  --accent:#3cc3b2; --accent-bg:#173430; --pink:#f0719f; --pink-bg:#3a1f2a;
+  --good:#4fcf86; --good-bg:#16301f; --bad:#f07171; --bad-bg:#3a1c1c; --warn:#e3b04b;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+h1,h2,h3{font-family:var(--display);line-height:1.3;text-wrap:balance;margin:0}
+h1{font-size:26px} h2{font-size:21px} h3{font-size:18px}
+p{margin:0}
+button{font:inherit;color:inherit}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+.top{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(8px + env(safe-area-inset-top)) 16px 8px}
+.top-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.lv{display:flex;flex-direction:column;flex:1;min-width:0}
+.lv-name{font-family:var(--display);font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:4px}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.bar.pink>i{background:var(--pink)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;background:var(--surface);border:1px solid var(--line);font-size:14px;white-space:nowrap}
+.chip svg{width:16px;height:16px}
+.flame{color:var(--pink)}
+
+.wrap{max-width:720px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;min-height:48px;font-size:16px}
+:root[data-theme="dark"] .btn{color:#06201c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#06201c}}
+.btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+.btn.pink{background:var(--pink)}
+.btn.soft{background:var(--accent-bg);color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.block{width:100%}
+.link{background:none;border:0;color:var(--accent);font-weight:700;cursor:pointer;padding:6px 0}
+
+.books{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.book{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 14px;cursor:pointer;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips .book{flex:0 1 auto;max-width:100%;text-align:left}
+.swap{cursor:pointer;color:var(--accent);font-weight:700;border-color:var(--accent)}
+.shelf-book.on{border-color:var(--accent)}
+.ch-no.cover{background:var(--pink-bg);color:var(--pink);font-size:16px}
+.book.on{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+
+.goal{display:flex;gap:14px;align-items:center}
+.ring{width:64px;height:64px;flex:none}
+.sug{display:flex;flex-direction:column;gap:8px}
+.sug button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;cursor:pointer}
+.sug b{font-weight:700}
+.pill{font-size:13px;padding:2px 9px;border-radius:99px;background:var(--pink-bg);color:var(--pink);font-weight:700;white-space:nowrap}
+.pill.ok{background:var(--good-bg);color:var(--good)}
+
+.ch{display:flex;gap:12px;align-items:center;cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:14px;text-align:left;width:100%}
+.ch-no{flex:none;width:44px;height:44px;border-radius:12px;background:var(--accent-bg);color:var(--accent);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:20px}
+.ch-body{flex:1;min-width:0}
+.ch-title{font-weight:700}
+
+.story{background:var(--pink-bg);border-color:transparent}
+.story h3{color:var(--pink)}
+.lesson-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer}
+.tick{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:14px;font-weight:700}
+.tick.on{background:var(--good);border-color:var(--good);color:#fff}
+
+.lesson h4{margin:6px 0 0;font-size:16px;color:var(--accent)}
+.lesson ul{margin:0;padding-left:20px}
+.lesson li{margin:2px 0}
+.key{background:var(--accent-bg);border-left:4px solid var(--accent);padding:10px 12px;border-radius:0 10px 10px 0}
+.tip{background:var(--pink-bg);border-left:4px solid var(--pink);padding:10px 12px;border-radius:0 10px 10px 0}
+.je{width:100%;border-collapse:collapse;font-size:15px;margin:4px 0}
+.je td{padding:6px 8px;border-bottom:1px dashed var(--line)}
+.je td:first-child{width:2.5em;color:var(--muted)}
+.je td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.je tr.cr td:nth-child(2){padding-left:28px}
+.tbl-wrap{overflow-x:auto}
+.tbl{border-collapse:collapse;width:100%;font-size:14px;min-width:300px}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl th{background:var(--accent-bg);color:var(--accent)}
+.tbl td.r{text-align:right;font-variant-numeric:tabular-nums}
+
+.q-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.q-text{font-size:18px;font-weight:700;line-height:1.55}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.opts.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.opt{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 10px;font-size:16px;text-align:center;min-height:58px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;line-height:1.4;word-break:break-word}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.sel{border-color:var(--accent);background:var(--accent-bg)}
+.opt.right{border-color:var(--good);background:var(--good-bg);color:var(--good);font-weight:700}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.opt .lab{font-size:13px;opacity:.7;font-weight:700}
+.fb{border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.fb.ok{background:var(--good-bg)}
+.fb.no{background:var(--bad-bg)}
+.fb b.t{font-size:17px}
+.fb.ok b.t{color:var(--good)} .fb.no b.t{color:var(--bad)}
+.combo{color:var(--pink);font-weight:700}
+
+.flash{min-height:220px;border:2px solid var(--line);border-radius:16px;background:var(--surface);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:24px;cursor:pointer;gap:10px;width:100%}
+.flash .side{font-size:13px;color:var(--muted)}
+.flash .face{font-family:var(--display);font-size:22px;font-weight:700;line-height:1.5}
+.flash.back{border-color:var(--accent);background:var(--accent-bg)}
+.flash.back .face{font-family:var(--body);font-size:18px}
+.boxes{display:flex;gap:6px}
+.boxes span{flex:1;text-align:center;font-size:12px;padding:4px 0;border-radius:8px;background:var(--bg);border:1px solid var(--line)}
+
+.timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent)}
+.timer.low{color:var(--bad)}
+.dots{display:flex;flex-wrap:wrap;gap:6px}
+.dots button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:13px;cursor:pointer}
+.dots button.ans{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.dots button.cur{outline:2px solid var(--pink)}
+.big{font-family:var(--display);font-size:44px;font-weight:700;line-height:1}
+.chbar{display:grid;grid-template-columns:7em 1fr 3.5em;gap:8px;align-items:center;font-size:14px}
+
+textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:12px;padding:10px;font:14px/1.5 ui-monospace,Menlo,monospace;background:var(--bg);color:var(--ink)}
+details summary{cursor:pointer;font-weight:700}
+details .why{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+details .why div{font-size:15px}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs-in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.tabs button{background:none;border:0;padding:8px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--muted);cursor:pointer;min-height:58px}
+.tabs button svg{width:24px;height:24px}
+.tabs button.on{color:var(--accent);font-weight:700}
+
+#toast{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:700;opacity:0;pointer-events:none;transition:all .3s;z-index:30;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:25;width:100%;height:100%}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:440px){.chip.today{display:none}}
+@media (max-width:380px){.opts.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in" id="top"></div></header>
+<main class="wrap" id="app"></main>
+<nav class="tabs"><div class="tabs-in" id="tabs"></div></nav>
+<div id="toast" role="status" aria-live="polite"></div>
+<canvas id="fx"></canvas>
+
+<!-- 課本資料：新增課本 = 在 books/ 放一個檔案，再加一行 script -->
+<script src="books/accounting-3.js"></script>
+<script>
+/* ===================== 課本格式 =====================
+   每本書：{id,title,subtitle,chapters:[{title,story,lessons:[{title,body,check}],cards:[[正面,背面]],questions:[{q,o:[4個選項],a:正確選項的索引,e:解析}]}]}
+   選項顯示時會自動打亂順序。 */
+
+const EXAMPLE_BOOK={title:'經濟學（一）',subtitle:'範例：自己加課本',chapters:[{title:'需求與供給',story:'用一句話說這章在學什麼（可省略）',lessons:[{title:'需求法則',body:'價格上升，需求量下降。\n其他條件不變。',check:{q:'價格上升時，需求量會？',o:['下降','上升','不變','先升後降'],a:0,e:'需求法則：價格與需求量反方向。'}}],cards:[['需求法則','價格與需求量反方向變動']],questions:[{q:'需求曲線通常是？',o:['負斜率','正斜率','水平','垂直'],a:0,e:'價格越高，需求量越少，所以往右下。'}]}]};
+
+/* ===================== 狀態（只存在這台裝置的瀏覽器） ===================== */
+const KEY='acc-study-v1';
+const LEVELS=['記帳新手','小出納','記帳員','會計助理','會計專員','資深會計','會計主任','財務經理','財務長','會計大師'];
+const BOX_DAYS=[0,1,2,4,7,14];
+function defState(){return {xp:0,streak:0,last:'',today:{d:'',n:0},goal:10,done:{},wrong:{},cards:{},exams:[],custom:[],book:'acc3'}}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');return Object.assign(defState(),s)}catch(e){return defState()}}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+function dstr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function today(){return dstr(new Date())}
+function addDays(s,n){const p=s.split('-');const d=new Date(+p[0],+p[1]-1,+p[2]);d.setDate(d.getDate()+n);return dstr(d)}
+function curStreak(){const t=today();return (S.last===t||S.last===addDays(t,-1))?S.streak:0}
+function touch(){const t=today();if(S.last===t)return;S.streak=(S.last===addDays(t,-1))?S.streak+1:1;S.last=t}
+
+function allBooks(){return (window.BOOKS||[]).concat(S.custom||[])}
+function book(){return allBooks().find(b=>b.id===S.book)||allBooks()[0]}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function allQs(b,chi){const out=[];b.chapters.forEach((c,ci)=>{if(chi!=null&&ci!==chi)return;(c.questions||[]).forEach((q,qi)=>out.push(Object.assign({id:b.id+':'+ci+':'+qi,ch:ci},q)))});return out}
+function findQ(id){const p=id.split(':');const b=allBooks().find(x=>x.id===p[0]);if(!b)return null;const c=b.chapters[+p[1]];if(!c||!c.questions[+p[2]])return null;return Object.assign({id,ch:+p[1],book:b},c.questions[+p[2]])}
+
+/* ===================== 經驗值與回饋 ===================== */
+function level(){return Math.floor(S.xp/100)}
+function addXP(n,msg){const before=level();S.xp+=n;save();renderTop();if(level()>before){celebrate();toast('升級！你現在是「'+LEVELS[Math.min(level(),LEVELS.length-1)]+'」')}else if(msg!==false){toast('+'+n+' 經驗'+(msg?'　'+msg:''))}}
+function gotRight(){touch();const t=today();if(S.today.d!==t)S.today={d:t,n:0};S.today.n++;save();if(S.today.n===S.goal){setTimeout(()=>{celebrate();toast('今日目標完成！連續 '+curStreak()+' 天')},700)}renderTop()}
+let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),1800)}
+function celebrate(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const c=document.getElementById('fx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cs=getComputedStyle(document.documentElement);const cols=[cs.getPropertyValue('--accent'),cs.getPropertyValue('--pink'),'#f2c14e','#5aa9e6'];const ps=Array.from({length:90},()=>({x:c.width/2,y:c.height/3,vx:(Math.random()-.5)*12,vy:Math.random()*-10-3,r:Math.random()*5+3,c:cols[Math.floor(Math.random()*4)],a:Math.random()*6}));let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.a+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});if(++f<90)requestAnimationFrame(tick);else x.clearRect(0,0,c.width,c.height)})()}
+
+/* ===================== 版面：上方狀態列、下方分頁 ===================== */
+const IC={
+ home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+ quiz:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+ cards:'<rect x="3" y="7" width="14" height="12" rx="2"/><path d="M7 7V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2"/>',
+ exam:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.5 11h7M8.5 15h4"/>',
+ wrong:'<path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/>',
+ flame:'<path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-4-1-6 1-9z"/>'
+};
+function svg(k,fill){return '<svg viewBox="0 0 24 24" fill="'+(fill?'currentColor':'none')+'" stroke="currentColor" stroke-width="'+(fill?0:1.8)+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[k]+'</svg>'}
+const TABS=[['home','首頁'],['quiz','練習'],['cards','閃卡'],['exam','模擬考'],['wrong','錯題本']];
+let view='home';
+function renderTop(){const lv=level(),name=LEVELS[Math.min(lv,LEVELS.length-1)],pct=S.xp%100;const t=today();const n=S.today.d===t?S.today.n:0;
+ document.getElementById('top').innerHTML='<div class="lv"><span class="lv-name">'+esc(book().title)+'・Lv.'+(lv+1)+' '+name+'</span><div class="bar"><i style="width:'+pct+'%"></i></div><span class="small muted num">'+pct+' / 100 經驗</span></div><button class="chip swap" data-shelf>換課本</button><span class="chip num"><span class="flame">'+svg('flame',1)+'</span>'+curStreak()+' 天</span><span class="chip num today">今日 '+Math.min(n,S.goal)+'/'+S.goal+'</span>'}
+function renderTabs(){document.getElementById('tabs').innerHTML=TABS.map(t=>'<button class="'+(view===t[0]?'on':'')+'" data-go="'+t[0]+'">'+svg(t[0])+t[1]+'</button>').join('')}
+document.getElementById('top').addEventListener('click',e=>{if(e.target.closest('[data-shelf]'))go('shelf')});
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
+let timer=null;
+function go(v,arg){clearInterval(timer);view=v;renderTabs();const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);
+ ({shelf:vShelf,home:vHome,chapter:vChapter,lesson:vLesson,quiz:vQuizPick,cards:vCardsPick,exam:vExamIntro,wrong:vWrong,books:vBooks})[v](app,arg)}
+function h(html){const d=document.createElement('div');d.innerHTML=html;return d.firstElementChild}
+
+/* ===================== 首頁 ===================== */
+function lessonKey(ci,li){return S.book+':'+ci+':'+li}
+function dueCards(b,chi){const t=today(),out=[];b.chapters.forEach((c,ci)=>{if(chi!=null&&ci!==chi)return;(c.cards||[]).forEach((cd,i)=>{const k=b.id+':'+ci+':'+i,st=S.cards[k];if(!st||st.due<=t)out.push({k,f:cd[0],b:cd[1],ch:ci,box:st?st.box:0})})});return out}
+function wrongIds(){const b=book();return Object.keys(S.wrong).filter(id=>id.startsWith(b.id+':')&&findQ(id))}
+function vHome(app){const b=book(),t=today(),n=S.today.d===t?S.today.n:0,pct=Math.min(1,n/S.goal);
+ const C=2*Math.PI*26;
+ // 下一課
+ let next=null;b.chapters.some((c,ci)=>(c.lessons||[]).some((l,li)=>{if(!S.done[lessonKey(ci,li)]){next={ci,li,l};return true}}));
+ const due=dueCards(b).length,wr=wrongIds().length;
+ const g=h(`<section class="card"><div class="goal"><svg class="ring" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="var(--pink)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}" transform="rotate(-90 32 32)"/><text x="32" y="37" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">${Math.min(n,S.goal)}</text></svg>
+ <div><h2>今天的任務</h2><p class="muted small">答對 ${S.goal} 題就完成今日目標。</p></div></div>
+ <div class="sug">
+ ${next?`<button data-act="next"><span><b>繼續上課</b><br><span class="small muted">第 ${next.ci+1} 章・${esc(next.l.title)}</span></span><span class="pill">+20</span></button>`:`<button data-act="quiz"><span><b>課程都上完了！</b><br><span class="small muted">去做混合練習鞏固</span></span><span class="pill ok">完成</span></button>`}
+ <button data-act="cards"><span><b>複習閃卡</b><br><span class="small muted">複習今天到期的卡片</span></span><span class="pill ${due?'':'ok'}">${due?due+' 張到期':'都記住了'}</span></button>
+ <button data-act="wrong"><span><b>錯題重練</b><br><span class="small muted">把答錯的題目再做一次</span></span><span class="pill ${wr?'':'ok'}">${wr?wr+' 題':'沒有錯題'}</span></button>
+ </div></section>`);
+ g.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const k=a.dataset.act;if(k==='next')go('lesson',next);else if(k==='cards')startCards(null);else if(k==='wrong')go('wrong');else go('quiz')});
+ app.appendChild(g);
+ app.appendChild(h('<div class="row between"><h2>選擇章節</h2><span class="small muted">'+esc(b.title)+'</span></div>'));
+ b.chapters.forEach((c,ci)=>{const L=(c.lessons||[]).length,d=(c.lessons||[]).filter((l,li)=>S.done[lessonKey(ci,li)]).length;
+  const el=h(`<button class="ch"><span class="ch-no">${ci+1}</span><span class="ch-body"><span class="ch-title">${esc(c.title)}</span><span class="small muted" style="display:block">課程 ${d}/${L}・題目 ${(c.questions||[]).length}・閃卡 ${(c.cards||[]).length}</span><span class="bar"><i style="width:${L?d/L*100:0}%"></i></span></span></button>`);
+  el.addEventListener('click',()=>go('chapter',ci));app.appendChild(el)});
+}
+
+/* ===================== 書架（打開網站先選課本） ===================== */
+function vShelf(app){
+ app.appendChild(h('<div class="row"><img src="icons/icon-192.png" alt="" width="56" height="56" style="border-radius:14px"><h1>選擇課本</h1></div>'));app.appendChild(h('<p class="muted">選一本開始讀。之後可以按上方的「換課本」切換。</p>'));
+ allBooks().forEach(b=>{const L=b.chapters.reduce((n,c)=>n+(c.lessons||[]).length,0);const d=b.chapters.reduce((n,c,ci)=>n+(c.lessons||[]).filter((l,li)=>S.done[b.id+':'+ci+':'+li]).length,0);
+  const el=h(`<button class="ch shelf-book${b.id===S.book?' on':''}"><span class="ch-no cover">${esc(b.title.slice(0,2))}</span><span class="ch-body"><span class="ch-title">${esc(b.title)}</span><span class="small muted" style="display:block">${esc(b.subtitle||'')}</span><span class="small muted" style="display:block">${b.chapters.length} 章・課程 ${d}/${L}</span><span class="bar"><i style="width:${L?d/L*100:0}%"></i></span></span><span class="muted">›</span></button>`);
+  el.onclick=()=>{S.book=b.id;save();renderTop();go('home')};app.appendChild(el)});
+ const add=h('<button class="btn ghost block">＋ 加入新課本</button>');add.onclick=()=>go('books');app.appendChild(add)}
+
+/* ===================== 章節與課程 ===================== */
+function vChapter(app,ci){const b=book(),c=b.chapters[ci];
+ app.appendChild(h('<button class="link" data-back>← 回首頁</button>'));app.lastChild.onclick=()=>go('home');
+ app.appendChild(h('<h1>第 '+(ci+1)+' 章　'+esc(c.title)+'</h1>'));
+ if(c.story)app.appendChild(h('<section class="card story"><h3>情境</h3><p>'+esc(c.story)+'</p></section>'));
+ (c.lessons||[]).forEach((l,li)=>{const done=S.done[lessonKey(ci,li)];const el=h('<button class="lesson-item"><span class="tick '+(done?'on':'')+'">'+(done?'✓':li+1)+'</span><span style="flex:1"><b>'+esc(l.title)+'</b></span><span class="muted">›</span></button>');el.onclick=()=>go('lesson',{ci,li});app.appendChild(el)});
+ const r=h('<div class="grid2"><button class="btn">練習本章</button><button class="btn soft">本章閃卡</button></div>');
+ r.children[0].onclick=()=>startQuiz(shuffle(allQs(b,ci)).slice(0,10),'第 '+(ci+1)+' 章練習');
+ r.children[1].onclick=()=>startCards(ci);app.appendChild(r)}
+
+function vLesson(app,{ci,li}){const b=book(),c=b.chapters[ci],l=c.lessons[li],custom=!!b.custom;
+ app.appendChild(h('<button class="link">← 第 '+(ci+1)+' 章</button>'));app.lastChild.onclick=()=>go('chapter',ci);
+ app.appendChild(h('<div class="q-top"><span>第 '+(ci+1)+' 章・第 '+(li+1)+'/'+c.lessons.length+' 課</span></div>'));
+ app.appendChild(h('<h1>'+esc(l.title)+'</h1>'));
+ app.appendChild(h('<section class="card lesson">'+(custom?'<p>'+esc(l.body).replace(/\n/g,'<br>')+'</p>':l.body)+'</section>'));
+ const box=h('<section class="card"><h3>小檢查</h3></section>');app.appendChild(box);
+ const fin=h('<button class="btn block" disabled>先回答上面的小檢查</button>');
+ if(l.check){box.appendChild(mcq(l.check,(ok)=>{fin.disabled=false;fin.textContent=li+1<c.lessons.length?'完成，下一課 →':'完成這一章！'}))}else{fin.disabled=false;fin.textContent='完成這一課'}
+ fin.onclick=()=>{const k=lessonKey(ci,li);if(!S.done[k]){S.done[k]=1;touch();addXP(20,'完成一課')}save();
+  if(li+1<c.lessons.length)go('lesson',{ci,li:li+1});else{celebrate();go('chapter',ci)}};
+ app.appendChild(fin)}
+
+/* 單題元件：點選項 → 立即回饋。onAnswer(ok) */
+function optsHTML(list){const short=list.every(o=>o.t.length<=5);return '<div class="opts'+(short?' four':'')+'">'+list.map((o,i)=>'<button class="opt" data-i="'+i+'"><span class="lab">'+'ABCD'[i]+'</span><span>'+esc(o.t)+'</span></button>').join('')+'</div>'}
+function mcq(q,onAnswer){const list=shuffle(q.o.map((t,i)=>({t,ok:i===q.a})));
+ const w=h('<div style="display:flex;flex-direction:column;gap:12px"><p class="q-text">'+esc(q.q)+'</p>'+optsHTML(list)+'<div class="fbx"></div></div>');
+ w.querySelector('.opts').addEventListener('click',e=>{const bt=e.target.closest('.opt');if(!bt||bt.disabled)return;const i=+bt.dataset.i,ok=list[i].ok;
+  w.querySelectorAll('.opt').forEach((x,j)=>{x.disabled=true;if(list[j].ok)x.classList.add('right');else if(j===i)x.classList.add('wrong')});
+  const right=list.find(o=>o.ok).t;
+  w.querySelector('.fbx').innerHTML='<div class="fb '+(ok?'ok':'no')+'"><b class="t">'+(ok?pick(['答對了！','漂亮！','完全正確！','你越來越懂了！']):'差一點！正確答案是「'+esc(right)+'」')+'</b><span>'+esc(q.e||'')+'</span></div>';
+  if(ok)gotRight();onAnswer(ok)});
+ return w}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+
+/* ===================== 練習（一次一題） ===================== */
+function vQuizPick(app){const b=book();
+ app.appendChild(h('<h1>練習</h1>'));app.appendChild(h('<p class="muted">每次 10 題，一題一題作答，答完馬上看解析。</p>'));
+ const mix=h('<button class="ch"><span class="ch-no" style="background:var(--pink-bg);color:var(--pink)">混</span><span class="ch-body"><span class="ch-title">全部章節混合</span><span class="small muted" style="display:block">不同章節混在一起出題</span></span></button>');
+ mix.onclick=()=>startQuiz(shuffle(allQs(b)).slice(0,10),'混合練習');app.appendChild(mix);
+ b.chapters.forEach((c,ci)=>{const el=h('<button class="ch"><span class="ch-no">'+(ci+1)+'</span><span class="ch-body"><span class="ch-title">'+esc(c.title)+'</span><span class="small muted" style="display:block">'+(c.questions||[]).length+' 題</span></span></button>');el.onclick=()=>startQuiz(shuffle(allQs(b,ci)).slice(0,10),'第 '+(ci+1)+' 章練習');app.appendChild(el)})}
+
+let Q=null;
+function startQuiz(items,title,mode){if(!items.length){toast('這裡還沒有題目');return}Q={items,title,i:0,right:0,combo:0,xp:0,mode:mode||'normal',wrongs:[]};view='quiz';renderTabs();drawQuiz()}
+function drawQuiz(){const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);const q=Q.items[Q.i],b=book();
+ app.appendChild(h('<div class="q-top"><span>'+esc(Q.title)+'</span><span class="num">'+(Q.i+1)+' / '+Q.items.length+'</span></div>'));
+ app.appendChild(h('<div class="bar pink"><i style="width:'+(Q.i/Q.items.length*100)+'%"></i></div>'));
+ const card=h('<section class="card"><span class="small muted">第 '+(q.ch+1)+' 章・'+esc((b.chapters[q.ch]||{}).title||'')+'</span></section>');
+ const nx=h('<button class="btn block" style="display:none"></button>');
+ card.appendChild(mcq(q,ok=>{if(ok){Q.right++;Q.combo++;const g=Q.combo>=3?15:10;Q.xp+=g;addXP(g,Q.combo>=3?'連對 '+Q.combo+' 題！':'');if(Q.mode==='wrong'){delete S.wrong[q.id];save()}}
+  else{Q.combo=0;S.wrong[q.id]=(S.wrong[q.id]||0)+1;Q.wrongs.push(q);touch();save()}
+  nx.style.display='';nx.textContent=Q.i+1<Q.items.length?'下一題 →':'看結果'}));
+ app.appendChild(card);nx.onclick=()=>{Q.i++;if(Q.i<Q.items.length)drawQuiz();else quizDone()};app.appendChild(nx)}
+function quizDone(){const app=document.getElementById('app');app.innerHTML='';const n=Q.items.length,r=Q.right,p=Math.round(r/n*100);
+ if(p>=80)celebrate();
+ const msg=p===100?'全對！這部分你已經掌握了。':p>=80?'很棒，只差一點點。':p>=60?'有進步空間，看一下錯的題目。':'沒關係，錯題已經存進錯題本，明天再練一次會好很多。';
+ app.appendChild(h('<section class="card" style="align-items:center;text-align:center"><span class="muted">'+esc(Q.title)+'</span><span class="big num">'+r+' / '+n+'</span><p>'+msg+'</p><span class="pill">本次 +'+Q.xp+' 經驗</span></section>'));
+ if(Q.wrongs.length){const w=h('<section class="card"><h3>這次錯的題目</h3></section>');Q.wrongs.forEach(q=>w.appendChild(h('<div class="fb no"><b>'+esc(q.q)+'</b><span>答案：'+esc(q.o[q.a])+'。'+esc(q.e||'')+'</span></div>')));app.appendChild(w)}
+ const r2=h('<div class="grid2"><button class="btn">再練一次</button><button class="btn soft">回首頁</button></div>');
+ const items=Q.items,title=Q.title,mode=Q.mode;
+ r2.children[0].onclick=()=>mode==='wrong'?go('wrong'):startQuiz(shuffle(items),title,mode);r2.children[1].onclick=()=>go('home');app.appendChild(r2)}
+
+/* ===================== 閃卡（間隔重複） ===================== */
+function vCardsPick(app){const b=book();
+ app.appendChild(h('<h1>閃卡</h1>'));app.appendChild(h('<p class="muted">先自己想答案，再點卡片翻面。</p>'));
+ const all=h('<button class="ch"><span class="ch-no" style="background:var(--pink-bg);color:var(--pink)">全</span><span class="ch-body"><span class="ch-title">今天到期的全部閃卡</span><span class="small muted" style="display:block">'+dueCards(b).length+' 張</span></span></button>');all.onclick=()=>startCards(null);app.appendChild(all);
+ b.chapters.forEach((c,ci)=>{const el=h('<button class="ch"><span class="ch-no">'+(ci+1)+'</span><span class="ch-body"><span class="ch-title">'+esc(c.title)+'</span><span class="small muted" style="display:block">到期 '+dueCards(b,ci).length+' / 共 '+(c.cards||[]).length+' 張</span></span></button>');el.onclick=()=>startCards(ci);app.appendChild(el)});
+ // 熟練度分布
+ const cnt=[0,0,0,0,0,0];b.chapters.forEach((c,ci)=>(c.cards||[]).forEach((cd,i)=>{const st=S.cards[b.id+':'+ci+':'+i];cnt[st?Math.min(st.box,5):0]++}));
+ app.appendChild(h('<section class="card"><h3>熟練度</h3><div class="boxes">'+['新卡','1天','2天','4天','7天','14天'].map((t,i)=>'<span><b class="num">'+cnt[i]+'</b><br>'+t+'</span>').join('')+'</div><p class="small muted">卡片從左邊慢慢移到右邊，就代表進入長期記憶了。</p></section>'))}
+let CQ=null;
+function startCards(chi){const b=book();let list=dueCards(b,chi);
+ if(!list.length){toast('這裡的閃卡今天都複習完了！');if(view!=='cards')go('cards');return}
+ CQ={list:shuffle(list).slice(0,20),i:0,known:0,flip:false};view='cards';renderTabs();drawCard()}
+function drawCard(){const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);const c=CQ.list[CQ.i];
+ if(!c){celebrate();addXP(CQ.known*3,'閃卡複習');app.appendChild(h('<section class="card" style="align-items:center;text-align:center"><h2>這一輪複習完成</h2><p>記住了 '+CQ.known+' 張。明天記得回來，到期的卡會自動出現。</p></section>'));const bb=h('<button class="btn block">回首頁</button>');bb.onclick=()=>go('home');app.appendChild(bb);return}
+ app.appendChild(h('<div class="q-top"><span>閃卡</span><span class="num">剩 '+(CQ.list.length-CQ.i)+' 張</span></div>'));
+ const fc=h('<button class="flash'+(CQ.flip?' back':'')+'"><span class="side">'+(CQ.flip?'答案':'題目・先想一想再點我翻面')+'</span><span class="face">'+esc(CQ.flip?c.b:c.f)+'</span>'+(CQ.flip?'<span class="small muted">'+esc(c.f)+'</span>':'')+'</button>');
+ fc.onclick=()=>{CQ.flip=!CQ.flip;drawCard()};app.appendChild(fc);
+ if(CQ.flip){const r=h('<div class="grid2"><button class="btn pink">還不熟</button><button class="btn">記得了</button></div>');
+  r.children[0].onclick=()=>{S.cards[c.k]={box:1,due:today()};save();CQ.list.push(CQ.list[CQ.i]);CQ.list.splice(CQ.i,1);CQ.flip=false;drawCard()};
+  r.children[1].onclick=()=>{const nb=Math.min((S.cards[c.k]?S.cards[c.k].box:0)+1,5);S.cards[c.k]={box:nb,due:addDays(today(),BOX_DAYS[nb])};touch();save();CQ.known++;CQ.i++;CQ.flip=false;drawCard()};
+  app.appendChild(r);app.appendChild(h('<p class="small muted" style="text-align:center">「還不熟」的卡會在這一輪最後再出現一次</p>'))}}
+
+/* ===================== 模擬考 ===================== */
+let examSel=null;
+function vExamIntro(app){const b=book();if(!examSel||examSel.b!==b.id)examSel={b:b.id,on:b.chapters.map(()=>true)};
+ app.appendChild(h('<h1>模擬考</h1>'));
+ const pick=h('<section class="card"><h3>考試範圍</h3><p class="small muted">點章節可以加入或取消。</p><div class="chips">'+b.chapters.map((c,ci)=>'<button class="book'+(examSel.on[ci]?' on':'')+'" data-c="'+ci+'">第 '+(ci+1)+' 章 '+esc(c.title)+'</button>').join('')+'</div><div class="row"><button class="link" data-all>全選</button></div></section>');
+ pick.onclick=e=>{const c=e.target.closest('[data-c]');if(c){examSel.on[+c.dataset.c]=!examSel.on[+c.dataset.c];go('exam')}if(e.target.closest('[data-all]')){examSel.on=examSel.on.map(()=>true);go('exam')}};app.appendChild(pick);
+ const pool=allQs(b).filter(q=>examSel.on[q.ch]),n=Math.min(15,pool.length),mins=Math.max(5,Math.round(n*4/3));
+ app.appendChild(h('<section class="card"><p>從選好的章節隨機出 <b class="num">'+n+'</b> 題，限時 <b class="num">'+mins+'</b> 分鐘。</p><p>作答時<b>不會</b>馬上告訴你對錯，交卷後才看成績和每一章的答對率。</p></section>'));
+ const st=h('<button class="btn block"'+(n?'':' disabled')+'>'+(n?'開始考試':'請至少選一章')+'</button>');st.onclick=()=>startExam(shuffle(pool).slice(0,n),mins);app.appendChild(st);
+ if(S.exams.length){const hist=S.exams.filter(e=>e.b===b.id).slice(-5).reverse();if(hist.length)app.appendChild(h('<section class="card"><h3>最近成績</h3>'+hist.map(e=>'<div class="row between"><span class="muted small num">'+e.d+'</span><b class="num">'+e.s+' 分</b></div>').join('')+'</section>'))}}
+let E=null;
+function startExam(items,mins){E={items:items.map(q=>Object.assign({},q,{list:shuffle(q.o.map((t,i)=>({t,ok:i===q.a})))})),ans:{},i:0,end:Date.now()+(mins||20)*60*1000};view='exam';renderTabs();drawExam();clearInterval(timer);timer=setInterval(()=>{const el=document.getElementById('tm');if(!el)return;const s=Math.max(0,Math.round((E.end-Date.now())/1000));el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');el.classList.toggle('low',s<120);if(s<=0){clearInterval(timer);examDone()}},500)}
+function drawExam(){const app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);const q=E.items[E.i];
+ app.appendChild(h('<div class="q-top"><span>模擬考・第 <span class="num">'+(E.i+1)+'/'+E.items.length+'</span> 題</span><span class="timer" id="tm">--:--</span></div>'));
+ const dots=h('<div class="dots">'+E.items.map((x,i)=>'<button class="num '+(E.ans[i]!=null?'ans ':'')+(i===E.i?'cur':'')+'" data-j="'+i+'">'+(i+1)+'</button>').join('')+'</div>');
+ dots.onclick=e=>{const b=e.target.closest('[data-j]');if(b){E.i=+b.dataset.j;drawExam()}};app.appendChild(dots);
+ const card=h('<section class="card"><p class="q-text">'+esc(q.q)+'</p>'+optsHTML(q.list)+'</section>');
+ card.querySelectorAll('.opt').forEach((x,j)=>{if(E.ans[E.i]===j)x.classList.add('sel')});
+ card.querySelector('.opts').onclick=e=>{const b=e.target.closest('.opt');if(!b)return;E.ans[E.i]=+b.dataset.i;drawExam()};app.appendChild(card);
+ const last=E.i===E.items.length-1;const nav=h('<div class="grid2"><button class="btn soft"'+(E.i===0?' disabled':'')+'>← 上一題</button><button class="btn'+(last?' pink':'')+'">'+(last?'交卷':'下一題 →')+'</button></div>');
+ nav.children[0].onclick=()=>{E.i--;drawExam()};nav.children[1].onclick=()=>{if(last){const un=E.items.length-Object.keys(E.ans).length;if(un&&!E.warned){E.warned=1;toast('還有 '+un+' 題沒寫，再按一次交卷');return}clearInterval(timer);examDone()}else{E.i++;drawExam()}};
+ app.appendChild(nav);const s=Math.max(0,Math.round((E.end-Date.now())/1000));document.getElementById('tm').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function examDone(){const b=book(),app=document.getElementById('app');app.innerHTML='';window.scrollTo(0,0);let r=0;const per={};const wrongs=[];
+ E.items.forEach((q,i)=>{const ok=E.ans[i]!=null&&q.list[E.ans[i]].ok;per[q.ch]=per[q.ch]||[0,0];per[q.ch][1]++;if(ok){r++;per[q.ch][0]++;gotRight()}else{S.wrong[q.id]=(S.wrong[q.id]||0)+1;wrongs.push({q,pick:E.ans[i]!=null?q.list[E.ans[i]].t:'沒有作答'})}});
+ const score=Math.round(r/E.items.length*100);S.exams.push({b:b.id,d:today(),s:score});touch();save();addXP(r*5+20,'模擬考');if(score>=80)celebrate();
+ let weak=null,wv=2;Object.keys(per).forEach(k=>{const v=per[k][0]/per[k][1];if(v<wv){wv=v;weak=+k}});
+ app.appendChild(h('<section class="card" style="align-items:center;text-align:center"><span class="muted">模擬考成績</span><span class="big num">'+score+' 分</span><span class="muted num">答對 '+r+' / '+E.items.length+'</span></section>'));
+ const pc=h('<section class="card"><h3>各章答對率</h3>'+Object.keys(per).sort((a,c)=>a-c).map(k=>{const v=per[k];return '<div class="chbar"><span>第 '+(+k+1)+' 章</span><span class="bar"><i style="width:'+(v[0]/v[1]*100)+'%;background:'+(v[0]/v[1]<.6?'var(--bad)':v[0]/v[1]<.8?'var(--warn)':'var(--good)')+'"></i></span><span class="num small">'+v[0]+'/'+v[1]+'</span></div>'}).join('')+'</section>');app.appendChild(pc);
+ if(weak!=null&&wv<1){const wb=h('<button class="btn block">最需要加強：第 '+(weak+1)+' 章 '+esc(b.chapters[weak].title)+' → 去練習</button>');wb.onclick=()=>startQuiz(shuffle(allQs(b,weak)).slice(0,10),'第 '+(weak+1)+' 章練習');app.appendChild(wb)}
+ if(wrongs.length){const w=h('<section class="card"><h3>錯題檢討（已加入錯題本）</h3></section>');wrongs.forEach(x=>w.appendChild(h('<div class="fb no"><b>'+esc(x.q.q)+'</b><span>你選：'+esc(x.pick)+'</span><span>正確：'+esc(x.q.o[x.q.a])+'。'+esc(x.q.e||'')+'</span></div>')));app.appendChild(w)}
+ const bb=h('<button class="btn soft block">回首頁</button>');bb.onclick=()=>go('home');app.appendChild(bb)}
+
+/* ===================== 錯題本 ===================== */
+function vWrong(app){const ids=wrongIds();const b=book();
+ app.appendChild(h('<h1>錯題本</h1>'));
+ if(!ids.length){app.appendChild(h('<section class="card"><p>目前沒有錯題。做練習或模擬考答錯的題目會自動收進來，重練答對就會移除。</p></section>'));return}
+ app.appendChild(h('<p class="muted">共 '+ids.length+' 題。重練時答對一次就會從這裡畢業。</p>'));
+ const st=h('<button class="btn block">重練錯題</button>');st.onclick=()=>startQuiz(shuffle(ids.map(findQ)).slice(0,10),'錯題重練','wrong');app.appendChild(st);
+ ids.sort((a,c)=>S.wrong[c]-S.wrong[a]).forEach(id=>{const q=findQ(id);app.appendChild(h('<section class="card"><div class="row between"><span class="small muted">第 '+(q.ch+1)+' 章・'+esc(b.chapters[q.ch].title)+'</span><span class="pill">錯 '+S.wrong[id]+' 次</span></div><b>'+esc(q.q)+'</b><details><summary class="small">看答案</summary><p class="small" style="margin-top:6px">'+esc(q.o[q.a])+'。'+esc(q.e||'')+'</p></details></section>'))})}
+
+/* ===================== 加課本 ===================== */
+function vBooks(app){
+ app.appendChild(h('<button class="link">← 回首頁</button>'));app.lastChild.onclick=()=>go('home');
+ app.appendChild(h('<h1>加入新課本</h1>'));
+ app.appendChild(h('<section class="card"><p>把課本資料貼到下面就能加入新課本。可以先按「填入範例」看看格式。</p><p class="small muted">格式：書名、章節、每章的課程（含小檢查）、閃卡、選擇題（a 是正確選項的位置，從 0 開始）。</p></section>'));
+ const ta=h('<textarea id="bookjson" aria-label="課本資料" placeholder="把課本資料貼在這裡"></textarea>');app.appendChild(ta);
+ const r=h('<div class="grid2"><button class="btn">加入課本</button><button class="btn soft">填入範例</button></div>');app.appendChild(r);
+ const msg=h('<p class="small" role="status"></p>');app.appendChild(msg);
+ r.children[1].onclick=()=>{ta.value=JSON.stringify(EXAMPLE_BOOK,null,1)};
+ r.children[0].onclick=()=>{try{const bk=JSON.parse(ta.value);
+   if(!bk.title||!Array.isArray(bk.chapters)||!bk.chapters.length)throw new Error('需要 title 和 chapters');
+   bk.chapters.forEach((c,i)=>{if(!c.title)throw new Error('第 '+(i+1)+' 章沒有 title');c.lessons=c.lessons||[];c.cards=c.cards||[];c.questions=c.questions||[];c.questions.forEach((q,j)=>{if(!q.q||!Array.isArray(q.o)||typeof q.a!=='number'||q.a<0||q.a>=q.o.length)throw new Error('第 '+(i+1)+' 章第 '+(j+1)+' 題格式不對')})});
+   bk.id='c'+Date.now().toString(36);bk.custom=true;S.custom.push(bk);S.book=bk.id;save();toast('已加入《'+bk.title+'》');go('home')}
+  catch(e){msg.style.color='var(--bad)';msg.textContent='讀不懂這段資料：'+e.message+'。請確認是完整的 JSON 格式。'}};
+ if(S.custom.length){const c=h('<section class="card"><h3>你加入的課本</h3></section>');S.custom.forEach(bk=>{const row=h('<div class="row between"><b>'+esc(bk.title)+'</b><button class="link" style="color:var(--bad)">刪除</button></div>');const del=row.querySelector('button');del.onclick=()=>{if(del.dataset.sure){S.custom=S.custom.filter(x=>x.id!==bk.id);if(S.book===bk.id)S.book=allBooks()[0].id;save();go('books')}else{del.dataset.sure=1;del.textContent='再按一次確認刪除'}};c.appendChild(row)});app.appendChild(c)}
+ app.appendChild(h('<p class="small muted">進度、經驗值和加入的課本都存在這支手機的瀏覽器裡，換裝置不會同步。</p>'))}
+
+renderTop();go('shelf');
+</script>
+</body>
+</html>
