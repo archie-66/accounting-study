@@ -803,6 +803,8 @@ const FIRES=[
  {min:55,key:'emerald',name:'翡翠火焰'},{min:60,key:'gold',name:'黃金火焰'},{min:65,key:'platinum',name:'白金火焰'},{min:70,key:'rainbow',name:'彩虹火焰'},
  {min:75,key:'aurora',name:'極光火焰'},{min:80,key:'star',name:'星火'},{min:85,key:'galaxy',name:'銀河火焰'},{min:90,key:'sun',name:'太陽之火'},
  {min:95,key:'holy',name:'聖火'},{min:100,key:'phoenix',name:'鳳凰之火'}];
+/* 暫時設定：右上角的火固定顯示「聖火」（第 95 天）。要改回原本的規則，把這行改成 null */
+const FIRE_OVERRIDE='holy';
 function fireOf(d){let f=FIRES[0];FIRES.forEach(x=>{if(d>=x.min)f=x});return f}
 function nextFire(d){return FIRES.find(x=>x.min>d)}
 function doneToday(){return S.last===today()}
@@ -852,9 +854,9 @@ function fireSVG(key,size){const id='fg'+(++fireUid),C=[14,17];
  if(c.twk){const pos=[[3.5,6],[24.5,4.5],[2.5,20],[25.5,19]],tc=c.twkC||'#ffc61a';for(let k=0;k<c.twk;k++){const [x,y]=pos[k];front+='<path class="tw t'+k+'" d="M'+x+' '+(y-3.2)+'l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z" fill="'+tc+'" stroke="#fff" stroke-width=".45" stroke-linejoin="round"/>'}}
  const sx=[10,18,14,8,20,12],spc=c.spc||'#ffc04d';for(let k=0;k<(c.sp||0);k++)front+='<circle class="sp s'+k+'" cx="'+sx[k]+'" cy="'+(ty+13)+'" r="'+(k%2?.8:1.1)+'" fill="'+spc+'"/>';
  return '<svg class="fire '+key+'" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true">'+(defs?'<defs>'+defs+'</defs>':'')+back+body+front+'</svg>'}
-function streakChip(){const d=curStreak(),f=fireOf(d),dt=doneToday();return '<button class="chip streak'+(dt?'':' cold')+'" data-streak aria-label="連續 '+d+' 天，'+f.name+'">'+fireSVG(f.key,22)+'<span class="num">'+d+' 天</span></button>'}
+function streakChip(){const d=curStreak(),f=fireOf(d),dt=doneToday(),k=FIRE_OVERRIDE||f.key;return '<button class="chip streak'+(dt?'':' cold')+'" data-streak aria-label="連續 '+d+' 天，'+f.name+'">'+fireSVG(k,22)+'<span class="num">'+d+' 天</span></button>'}
 function openStreak(){const d=curStreak(),f=fireOf(d),nx=nextFire(d),dt=doneToday();const s=sheet('fireSheet');
- s.innerHTML='<div class="fire-hero">'+fireSVG(f.key,96)+'<div><h2>連續 '+d+' 天</h2><div class="muted">現在是「'+f.name+'」</div></div></div>'
+ s.innerHTML='<div class="fire-hero">'+fireSVG(FIRE_OVERRIDE||f.key,96)+'<div><h2>連續 '+d+' 天</h2><div class="muted">現在是「'+f.name+'」</div></div></div>'
  +'<div class="fb '+(dt?'ok':'no')+'"><b class="t">'+(dt?'今天的火已經續上了':'今天還沒續火')+'</b><span>'+(dt?'明天再做題目或複習閃卡，就能繼續累積。':'做 1 題練習、模擬考，或複習 1 張閃卡，就能續火。只打開網站不算喔。')+'</span></div>'
  +(nx?'<p>再 <b class="num">'+(nx.min-d)+'</b> 天，就會升級成「'+nx.name+'」。</p>':'<p>你已經到最高級的火了！</p>')
  +'<div class="fire-grid">'+FIRES.slice(1).map(x=>'<div class="'+(d>=x.min?'got':'')+'">'+fireSVG(x.key,40)+'<b>'+x.name+'</b><span class="small muted">'+x.min+' 天</span></div>').join('')+'</div>'
