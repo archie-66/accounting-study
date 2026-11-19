@@ -13,6 +13,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#132347">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://www.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
@@ -339,7 +344,7 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 .fire .wing{transform-box:view-box;transform-origin:14px 17px}
 .fire .wing.l{animation:flapL 1.8s ease-in-out infinite}
 .fire .wing.r{animation:flapR 1.8s ease-in-out infinite}
-.fire .sp.s3{animation-delay:.3s}.fire .sp.s4{animation-delay:.9s}.fire .sp.s5{animation-delay:1.5s}
+.fire .sp.s3{animation-delay:.3s}.fire .sp.s4{animation-delay:.9s}.fire .sp.s5{animation-delay:1.5s}.fire .sp.s6{animation-delay:.75s}.fire .sp.s7{animation-delay:1.8s;animation-name:rise2}.fire.boost .glow{animation-duration:1.6s}
 .fire .sp.s1,.fire .sp.s4{animation-name:rise2}
 .fire .tw.t1{animation-delay:.45s}.fire .tw.t2{animation-delay:.9s}.fire .tw.t3{animation-delay:1.35s}
 @keyframes glowP{0%,100%{opacity:.7;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}}
@@ -377,6 +382,7 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 .fire-hero .fire{flex:none;overflow:visible}
 .fire-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .fire-grid div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:12px;background:var(--bg);text-align:center;font-size:12px}
+.fire-grid .pl{display:block;font-style:normal;font-size:11px;color:var(--accent,#d9822b)}
 .fire-grid div:not(.got) .fire{filter:grayscale(1);opacity:.35}
 .fire-grid div:not(.got) .fire *{animation:none!important}
 .fire-grid b{font-size:12px}
@@ -550,13 +556,17 @@ function vHome(app){const b=book(),t=today(),n=S.today.d===t?S.today.n:0,pct=Mat
 }
 
 /* ===================== Google 登入與雲端進度（Firebase） ===================== */
-const CLOUD={ready:false,user:null,db:null,syncing:false};
+const CLOUD={ready:false,user:null,db:null,syncing:false,known:false,cached:null};
+const CU_KEY='acc-cloud-user';try{CLOUD.cached=JSON.parse(localStorage.getItem(CU_KEY)||'null')}catch(e){}
 function cloudConfigured(){const c=window.FIREBASE_CONFIG;return !!(c&&c.apiKey&&c.projectId)}
 function loadJS(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
 async function cloudInit(){if(!cloudConfigured())return;const base='https://cdn.jsdelivr.net/npm/firebase@10.12.2/';
- try{await loadJS(base+'firebase-app-compat.js');await loadJS(base+'firebase-auth-compat.js');await loadJS(base+'firebase-firestore-compat.js');firebase.initializeApp(window.FIREBASE_CONFIG);CLOUD.db=firebase.firestore();CLOUD.ready=true}catch(e){CLOUD.failed=true;if(view==='shelf')go('shelf');return}
+ try{await loadJS(base+'firebase-app-compat.js');await Promise.all([loadJS(base+'firebase-auth-compat.js'),loadJS(base+'firebase-firestore-compat.js')]);firebase.initializeApp(window.FIREBASE_CONFIG);CLOUD.db=firebase.firestore();CLOUD.ready=true}catch(e){CLOUD.failed=true;if(view==='shelf')go('shelf');return}
  firebase.auth().getRedirectResult().catch(()=>toast('登入沒有完成，請再試一次'));
- firebase.auth().onAuthStateChanged(async u=>{CLOUD.user=u;if(u)await cloudPull();renderTop();{const ss=document.getElementById('setSheet');if(ss&&ss.classList.contains('show'))openSettings()}if(view==='shelf')go('shelf')});
+ firebase.auth().onAuthStateChanged(u=>{const first=!CLOUD.cached;CLOUD.user=u;CLOUD.known=true;
+  try{if(u){CLOUD.cached={n:u.displayName||'',e:u.email||''};localStorage.setItem(CU_KEY,JSON.stringify(CLOUD.cached))}else{CLOUD.cached=null;localStorage.removeItem(CU_KEY)}}catch(e){}
+  renderTop();if(view==='shelf')go('shelf');{const ss=document.getElementById('setSheet');if(ss&&ss.classList.contains('show'))openSettings()}
+  if(u)cloudPull(first).then(()=>{renderTop();if(view==='shelf'||view==='home')go(view)})});
  if(view==='shelf')go('shelf')}
 /* 合併兩份進度：經驗值取大的、完成的課取聯集、閃卡取比較熟的那份 */
 function mergeState(a,b){a=Object.assign(defState(),a);b=Object.assign(defState(),b);const o=Object.assign({},a);
@@ -570,9 +580,9 @@ function mergeState(a,b){a=Object.assign(defState(),a);b=Object.assign(defState(
  const ex=new Set();o.exams=a.exams.concat(b.exams).filter(e=>{const k=JSON.stringify(e);if(ex.has(k))return false;ex.add(k);return true}).sort((x,y)=>x.d<y.d?-1:1).slice(-200);
  const ids=new Set();o.custom=a.custom.concat(b.custom).filter(c=>{if(ids.has(c.id))return false;ids.add(c.id);return true});
  return o}
-async function cloudPull(){if(!CLOUD.user)return;CLOUD.syncing=true;
+async function cloudPull(loud){if(!CLOUD.user)return;CLOUD.syncing=true;
  try{const ref=CLOUD.db.collection('progress').doc(CLOUD.user.uid);const d=await ref.get();if(d.exists){const c=JSON.parse(d.data().state||'{}');S=mergeState(S,c);applyTheme();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-  await cloudPush(true);toast('進度已同步到 Google 帳號')}catch(e){toast('同步失敗，進度先存在這台裝置')}
+  await cloudPush(true);if(loud)toast('進度已同步到 Google 帳號')}catch(e){toast('同步失敗，進度先存在這台裝置')}
  CLOUD.syncing=false}
 let pushT=null;
 function cloudPush(now){if(!CLOUD.user||!CLOUD.db)return Promise.resolve();clearTimeout(pushT);
@@ -580,10 +590,10 @@ function cloudPush(now){if(!CLOUD.user||!CLOUD.db)return Promise.resolve();clear
  if(now)return run();pushT=setTimeout(run,1500);return Promise.resolve()}
 function cloudLogin(){if(!CLOUD.ready){toast('登入功能還在載入，請稍等');return}const p=new firebase.auth.GoogleAuthProvider();
  firebase.auth().signInWithPopup(p).catch(e=>{if(/popup|operation-not-supported/.test(e.code||''))firebase.auth().signInWithRedirect(p);else if(e.code!=='auth/cancelled-popup-request'&&e.code!=='auth/popup-closed-by-user')toast('登入失敗：'+(e.code||'請再試一次'))})}
-function cloudLogout(){if(CLOUD.ready)firebase.auth().signOut().then(()=>toast('已登出，進度仍保留在這台裝置'))}
+function cloudLogout(){if(!CLOUD.ready){toast('登入功能還在載入，請稍等');return}firebase.auth().signOut().then(()=>toast('已登出，進度仍保留在這台裝置'))}
 function accountCard(){if(!cloudConfigured())return null;
  if(CLOUD.failed)return h('<section class="card acct"><p class="small muted">登入功能暫時無法載入，進度先存在這台裝置。</p></section>');
- if(CLOUD.user){const u=CLOUD.user;const el=h('<section class="card acct"><div class="row between"><div><b>'+esc(u.displayName||'已登入')+'</b><div class="small muted">'+esc(u.email||'')+'・進度會自動存到這個帳號</div></div><button class="link" data-out>登出</button></div></section>');el.querySelector('[data-out]').onclick=cloudLogout;return el}
+ if(CLOUD.user||(!CLOUD.known&&CLOUD.cached)){const u=CLOUD.user||{displayName:CLOUD.cached.n,email:CLOUD.cached.e};const el=h('<section class="card acct"><div class="row between"><div><b>'+esc(u.displayName||'已登入')+'</b><div class="small muted">'+esc(u.email||'')+'・進度會自動存到這個帳號</div></div><button class="link" data-out>登出</button></div></section>');el.querySelector('[data-out]').onclick=cloudLogout;return el}
  const el=h('<section class="card acct"><p>登入後，進度會存在你的 Google 帳號，換手機或電腦也能接著讀。</p><button class="btn gbtn"'+(CLOUD.ready?'':' disabled')+'><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#fff" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path fill="#fff" opacity=".85" d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="#fff" opacity=".7" d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1a10 10 0 0 0 0 9.2L6.4 14z"/><path fill="#fff" opacity=".55" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.4L6.4 10c.8-2.3 3-4.1 5.6-4.1z"/></svg>'+(CLOUD.ready?'用 Google 登入':'登入功能載入中…')+'</button></section>');
  el.querySelector('button').onclick=cloudLogin;return el}
 
@@ -802,15 +812,11 @@ function mascotSVG(t){
 function addMascot(card){const t=S.theme;if(t!=='cat'&&t!=='dog')return;const m=h('<div class="mascot '+t+'" aria-hidden="true">'+mascotSVG(t)+'</div>');card.prepend(m);
  if(matchMedia('(prefers-reduced-motion: reduce)').matches){const s=m.querySelector('svg');if(s.pauseAnimations)s.pauseAnimations()}}
 
-/* ===================== 連續天數的火：每 10 天換一種火，提醒今天續火 ===================== */
-const FIRES=[
- {min:0,key:'ember',name:'熄滅的火種'},{min:1,key:'spark',name:'小火花'},{min:5,key:'match',name:'火柴'},{min:10,key:'candle',name:'燭火'},
- {min:15,key:'lamp',name:'油燈'},{min:20,key:'torch',name:'火把'},{min:25,key:'camp',name:'篝火'},{min:30,key:'blaze',name:'熊熊烈火'},
- {min:35,key:'lava',name:'熔岩之火'},{min:40,key:'blue',name:'藍色火焰'},{min:45,key:'ice',name:'冰晶火焰'},{min:50,key:'purple',name:'紫色火焰'},
- {min:55,key:'emerald',name:'翡翠火焰'},{min:60,key:'gold',name:'黃金火焰'},{min:65,key:'platinum',name:'白金火焰'},{min:70,key:'rainbow',name:'彩虹火焰'},
- {min:75,key:'aurora',name:'極光火焰'},{min:80,key:'star',name:'星火'},{min:85,key:'galaxy',name:'銀河火焰'},{min:90,key:'sun',name:'太陽之火'},
- {min:95,key:'holy',name:'聖火'},{min:100,key:'phoenix',name:'鳳凰之火'}];
-/* 暫時設定：右上角的火固定顯示「聖火」（第 95 天）。要改回原本的規則，把這行改成 null */
+/* ===================== 連續天數的火：每 2 天升級一次，提醒今天續火 ===================== */
+const FIRE_TYPES=[['match','火柴'],['candle','燭火'],['lamp','油燈'],['torch','火把'],['camp','篝火'],['blaze','熊熊烈火'],['lava','熔岩之火'],['ruby','紅寶石火焰'],['blue','藍色火焰'],['ice','冰晶火焰'],['crystal','水晶火焰'],['purple','紫色火焰'],['sakura','櫻花火焰'],['emerald','翡翠火焰'],['thunder','雷光火焰'],['gold','黃金火焰'],['platinum','白金火焰'],['shadow','暗影火焰'],['rainbow','彩虹火焰'],['aurora','極光火焰'],['star','星火'],['galaxy','銀河火焰'],['sun','太陽之火'],['holy','聖火'],['phoenix','鳳凰之火']];
+/* 每 2 天升級一次：每種火先出現一般版，再 2 天變成「強化」版（火花、光點更多），到第 100 天是強化的鳳凰之火 */
+const FIRES=[{min:0,key:'ember',name:'熄滅的火種'},{min:1,key:'spark',name:'小火花'}].concat(...FIRE_TYPES.map((t,k)=>[{min:2+4*k,key:t[0],name:t[1]},{min:4+4*k,key:t[0]+'+',name:t[1]+'・強化'}]));
+/* 暫時設定：右上角的火固定顯示「聖火」。要改回原本的規則，把這行改成 null */
 const FIRE_OVERRIDE='holy';
 function fireOf(d){let f=FIRES[0];FIRES.forEach(x=>{if(d>=x.min)f=x});return f}
 function nextFire(d){return FIRES.find(x=>x.min>d)}
@@ -829,12 +835,17 @@ function fireSVG(key,size){const id='fg'+(++fireUid),C=[14,17];
   camp:{sc:.8,ty:-4,o:'#ff5a24',m:'#ff9a3c',i:'#ffe58a',sp:3,glow:'#ff7a2e',pulse:1,coal:1,over:'<g stroke-linecap="round"><path d="M5 25.5L23 20.8" stroke="#6e4527" stroke-width="3.4"/><path d="M5 20.8L23 25.5" stroke="#9a6a3e" stroke-width="3.4"/></g>'},
   blaze:{o:'#ff2e1f',m:'#ff7a2e',i:'#ffe58a',side:1,sp:4,glow:'#ff4d24',pulse:1},
   lava:{o:'#b3121b',m:'#ff4d1f',i:'#ffc04d',side:1,sp:5,spc:'#ff7a2e',glow:'#ff3d1f',pulse:1,under:'<ellipse cx="14" cy="26" rx="10" ry="2.4" fill="#5a1410"/><path class="crack" d="M7 26h3l1-.8 2 .8h3l1.5-.6L20 26" fill="none" stroke="#ff8a2e" stroke-width=".8"/>'},
+  ruby:{o:'#c2103a',m:'#ff3d6b',i:'#ffd6e0',side:1,sp:4,spc:'#ff6b8f',glow:'#ff2e5b',pulse:1,twk:1,twkC:'#ff6b8f'},
   blue:{o:'#2a6cff',m:'#55a8ff',i:'#eaf7ff',side:1,sp:4,glow:'#4d9bff',pulse:1,ring:'#7fbfff',spc:'#8cc8ff'},
   ice:{o:'#1aa7dd',m:'#6fdcff',i:'#ffffff',side:1,sp:4,glow:'#5fd2ff',pulse:1,ring:'#7fdcff',spc:'#a8ecff',twk:2,twkC:'#7fdcff'},
+  crystal:{o:'#13b5c9',m:'#8ff3ff',i:'#ffffff',side:1,sp:4,spc:'#c8fbff',glow:'#6fe7ff',pulse:1,rays:6,rayC:'#7fe6f5',twk:2,twkC:'#3fd0e8'},
   purple:{o:'#7a2cff',m:'#ad6dff',i:'#f6edff',side:1,sp:4,glow:'#9a52ff',pulse:1,ring:'#c49cff',orbit:2,orbC:'#b57bff',spc:'#d2b8ff',twk:2,twkC:'#c49cff'},
+  sakura:{o:'#e8508a',m:'#ff9ac0',i:'#fff0f6',side:1,sp:5,spc:'#ffb3cf',glow:'#ff8ab8',pulse:1,ring:'#ffb3cf',orbit:3,orbC:'#ff7fae',twk:2,twkC:'#ff7fae'},
   emerald:{o:'#0b8f63',m:'#36c98f',i:'#eafff6',side:1,sp:5,glow:'#2fd39a',pulse:1,ring:'#7fe3bd',orbit:3,orbC:'#2fd39a',spc:'#8ff0c8',twk:2,twkC:'#5fe0ad'},
+  thunder:{o:'#f2c200',m:'#fff06b',i:'#ffffff',side:1,sp:5,spc:'#ffe23a',glow:'#ffe23a',pulse:1,rays:10,rayC:'#ffd200',ring:'#ffd94d',twk:3,twkC:'#ffc400'},
   gold:{o:'#e09600',m:'#ffc23a',i:'#fff8d6',side:1,sp:5,glow:'#ffc933',pulse:1,rays:8,rayC:'#ffc933',orbit:2,orbC:'#ffb300',twk:3},
   platinum:{grad:[[0,'#6f84a0'],[1,'#d7e2ee']],m:'#b8c8db',i:'#ffffff',side:1,sp:5,spc:'#c9d6e6',glow:'#9fb6d1',pulse:1,rays:10,rayC:'#a9bcd2',ring:'#a9bcd2',orbit:3,orbC:'#8aa2c0',twk:3,twkC:'#8aa2c0'},
+  shadow:{grad:[[0,'#1a0f2e'],[.6,'#4b2a8a'],[1,'#8f5cff']],m:'#3a1f6e',i:'#d9c7ff',side:1,sp:5,spc:'#b79cff',glow:'#6b3dd6',pulse:1,ring:'#7a52e0',ring2:'#4b2a8a',orbit:3,orbC:'#9a6bff',twk:3,twkC:'#b79cff'},
   rainbow:{grad:[[0,'#ff3d3d'],[.22,'#ff9a3c'],[.42,'#ffd24d'],[.6,'#4cc38a'],[.8,'#3d8bff'],[1,'#a35cff']],m:null,i:'#ffffff',side:1,sp:5,glow:'#ff8ad8',pulse:1,rays:12,rayC:'#ff9ad9',hue:1,orbit:3,orbC:'#ff5fbf',twk:3,twkC:'#ff9a3c'},
   aurora:{grad:[[0,'#1fd391'],[.5,'#2bb8ff'],[1,'#a35cff']],m:null,i:'#ffffff',side:1,sp:5,spc:'#7cf3d0',glow:'#3fd3c9',pulse:1,rays:12,rayC:'#5fe0d8',ring:'#7fd8ff',orbit:3,orbC:'#1fd391',twk:3,twkC:'#2bb8ff',hue:2},
   star:{o:'#3d4bff',m:'#7f8cff',i:'#ffffff',side:1,sp:5,glow:'#6b7bff',pulse:1,ring:'#9aa6ff',orbit:4,orbStar:1,orbC:'#ffcc33',twk:4,rays:6,rayC:'#9aa6ff'},
@@ -843,7 +854,9 @@ function fireSVG(key,size){const id='fg'+(++fireUid),C=[14,17];
   holy:{o:'#f2b705',m:'#ffe27a',i:'#ffffff',side:1,sp:6,glow:'#ffd24d',pulse:1,rays:14,rayC:'#ffcf3a',halo:1,orbit:4,orbC:'#ffb300',twk:4,ring:'#ffdf7a'},
   phoenix:{grad:[[0,'#ff2e1f'],[.55,'#ff8a2e'],[1,'#ffd24d']],m:'#ffb347',i:'#fff4bf',side:1,sp:6,glow:'#ff6a24',pulse:1,rays:16,rayC:'#ffb300',wings:1,ring:'#ffc04d',orbit:4,orbC:'#ff8a00',twk:4}};
  if(key==='ember')return '<svg class="fire ember" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true"><path class="smoke" d="M14 17c-2-3 2-5 0-8s2-5 0-7" fill="none" stroke="#a9a3a0" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="14" cy="23" rx="6" ry="2.6" fill="#6b6560"/><circle class="coal" cx="14" cy="22.4" r="1.6" fill="#ff8a3c"/></svg>';
- const c=T[key]||T.spark,sc=c.sc||1,ty=c.ty||0;let defs='',back='',front='';
+ const boost=key.endsWith('+');if(boost)key=key.slice(0,-1);
+ let c=T[key]||T.spark;if(boost){c=Object.assign({},c);c.sp=Math.min(8,(c.sp||0)+2);c.twk=Math.min(4,(c.twk||0)+1);c.twkC=c.twkC||c.spc||c.glow||'#ffc61a';if(!c.glow)c.glow=c.spc||c.o||'#ffb347';c.pulse=1;if(!c.ring)c.ring=c.spc||c.glow;else if(!c.ring2)c.ring2=c.spc||c.glow;}
+ const sc=c.sc||1,ty=c.ty||0;let defs='',back='',front='';
  const oFill=c.grad?(defs+=LG(id+'o',c.grad),'url(#'+id+'o)'):c.o;
  if(c.glow){defs+='<radialGradient id="'+id+'g"><stop offset="0" stop-color="'+c.glow+'" stop-opacity=".6"/><stop offset=".55" stop-color="'+c.glow+'" stop-opacity=".18"/><stop offset="1" stop-color="'+c.glow+'" stop-opacity="0"/></radialGradient>';back+='<circle class="glow'+(c.pulse?' pulse':'')+'" cx="14" cy="17" r="'+(c.rays?15:13)+'" fill="url(#'+id+'g)"/>'}
  if(c.rays){let p='';for(let k=0;k<c.rays;k++){const a=k/c.rays*Math.PI*2,w=.09,R=15;const P=(t,r)=>(C[0]+Math.cos(t)*r).toFixed(2)+','+(C[1]+Math.sin(t)*r).toFixed(2);p+='<polygon points="'+P(a-w,4)+' '+P(a,R)+' '+P(a+w,4)+'"/>'}back='<g class="rays" fill="'+c.rayC+'" opacity=".55">'+p+'</g>'+back}
@@ -859,14 +872,14 @@ function fireSVG(key,size){const id='fg'+(++fireUid),C=[14,17];
  if(c.coal)body+='<ellipse class="coal" cx="14" cy="23.2" rx="3" ry="1.2" fill="#ffb347"/>';
  if(c.orbit){let o='';for(let k=0;k<c.orbit;k++){const a=k/c.orbit*Math.PI*2,x=(C[0]+Math.cos(a)*11.5).toFixed(2),y=(C[1]+Math.sin(a)*11.5).toFixed(2);o+=c.orbStar?'<path d="M'+x+' '+(y-2.6)+'l.75 1.85 1.85.75-1.85.75-.75 1.85-.75-1.85-1.85-.75 1.85-.75z" fill="'+c.orbC+'" stroke="#fff" stroke-width=".4" stroke-linejoin="round"/>':'<circle cx="'+x+'" cy="'+y+'" r="1.35" fill="'+c.orbC+'" stroke="#fff" stroke-width=".45"/>'}front+='<g class="orbit">'+o+'</g>'}
  if(c.twk){const pos=[[3.5,6],[24.5,4.5],[2.5,20],[25.5,19]],tc=c.twkC||'#ffc61a';for(let k=0;k<c.twk;k++){const [x,y]=pos[k];front+='<path class="tw t'+k+'" d="M'+x+' '+(y-3.2)+'l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z" fill="'+tc+'" stroke="#fff" stroke-width=".45" stroke-linejoin="round"/>'}}
- const sx=[10,18,14,8,20,12],spc=c.spc||'#ffc04d';for(let k=0;k<(c.sp||0);k++)front+='<circle class="sp s'+k+'" cx="'+sx[k]+'" cy="'+(ty+13)+'" r="'+(k%2?.8:1.1)+'" fill="'+spc+'"/>';
- return '<svg class="fire '+key+'" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true">'+(defs?'<defs>'+defs+'</defs>':'')+back+body+front+'</svg>'}
+ const sx=[10,18,14,8,20,12,6,22],spc=c.spc||'#ffc04d';for(let k=0;k<(c.sp||0);k++)front+='<circle class="sp s'+k+'" cx="'+sx[k]+'" cy="'+(ty+13)+'" r="'+(k%2?.8:1.1)+'" fill="'+spc+'"/>';
+ return '<svg class="fire '+key+(boost?' boost':'')+'" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true">'+(defs?'<defs>'+defs+'</defs>':'')+back+body+front+'</svg>'}
 function streakChip(){const d=curStreak(),f=fireOf(d),dt=doneToday(),k=FIRE_OVERRIDE||f.key;return '<button class="chip streak'+(dt?'':' cold')+'" data-streak aria-label="連續 '+d+' 天，'+f.name+'">'+fireSVG(k,22)+'<span class="num">'+d+' 天</span></button>'}
 function openStreak(){const d=curStreak(),f=fireOf(d),nx=nextFire(d),dt=doneToday();const s=sheet('fireSheet');
  s.innerHTML='<div class="fire-hero">'+fireSVG(FIRE_OVERRIDE||f.key,96)+'<div><h2>連續 '+d+' 天</h2><div class="muted">現在是「'+f.name+'」</div></div></div>'
  +'<div class="fb '+(dt?'ok':'no')+'"><b class="t">'+(dt?'今天的火已經續上了':'今天還沒續火')+'</b><span>'+(dt?'明天再做題目或複習閃卡，就能繼續累積。':'做 1 題練習、模擬考，或複習 1 張閃卡，就能續火。只打開網站不算喔。')+'</span></div>'
  +(nx?'<p>再 <b class="num">'+(nx.min-d)+'</b> 天，就會升級成「'+nx.name+'」。</p>':'<p>你已經到最高級的火了！</p>')
- +'<div class="fire-grid">'+FIRES.slice(1).map(x=>'<div class="'+(d>=x.min?'got':'')+'">'+fireSVG(x.key,40)+'<b>'+x.name+'</b><span class="small muted">'+x.min+' 天</span></div>').join('')+'</div>'
+ +'<div class="fire-grid">'+FIRES.slice(1).map(x=>'<div class="'+(d>=x.min?'got':'')+'">'+fireSVG(x.key,40)+'<b>'+x.name.replace('・強化','<i class="pl">強化</i>')+'</b><span class="small muted">'+x.min+' 天</span></div>').join('')+'</div>'
  +'<button class="btn block" data-ok>知道了</button>';
  s.querySelector('[data-ok]').onclick=()=>closeSheet('fireSheet');openSheet('fireSheet')}
 function streakTip(){if(doneToday())return;let k='';try{k=sessionStorage.getItem('acc-tip')||''}catch(e){}if(k===today())return;
@@ -900,6 +913,7 @@ function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
+ {id:'2026-11-19c',items:['火改成每 2 天就升級一次！每種火會先出現一般版，再 2 天變成「強化」版，到第 100 天是強化的鳳凰之火','新增 5 種火：紅寶石、水晶、櫻花、雷光、暗影','登入後再打開網站，會馬上顯示已登入，不用等']},
  {id:'2026-11-19b',items:['可以用 Google 登入了！在「選擇課本」頁按「用 Google 登入」，進度會存在帳號裡，換手機、iPad 都能接著讀']},
  {id:'2026-11-19',items:['主畫面上的名字改成「會計學」，從主畫面打開會像 App 一樣全螢幕','新功能：設定 → 備份進度。重新加入主畫面或換手機前，先複製備份碼，之後貼上就能還原']},
  {id:'2026-11-18g',items:['火改成每 5 天升級一次，到 100 天共 21 種火：新增火柴、油燈、熔岩、冰晶、翡翠、白金、極光、銀河、太陽、聖火','小星星和光點改成有顏色、加白邊，淺色背景也看得清楚']},
@@ -918,7 +932,7 @@ function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
 /* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
-const APP_VER='2026-11-19-1510';
+const APP_VER='2026-11-19-1600';
 /* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
 let updBusy=false;
 async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
