@@ -887,13 +887,19 @@ function praise(){const t=S.theme;return t==='cat'?['喵～答對了！','貓咪
 function sheet(id){let b=document.getElementById(id+'Back'),s=document.getElementById(id);if(!s){b=h('<div class="sheet-back" id="'+id+'Back"></div>');s=h('<div class="sheet" id="'+id+'" role="dialog" aria-modal="true"></div>');document.body.append(b,s);b.onclick=()=>closeSheet(id)}return s}
 function openSheet(id){document.getElementById(id).classList.add('show');document.getElementById(id+'Back').classList.add('show')}
 function closeSheet(id){const s=document.getElementById(id);if(!s)return;s.classList.remove('show');document.getElementById(id+'Back').classList.remove('show');if(id==='wnSheet')markNewsSeen()}
+function backupCode(){return 'ACC1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))))}
+function restoreCode(t){try{t=(t||'').replace(/\s+/g,'');if(!t.startsWith('ACC1:'))return false;const d=JSON.parse(decodeURIComponent(escape(atob(t.slice(5)))));if(!d||typeof d!=='object'||!('xp' in d))return false;S=mergeState(S,d);save();return true}catch(e){return false}}
 function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
- s.innerHTML='<h2>設定</h2><div><h3 style="margin-bottom:10px">外觀</h3><div class="themes">'+THEMES.map(t=>'<button data-t="'+t[0]+'" class="'+(t[0]===cur?'on':'')+'"><span class="sw">'+t[2].map(c=>'<i style="background:'+c+'"></i>').join('')+'</span>'+t[1]+'</button>').join('')+'</div></div><button class="btn soft block" data-wn>看這次更新了什麼</button><button class="btn block" data-close>完成</button>';
+ s.innerHTML='<h2>設定</h2><div><h3 style="margin-bottom:10px">外觀</h3><div class="themes">'+THEMES.map(t=>'<button data-t="'+t[0]+'" class="'+(t[0]===cur?'on':'')+'"><span class="sw">'+t[2].map(c=>'<i style="background:'+c+'"></i>').join('')+'</span>'+t[1]+'</button>').join('')+'</div></div><div><h3 style="margin-bottom:6px">備份進度</h3><p class="small muted" style="margin:0 0 10px">換手機、換瀏覽器，或刪掉主畫面圖示再重新加入之前，先按「複製備份碼」，貼到備忘錄存起來。到新的地方再按「還原」貼上就好。</p><div style="display:flex;gap:8px"><button class="btn soft" style="flex:1" data-bk>複製備份碼</button><button class="btn soft" style="flex:1" data-rs>還原</button></div><div data-rsbox style="display:none;margin-top:10px"><textarea data-rstxt rows="3" placeholder="把備份碼貼在這裡" style="width:100%;box-sizing:border-box;border-radius:12px;border:1px solid var(--line,#ccd);padding:10px;font:inherit;background:transparent;color:inherit"></textarea><button class="btn block" data-rsgo style="margin-top:8px">確定還原</button></div></div><button class="btn soft block" data-wn>看這次更新了什麼</button><button class="btn block" data-close>完成</button>';
+ s.querySelector('[data-bk]').onclick=async()=>{const code=backupCode();let ok=false;try{await navigator.clipboard.writeText(code);ok=true}catch(e){}if(ok)toast('已複製備份碼，記得貼到備忘錄');else{s.querySelector('[data-rsbox]').style.display='block';const t=s.querySelector('[data-rstxt]');t.value=code;t.select();toast('請長按上面的文字複製')}};
+ s.querySelector('[data-rs]').onclick=()=>{const b=s.querySelector('[data-rsbox]');b.style.display='block';const t=s.querySelector('[data-rstxt]');if(t.value.startsWith('ACC1:'))t.value='';t.focus()};
+ s.querySelector('[data-rsgo]').onclick=()=>{const r=restoreCode(s.querySelector('[data-rstxt]').value);if(r){closeSheet('setSheet');toast('進度已還原');applyTheme();go(S.book?'home':'shelf')}else toast('備份碼不正確，請整段重新貼上')};
  s.querySelector('.themes').onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;S.theme=b.dataset.t;save();applyTheme();if(view==='home')go('home');s.querySelectorAll('.themes button').forEach(x=>x.classList.toggle('on',x===b));toast(b.textContent+' 外觀')};
  s.querySelector('[data-wn]').onclick=()=>{closeSheet('setSheet');setTimeout(()=>showWhatsNew(true),300)};
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
+ {id:'2026-11-19',items:['主畫面上的名字改成「會計學」，從主畫面打開會像 App 一樣全螢幕','新功能：設定 → 備份進度。重新加入主畫面或換手機前，先複製備份碼，之後貼上就能還原']},
  {id:'2026-11-18g',items:['火改成每 5 天升級一次，到 100 天共 21 種火：新增火柴、油燈、熔岩、冰晶、翡翠、白金、極光、銀河、太陽、聖火','小星星和光點改成有顏色、加白邊，淺色背景也看得清楚']},
  {id:'2026-11-18f',items:['火把和篝火換了順序：20 天是火把、30 天是篝火','燭火之後的火變得更華麗，而且越高級越閃：光暈、火星、旋轉光環、繞圈的光點、光芒，鳳凰之火還會拍翅膀']},
  {id:'2026-11-18e',items:['右上角的火會動了，而且每連續 5 天換一種火：小火花 → 燭火 → 火把 → 篝火 → 熊熊烈火 → 藍色、紫色、黃金、彩虹、星火 → 鳳凰之火','只有做題目或複習閃卡才會續火，只打開網站不算','今天還沒續火時，火會提醒你；點右上角的火可以看全部的火和還差幾天升級','第一次滑到下一頁不會再卡頓']},
@@ -910,7 +916,7 @@ function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
 /* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
-const APP_VER='2026-11-19-1445';
+const APP_VER='2026-11-19-1500';
 /* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
 let updBusy=false;
 async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
