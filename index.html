@@ -499,7 +499,6 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 @keyframes ul{to{width:100%}}
 .ldr::before{display:none;content:"";position:absolute;inset:-8%;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--accent) 65%,transparent);animation:spin 7s linear infinite reverse}
 :root[data-theme="ninja"] .ldr::before,:root[data-theme="mermaid"] .ldr::before{display:block}
-#splash .ldr{animation:bursto .45s 1.05s ease-in forwards}
 @keyframes bursto{to{transform:scale(2.6);opacity:0}}
 /* 點擊特效 */
 .tapfx{position:fixed;pointer-events:none;z-index:95}
@@ -515,12 +514,82 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 .tapfx.sk{width:11px;height:11px;margin:-5.5px;background:#c8361d;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:skk .6s ease-out forwards}
 @keyframes skk{to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(540deg) scale(.4)}}
 @media (prefers-reduced-motion:reduce){#bgfx,.tapfx{display:none}}
+
+/* ===== 開場動畫（參考行事曆）：每種外觀一段動畫，點一下可以跳過 ===== */
+#splash{animation:splashOut .45s 2.9s forwards!important;cursor:pointer}
+#splash.off{animation:splashOut .35s forwards!important}
+#splash .ldr{display:none;animation:none}
+#splash b{opacity:0;animation:bin .8s 1.45s forwards}
+@keyframes bin{from{opacity:0;letter-spacing:.9em}to{opacity:1;letter-spacing:.3em}}
+#splash::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,color-mix(in srgb,var(--accent) 35%,transparent),transparent 55%);opacity:0;animation:sxflash .7s 1.25s ease-out both;pointer-events:none}
+@keyframes sxflash{30%{opacity:1}100%{opacity:0}}
+.sx{display:none;width:min(74vw,320px);height:auto;overflow:visible}
+@keyframes sdraw{to{stroke-dashoffset:0}}
+@keyframes nrise{from{opacity:0;transform:translateY(60px) scale(.5)}}
+@keyframes nimp{0%{opacity:1;transform:scale(.6)}100%{opacity:0;transform:scale(5)}}
+@keyframes nstamp{from{opacity:0;transform:scale(1.9)}to{opacity:1;transform:scale(1)}}
+@keyframes ray{0%{opacity:1;stroke-dashoffset:1}60%{opacity:1;stroke-dashoffset:0}100%{opacity:0;stroke-dashoffset:-1}}
+#splash .ry{stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;opacity:0;animation:ray .7s 1.25s ease-out both}
+/* 忍者：紅日升起、飛鏢射中、忍字蓋章、三道劍光、煙遁 */
+:root[data-theme="ninja"] .sx-nin{display:block;animation:nshake .3s 1.05s}
+#splash .sx-nin .sun{fill:var(--accent);transform-box:fill-box;transform-origin:center;animation:nrise .7s cubic-bezier(.2,.8,.2,1) both}
+#splash .sx-nin .thr polygon{fill:var(--ink);stroke:var(--bg);stroke-width:1}#splash .sx-nin .thr .hole{fill:var(--bg)}
+#splash .sx-nin .thr{transform-origin:0 0;animation:nthrow .75s .1s cubic-bezier(.15,.7,.3,1) both,ngone .15s 1.05s forwards}
+#splash .sx-nin .tr1{animation-delay:.15s,1.05s;opacity:.5}#splash .sx-nin .tr2{animation-delay:.2s,1.05s;opacity:.3}#splash .sx-nin .tr3{animation-delay:.25s,1.05s;opacity:.15}
+@keyframes nthrow{from{transform:translate(-150px,25px) rotate(0)}to{transform:translate(100px,100px) rotate(1260deg)}}
+@keyframes ngone{to{opacity:0}}
+#splash .sx-nin .imp{fill:none;stroke:var(--accent);stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center;animation:nimp .55s .85s ease-out both}
+#splash .sx-nin .kj2{fill:var(--ink);opacity:0;transform-box:fill-box;transform-origin:center;animation:nstamp .35s 1.15s cubic-bezier(.2,.9,.3,1.3) forwards}
+#splash .sx-nin .cuts{filter:drop-shadow(0 0 3px var(--accent));animation:cfade .5s 1.25s forwards}
+#splash .sx-nin .cuts line{stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:sdraw .18s ease-out forwards}
+#splash .sx-nin .cuts line:nth-child(1){animation-delay:1s}#splash .sx-nin .cuts line:nth-child(2){animation-delay:1.08s}#splash .sx-nin .cuts line:nth-child(3){animation-delay:1.16s}
+@keyframes cfade{to{opacity:0}}
+@keyframes nshake{25%{transform:translate(-5px,2px)}50%{transform:translate(5px,-2px)}75%{transform:translate(-2px,1px)}}
+#splash .sm{display:none;position:absolute;left:50%;top:44%;width:190px;height:190px;margin:-95px;border-radius:50%;background:radial-gradient(circle,rgba(150,150,160,.65),transparent 68%);filter:blur(8px);opacity:0;animation:smk 1s calc(1.85s + var(--d)) ease-out both;pointer-events:none}
+:root[data-theme="ninja"] #splash .sm{display:block}
+@keyframes smk{0%{opacity:0;transform:translate(var(--x),var(--y)) scale(.3)}35%{opacity:.95}100%{opacity:0;transform:translate(calc(var(--x)*2.2),calc(var(--y)*2.2)) scale(2.8)}}
+:root[data-theme="ninja"] #splash::after{display:none}
+/* 一般：帳本畫出來、打勾、金幣、光芒 */
+:root:is(:not([data-theme]),[data-theme="light"],[data-theme="dark"]) .sx-book{display:block}
+#splash .sx-book .bg{fill:var(--accent-bg);transform-box:fill-box;transform-origin:center;animation:nrise .7s cubic-bezier(.2,.8,.2,1) both}
+#splash .sx-book .bk path{fill:none;stroke:var(--ink);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+#splash .sx-book .bk .d3{stroke-width:2.4;opacity:.55}
+#splash .sx-book .dr{stroke-dasharray:1;stroke-dashoffset:1;animation:sdraw .7s .2s ease-out forwards}#splash .sx-book .d2{animation-delay:.45s;animation-duration:.4s}#splash .sx-book .d3{animation-duration:.3s}
+#splash .sx-book .ck{fill:none;stroke:var(--accent);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:sdraw .35s 1s cubic-bezier(.3,.8,.3,1) forwards}
+#splash .sx-book .ry{stroke:var(--gold)}
+#splash .sx-book .coin{opacity:0;transform-box:fill-box;transform-origin:center;animation:nstamp .4s 1.3s cubic-bezier(.2,.9,.3,1.3) forwards}
+#splash .sx-book .coin circle{fill:#f2c14e;stroke:#c98a12;stroke-width:2}#splash .sx-book .coin text{fill:#8a5a00;font-family:-apple-system,sans-serif}
+/* 人魚：海浪、泡泡、貝殼打開露出珍珠 */
+:root[data-theme="mermaid"] .sx-mer{display:block;overflow:hidden;border-radius:0 0 40% 40%/0 0 12% 12%}
+#splash .sx-mer .wv path{fill:url(#wvg)}#splash .sx-mer .w2 path{fill:url(#wvg2)}
+#splash .sx-mer .wv{animation:wvx 2.4s linear infinite}#splash .sx-mer .w2{animation-duration:3.2s;animation-direction:reverse}
+@keyframes wvx{to{transform:translateX(40px)}}
+#splash .sx-mer .bb{fill:none;stroke:#1fae96;stroke-width:2;opacity:0;animation:bbup 1.6s ease-in both}
+@keyframes bbup{0%{opacity:0;transform:translateY(0)}20%{opacity:.9}100%{opacity:0;transform:translateY(-190px)}}
+#splash .sx-mer .shell{transform-box:fill-box;transform-origin:center bottom;animation:nrise .7s .2s cubic-bezier(.2,.8,.2,1) both}
+#splash .sx-mer .lo{fill:#f6b8a6;stroke:#e0846e;stroke-width:2}
+#splash .sx-mer .up path{fill:#ffd2c4;stroke:#e0846e;stroke-width:2;stroke-linejoin:round}#splash .sx-mer .up path+path{fill:none;stroke-width:1.6;opacity:.7}
+#splash .sx-mer .up{transform-box:view-box;transform-origin:100px 118px;animation:shOpen .6s .95s cubic-bezier(.3,1.4,.5,1) forwards}
+@keyframes shOpen{to{transform:rotate(-38deg) translate(-6px,-6px)}}
+#splash .sx-mer .pearl{fill:#fff;stroke:#d9e6f2;stroke-width:1.5;filter:drop-shadow(0 0 0 #fff);animation:pglow 1s 1.2s ease-out forwards}
+@keyframes pglow{to{filter:drop-shadow(0 0 14px #fff) drop-shadow(0 0 6px #1fae96)}}
+#splash .sx-mer .ry{stroke:#1fae96}
+/* 貓咪、狗狗：腳印走過來，蹦出愛心或骨頭 */
+:root:is([data-theme="cat"],[data-theme="dog"]) .sx-pet{display:block}
+#splash .sx-pet .bg{fill:var(--accent-bg);transform-box:fill-box;transform-origin:center;animation:nrise .7s .4s cubic-bezier(.2,.8,.2,1) both}
+#splash .sx-pet .pw{fill:var(--accent);opacity:0;animation:pwin .25s ease-out forwards}
+@keyframes pwin{from{opacity:0}to{opacity:.85}}
+#splash .sx-pet .imp{fill:none;stroke:var(--accent);stroke-width:3;opacity:0;transform-box:fill-box;transform-origin:center;animation:nimp .55s 1.05s ease-out both}
+#splash .sx-pet .hrt,#splash .sx-pet .bone{display:none;opacity:0;transform-box:fill-box;transform-origin:center;animation:nstamp .4s 1.1s cubic-bezier(.2,.9,.3,1.4) forwards}
+:root[data-theme="cat"] #splash .sx-pet .hrt{display:block;fill:var(--accent)}
+:root[data-theme="dog"] #splash .sx-pet .bone{display:block;fill:#fff7ea;stroke:var(--accent);stroke-width:3}
+@media (prefers-reduced-motion:reduce){#splash{animation:splashOut .3s .6s forwards!important}#splash *{animation:none!important;opacity:1!important}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="shk" viewBox="0 0 24 24"><path d="M12 1l3.1 7.9L23 12l-7.9 3.1L12 23l-3.1-7.9L1 12l7.9-3.1z" fill="currentColor"/><circle cx="12" cy="12" r="2.4" fill="var(--bg)"/></symbol></svg>
 <script>try{var _t=JSON.parse(localStorage.getItem("acc-study-v1")||"{}").theme;if(_t&&_t!=="auto")document.documentElement.setAttribute("data-theme",_t)}catch(e){}</script>
-<div id="splash" aria-hidden="true"><div class="ldr"><svg class="ln"><use href="#shk"/></svg><div class="lc"><i></i><i></i><i></i></div></div><b>會計學</b></div>
+<div id="splash" aria-hidden="true"><svg class="sx sx-nin" viewBox="-10 -10 220 220"><circle class="sun" cx="100" cy="100" r="62"/><g class="thr tr3"><polygon points="0.0,-24.0 4.9,-4.9 24.0,0.0 4.9,4.9 0.0,24.0 -4.9,4.9 -24.0,0.0 -4.9,-4.9"/><circle r="3" class="hole"/></g><g class="thr tr2"><polygon points="0.0,-24.0 4.9,-4.9 24.0,0.0 4.9,4.9 0.0,24.0 -4.9,4.9 -24.0,0.0 -4.9,-4.9"/><circle r="3" class="hole"/></g><g class="thr tr1"><polygon points="0.0,-24.0 4.9,-4.9 24.0,0.0 4.9,4.9 0.0,24.0 -4.9,4.9 -24.0,0.0 -4.9,-4.9"/><circle r="3" class="hole"/></g><g class="thr t0"><polygon points="0.0,-24.0 4.9,-4.9 24.0,0.0 4.9,4.9 0.0,24.0 -4.9,4.9 -24.0,0.0 -4.9,-4.9"/><circle r="3" class="hole"/></g><circle class="imp" cx="100" cy="100" r="20"/><text class="kj2" x="100" y="128" text-anchor="middle" font-size="84" font-weight="900" font-family="Songti TC,Noto Serif TC,Hiragino Mincho ProN,serif">忍</text><g class="cuts"><line pathLength="1" x1="-10" y1="38" x2="210" y2="152"/><line pathLength="1" x1="-10" y1="152" x2="210" y2="48"/><line pathLength="1" x1="34" y1="-10" x2="168" y2="210"/></g></svg><i class="sm" style="--x:-60px;--y:10px;--d:0.00s"></i><i class="sm" style="--x:55px;--y:-15px;--d:0.05s"></i><i class="sm" style="--x:-20px;--y:40px;--d:0.10s"></i><i class="sm" style="--x:30px;--y:35px;--d:0.12s"></i><i class="sm" style="--x:-75px;--y:-30px;--d:0.15s"></i><i class="sm" style="--x:70px;--y:30px;--d:0.18s"></i><i class="sm" style="--x:0px;--y:-45px;--d:0.08s"></i><svg class="sx sx-book" viewBox="-5 -5 210 210"><circle class="bg" cx="100" cy="100" r="70"/><g class="bk"><path class="dr" pathLength="1" d="M100 72C86 62 64 61 50 66V138C64 133 86 134 100 144C114 134 136 133 150 138V66C136 61 114 62 100 72Z"/><path class="dr d2" pathLength="1" d="M100 72V144"/><path class="dr d3" pathLength="1" style="animation-delay:0.55s" d="M60 82C70 79 82 80 90 84"/><path class="dr d3" pathLength="1" style="animation-delay:0.63s" d="M60 96C70 93 82 94 90 98"/><path class="dr d3" pathLength="1" style="animation-delay:0.71s" d="M60 110C70 107 82 108 90 112"/><path class="dr d3" pathLength="1" style="animation-delay:0.79s" d="M110 84C118 80 130 79 140 82"/></g><path class="ck" pathLength="1" d="M112 104l10 11 20-24"/><g class="rys"><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(0 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(24 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(48 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(72 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(96 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(120 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(144 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(168 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(192 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(216 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(240 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(264 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(288 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(312 100 100)"/><line class="ry" pathLength="1" x1="100" y1="52" x2="100" y2="6" transform="rotate(336 100 100)"/></g><g class="coin"><circle cx="150" cy="58" r="13"/><text x="150" y="63.5" text-anchor="middle" font-size="15" font-weight="800">$</text></g></svg><svg class="sx sx-mer" viewBox="-5 -5 210 210"><defs><linearGradient id="wvg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fae96" stop-opacity=".45"/><stop offset="1" stop-color="#1fae96" stop-opacity="0"/></linearGradient><linearGradient id="wvg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f7f86" stop-opacity=".4"/><stop offset="1" stop-color="#0f7f86" stop-opacity="0"/></linearGradient></defs><g class="wv"><path d="M-120 160q20-12 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0V215H-120Z"/></g><g class="wv w2"><path d="M-120 172q20-12 40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0t40 0V215H-120Z"/></g><circle class="bb" cx="40" cy="190" r="6" style="animation-delay:0.00s"/><circle class="bb" cx="70" cy="200" r="4" style="animation-delay:0.15s"/><circle class="bb" cx="150" cy="195" r="7" style="animation-delay:0.30s"/><circle class="bb" cx="170" cy="205" r="4" style="animation-delay:0.10s"/><circle class="bb" cx="115" cy="210" r="5" style="animation-delay:0.45s"/><circle class="bb" cx="30" cy="205" r="3" style="animation-delay:0.50s"/><circle class="bb" cx="185" cy="190" r="5" style="animation-delay:0.60s"/><g class="shell"><path class="lo" d="M54 118C54 140 76 152 100 152C124 152 146 140 146 118Z"/><circle class="pearl" cx="100" cy="114" r="13"/><g class="up"><path d="M100 118C70 112 54 104 54 86C54 62 76 48 100 48C124 48 146 62 146 80C146 98 130 112 100 112Z" transform="translate(0 6)"/><path d="M100 120L138 106" /><path d="M100 120L122 92" /><path d="M100 120L100 88" /><path d="M100 120L78 92" /><path d="M100 120L61 106" /></g></g><g class="rys"><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(0 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(24 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(48 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(72 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(96 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(120 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(144 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(168 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(192 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(216 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(240 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(264 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(288 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(312 100 100)"/><line class="ry" pathLength="1" x1="100" y1="60" x2="100" y2="6" transform="rotate(336 100 100)"/></g></svg><svg class="sx sx-pet" viewBox="-5 -5 210 210"><circle class="bg" cx="110" cy="96" r="58"/><g class="pw" style="animation-delay:0.00s" transform="translate(10 192) rotate(40)"><ellipse cx="0" cy="4" rx="7" ry="6"/><circle cx="-7" cy="-4" r="2.6"/><circle cx="-2.4" cy="-8.5" r="2.6"/><circle cx="2.4" cy="-8.5" r="2.6"/><circle cx="7" cy="-4" r="2.6"/></g><g class="pw" style="animation-delay:0.18s" transform="translate(30 170) rotate(40)"><ellipse cx="0" cy="4" rx="7" ry="6"/><circle cx="-7" cy="-4" r="2.6"/><circle cx="-2.4" cy="-8.5" r="2.6"/><circle cx="2.4" cy="-8.5" r="2.6"/><circle cx="7" cy="-4" r="2.6"/></g><g class="pw" style="animation-delay:0.36s" transform="translate(38 142) rotate(30)"><ellipse cx="0" cy="4" rx="7" ry="6"/><circle cx="-7" cy="-4" r="2.6"/><circle cx="-2.4" cy="-8.5" r="2.6"/><circle cx="2.4" cy="-8.5" r="2.6"/><circle cx="7" cy="-4" r="2.6"/></g><g class="pw" style="animation-delay:0.54s" transform="translate(58 126) rotate(30)"><ellipse cx="0" cy="4" rx="7" ry="6"/><circle cx="-7" cy="-4" r="2.6"/><circle cx="-2.4" cy="-8.5" r="2.6"/><circle cx="2.4" cy="-8.5" r="2.6"/><circle cx="7" cy="-4" r="2.6"/></g><g class="pw" style="animation-delay:0.72s" transform="translate(66 100) rotate(20)"><ellipse cx="0" cy="4" rx="7" ry="6"/><circle cx="-7" cy="-4" r="2.6"/><circle cx="-2.4" cy="-8.5" r="2.6"/><circle cx="2.4" cy="-8.5" r="2.6"/><circle cx="7" cy="-4" r="2.6"/></g><circle class="imp" cx="118" cy="92" r="18"/><path class="hrt" d="M118 120C90 100 88 80 102 72C110 68 116 72 118 78C120 72 126 68 134 72C148 80 146 100 118 120Z"/><path class="bone" d="M96 86a8 8 0 1 1 10-10l26 0a8 8 0 1 1 10 10a8 8 0 1 1-10 10l-26 0a8 8 0 1 1-10-10z"/></svg><div class="ldr"><svg class="ln"><use href="#shk"/></svg><div class="lc"><i></i><i></i><i></i></div></div><b>會計學</b></div>
 <header class="top"><div class="top-in" id="top"></div></header>
 <canvas id="bgfx" aria-hidden="true"></canvas>
 <main class="pager" id="pager"><section class="page" data-tab="home"><div class="wrap inner" id="app"></div></section><section class="page" data-tab="quiz"><div class="wrap inner"></div></section><section class="page" data-tab="cards"><div class="wrap inner"></div></section><section class="page" data-tab="exam"><div class="wrap inner"></div></section><section class="page" data-tab="wrong"><div class="wrap inner"></div></section></main>
@@ -1156,6 +1225,7 @@ function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
+ {id:'2026-11-19i',items:['開場動畫跟行事曆一樣華麗：忍者是紅日、飛鏢射中、「忍」字蓋章、劍光和煙遁；一般外觀是帳本畫出來、打勾、金幣和光芒；人魚是海浪、泡泡、貝殼打開露出珍珠；貓咪和狗狗是腳印走過來，蹦出愛心或骨頭','開場時點一下畫面就能跳過']},
  {id:'2026-11-19h',items:['加入跟行事曆一樣的特效：背景會有慢慢飄的粒子，每種外觀不一樣（忍者是火星和飛鏢、人魚是泡泡和小魚、貓咪是愛心、狗狗是腳印、一般是光點和流星）','點畫面任何地方都有特效：忍者會劃出刀光、人魚冒泡泡、貓咪噴愛心、狗狗噴腳印','卡片會一張一張滑進來，主要按鈕有流動的漸層和光澤，按下去會微微縮小']},
  {id:'2026-11-19g',items:['整體風格改成跟行事曆一樣的標準：米白和墨色的配色、柔和的陰影、更圓的卡片，上方列變得清爽','打開網站會先出現開場畫面（忍者外觀是旋轉的飛鏢，其他外觀是水波動畫）','有新版本時會跳出「有新版本可以更新」視窗，可以選「稍後」或「立即更新」']},
  {id:'2026-11-19f',items:['新外觀：海底人魚！深海藍、海綠色，配上珊瑚紅、紫色和金色點綴，背景有泡泡和小海星，上方是海浪','首頁有一隻人魚趴在「今天的任務」上，會眨眼、甩尾巴，旁邊還會冒泡泡','換外觀：按上方的齒輪 → 外觀 → 海底人魚']},
@@ -1180,7 +1250,7 @@ function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
 /* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
-const APP_VER='2026-11-19-1800';
+const APP_VER='2026-11-19-1820';
 /* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
 let updBusy=false;
 async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
@@ -1237,6 +1307,7 @@ document.addEventListener('pointerdown',e=>{if(reduceMo())return;const th=curThe
  else{const r=document.createElement('i');r.className='tapfx ring';add(r,650);burst(6,'dot',18)}},{passive:true});
 bgStart();
 
+{const sp=document.getElementById('splash');if(sp){sp.onclick=()=>{sp.classList.add('off');setTimeout(()=>sp.remove(),400)};setTimeout(()=>sp.remove(),3600)}}
 applyTheme();renderTop();renderTabs();go('shelf');cloudInit();initWhatsNew();setTimeout(streakTip,2500);
 </script>
 </body>
