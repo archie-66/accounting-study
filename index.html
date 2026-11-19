@@ -464,6 +464,57 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 .fire-grid div:not(.got) .fire{filter:grayscale(1);opacity:.35}
 .fire-grid div:not(.got) .fire *{animation:none!important}
 .fire-grid b{font-size:12px}
+/* ===== 特效（參考行事曆）：背景粒子、點擊特效、卡片進場、按鈕光澤 ===== */
+#bgfx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.pager{z-index:1}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.985)}}
+.inner>.card,.inner>.ch,.inner .ch,.inner .lesson-item,.inner .book,.inner>section,.inner>h2{animation:cardIn .5s cubic-bezier(.2,.8,.2,1) both}
+.inner>*:nth-child(2),.inner .ch:nth-child(2),.inner .lesson-item:nth-child(2),.inner .book:nth-child(2){animation-delay:.05s}
+.inner>*:nth-child(3),.inner .ch:nth-child(3),.inner .lesson-item:nth-child(3),.inner .book:nth-child(3){animation-delay:.1s}
+.inner>*:nth-child(4),.inner .ch:nth-child(4),.inner .lesson-item:nth-child(4),.inner .book:nth-child(4){animation-delay:.15s}
+.inner>*:nth-child(5),.inner .ch:nth-child(5),.inner .lesson-item:nth-child(5),.inner .book:nth-child(5){animation-delay:.2s}
+.inner>*:nth-child(n+6),.inner .ch:nth-child(n+6),.inner .lesson-item:nth-child(n+6){animation-delay:.25s}
+.btn,.opt,.chip,.ch,.lesson-item,.book,.tabs button{transition:transform .15s,box-shadow .2s,background-color .2s}
+.btn:active,.opt:active,.chip:active,.ch:active,.lesson-item:active,.book:active{transform:scale(.97)}
+.btn:not(.soft):not(.ghost){position:relative;overflow:hidden;background-size:300% 100%;animation:btnGrad 7s linear infinite}
+.btn:not(.soft):not(.ghost)::after{content:"";position:absolute;top:-10%;left:-70%;width:45%;height:120%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-22deg);pointer-events:none;animation:sweep 4.2s ease-in-out infinite}
+@keyframes sweep{0%,55%{left:-70%}100%{left:135%}}
+@keyframes btnGrad{to{background-position:300% 0}}
+:root:is(:not([data-theme]),[data-theme="light"]) .btn:not(.soft):not(.ghost){background-image:linear-gradient(120deg,#3e63dd,#5b7cf0,#3550c4,#5b7cf0,#3e63dd);box-shadow:0 6px 16px -8px rgba(62,99,221,.8)}
+:root[data-theme="dark"] .btn:not(.soft):not(.ghost){background-image:linear-gradient(120deg,#8aa2ff,#b2c1ff,#7088f0,#b2c1ff,#8aa2ff);box-shadow:0 0 18px -6px rgba(138,162,255,.8)}
+@media (prefers-color-scheme:dark){:root:not([data-theme]) .btn:not(.soft):not(.ghost){background-image:linear-gradient(120deg,#8aa2ff,#b2c1ff,#7088f0,#b2c1ff,#8aa2ff);box-shadow:0 0 18px -6px rgba(138,162,255,.8)}}
+:root[data-theme="ninja"] .btn:not(.soft):not(.ghost){background-image:linear-gradient(120deg,#c8361d,#9c2412,#ef5a3c,#c8361d);border:1px solid #ef7a5f;box-shadow:0 6px 16px -6px rgba(200,54,29,.8),inset 0 1px 0 rgba(255,255,255,.35);letter-spacing:.1em;text-shadow:0 1px 0 rgba(0,0,0,.25)}
+:root[data-theme="cat"] .btn:not(.soft):not(.ghost){background-image:linear-gradient(120deg,#d9668b,#ec92ae,#c9527a,#ec92ae,#d9668b);box-shadow:0 6px 16px -8px rgba(217,102,139,.8)}
+:root[data-theme="dog"] .btn:not(.soft):not(.ghost){background-image:linear-gradient(120deg,#b0692f,#d08a4e,#9a5a26,#d08a4e,#b0692f);box-shadow:0 6px 16px -8px rgba(176,105,47,.8)}
+:root[data-theme="mermaid"] .btn:not(.soft):not(.ghost){background-image:linear-gradient(120deg,#0f7f86,#18a88f,#0b6f8a,#18a88f,#0f7f86);box-shadow:0 6px 16px -8px rgba(17,144,128,.8)}
+.tabs .ind{box-shadow:0 4px 14px -4px color-mix(in srgb,var(--accent) 80%,transparent)}
+:root[data-theme="ninja"] .tabs .ind{background:linear-gradient(135deg,#c8361d,#9c2412)}
+:root[data-theme="mermaid"] .tabs .ind{background:linear-gradient(135deg,#0f7f86,#1fae96)}
+:root[data-theme="cat"] .tabs .ind{background:linear-gradient(135deg,#d9668b,#ec92ae)}
+:root[data-theme="dog"] .tabs .ind{background:linear-gradient(135deg,#9a5a26,#c27c40)}
+.opt.ok,.opt.good,.opt.right{animation:optOk .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes optOk{40%{transform:scale(1.03)}}
+:root[data-theme="ninja"] .inner h2{position:relative;display:inline-block}
+:root[data-theme="ninja"] .inner h2::after{content:"";position:absolute;left:0;bottom:-4px;height:3px;width:0;background:linear-gradient(90deg,var(--accent),transparent);animation:ul 1.2s .3s ease-out forwards}
+@keyframes ul{to{width:100%}}
+.ldr::before{display:none;content:"";position:absolute;inset:-8%;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--accent) 65%,transparent);animation:spin 7s linear infinite reverse}
+:root[data-theme="ninja"] .ldr::before,:root[data-theme="mermaid"] .ldr::before{display:block}
+#splash .ldr{animation:bursto .45s 1.05s ease-in forwards}
+@keyframes bursto{to{transform:scale(2.6);opacity:0}}
+/* 點擊特效 */
+.tapfx{position:fixed;pointer-events:none;z-index:95}
+.tapfx.ring{width:14px;height:14px;margin:-7px;border-radius:50%;border:2px solid var(--accent);box-shadow:0 0 12px color-mix(in srgb,var(--accent) 70%,transparent);animation:tapr .6s ease-out forwards}
+@keyframes tapr{to{transform:scale(5);opacity:0}}
+.tapfx.dot{width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:spk .6s ease-out forwards}
+.tapfx.gl{color:var(--accent);margin:-8px 0 0 -8px;width:16px;height:16px;font-size:14px;line-height:16px;text-align:center;animation:spk .8s ease-out forwards}
+.tapfx.bub{width:10px;height:10px;margin:-5px;border-radius:50%;border:1.5px solid #1fae96;background:radial-gradient(circle at 30% 30%,#fff 0 18%,transparent 22%);animation:spkUp .9s ease-out forwards}
+@keyframes spk{to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3) rotate(var(--rot,0deg))}}
+@keyframes spkUp{to{opacity:0;transform:translate(var(--dx),calc(var(--dy) - 30px)) scale(1.3)}}
+.tapfx.cut{width:90px;height:3px;margin:-1.5px 0 0 -45px;background:linear-gradient(90deg,transparent,#c8361d 30%,#fff 50%,#c8361d 70%,transparent);box-shadow:0 0 10px #c8361d;transform:rotate(var(--r)) scaleX(0);animation:cutk .45s ease-out forwards}
+@keyframes cutk{40%{transform:rotate(var(--r)) scaleX(1);opacity:1}100%{transform:rotate(var(--r)) scaleX(1.15);opacity:0}}
+.tapfx.sk{width:11px;height:11px;margin:-5.5px;background:#c8361d;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:skk .6s ease-out forwards}
+@keyframes skk{to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(540deg) scale(.4)}}
+@media (prefers-reduced-motion:reduce){#bgfx,.tapfx{display:none}}
 </style>
 </head>
 <body>
@@ -471,6 +522,7 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 <script>try{var _t=JSON.parse(localStorage.getItem("acc-study-v1")||"{}").theme;if(_t&&_t!=="auto")document.documentElement.setAttribute("data-theme",_t)}catch(e){}</script>
 <div id="splash" aria-hidden="true"><div class="ldr"><svg class="ln"><use href="#shk"/></svg><div class="lc"><i></i><i></i><i></i></div></div><b>會計學</b></div>
 <header class="top"><div class="top-in" id="top"></div></header>
+<canvas id="bgfx" aria-hidden="true"></canvas>
 <main class="pager" id="pager"><section class="page" data-tab="home"><div class="wrap inner" id="app"></div></section><section class="page" data-tab="quiz"><div class="wrap inner"></div></section><section class="page" data-tab="cards"><div class="wrap inner"></div></section><section class="page" data-tab="exam"><div class="wrap inner"></div></section><section class="page" data-tab="wrong"><div class="wrap inner"></div></section></main>
 <nav class="tabs" id="tabs"></nav>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -1104,6 +1156,7 @@ function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
+ {id:'2026-11-19h',items:['加入跟行事曆一樣的特效：背景會有慢慢飄的粒子，每種外觀不一樣（忍者是火星和飛鏢、人魚是泡泡和小魚、貓咪是愛心、狗狗是腳印、一般是光點和流星）','點畫面任何地方都有特效：忍者會劃出刀光、人魚冒泡泡、貓咪噴愛心、狗狗噴腳印','卡片會一張一張滑進來，主要按鈕有流動的漸層和光澤，按下去會微微縮小']},
  {id:'2026-11-19g',items:['整體風格改成跟行事曆一樣的標準：米白和墨色的配色、柔和的陰影、更圓的卡片，上方列變得清爽','打開網站會先出現開場畫面（忍者外觀是旋轉的飛鏢，其他外觀是水波動畫）','有新版本時會跳出「有新版本可以更新」視窗，可以選「稍後」或「立即更新」']},
  {id:'2026-11-19f',items:['新外觀：海底人魚！深海藍、海綠色，配上珊瑚紅、紫色和金色點綴，背景有泡泡和小海星，上方是海浪','首頁有一隻人魚趴在「今天的任務」上，會眨眼、甩尾巴，旁邊還會冒泡泡','換外觀：按上方的齒輪 → 外觀 → 海底人魚']},
  {id:'2026-11-19e',items:['火改成每天都會升級！每種火有 4 階：一般 → 強化 → 閃耀 → 極致，到第 100 天是極致的鳳凰之火','閃耀會多出放射光芒和四顆星星，極致再加上旋轉的光環和繞圈的光點','點右上角的火，可以看每種火的 4 階，現在的那一格會框起來']},
@@ -1127,7 +1180,7 @@ function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
 /* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
-const APP_VER='2026-11-19-1740';
+const APP_VER='2026-11-19-1800';
 /* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
 let updBusy=false;
 async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
@@ -1139,6 +1192,50 @@ async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.
  updBusy=false}
 setTimeout(checkUpdate,1500);setInterval(checkUpdate,30*60e3);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate()});
+
+/* ===================== 特效（參考行事曆）：每種外觀有自己的背景粒子和點擊特效 ===================== */
+const reduceMo=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+const curTheme=()=>{const t=S.theme||'auto';if(t!=='auto')return t;return matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'};
+const bgfx=document.getElementById('bgfx'),bc=bgfx.getContext('2d');let bW=0,bH=0,bD=1,parts=[],bgRun=false,bgT=0,flyer=null;
+function bgSize(){bD=Math.min(2,devicePixelRatio||1);bW=bgfx.width=innerWidth*bD;bH=bgfx.height=innerHeight*bD}
+function bgInit(){bgSize();const th=curTheme(),n=th==='ninja'?40:th==='mermaid'?26:th==='cat'||th==='dog'?16:30;
+ parts=Array.from({length:n},()=>({x:Math.random()*bW,y:Math.random()*bH,r:(.6+Math.random()*1.8)*bD,v:(.12+Math.random()*.35)*bD,p:Math.random()*6.28,k:Math.random()}));parts.th=th}
+function heart(c,x,y,s){c.beginPath();c.moveTo(x,y+s*.35);c.bezierCurveTo(x-s*1.1,y-s*.4,x-s*.45,y-s*1.1,x,y-s*.45);c.bezierCurveTo(x+s*.45,y-s*1.1,x+s*1.1,y-s*.4,x,y+s*.35);c.fill()}
+function paw(c,x,y,s){c.beginPath();c.ellipse(x,y+s*.3,s*.55,s*.45,0,0,6.28);c.fill();[[-.55,-.3],[-.2,-.7],[.2,-.7],[.55,-.3]].forEach(q=>{c.beginPath();c.arc(x+q[0]*s,y+q[1]*s,s*.2,0,6.28);c.fill()})}
+function star4(c,x,y,R,r,rot){c.beginPath();for(let i=0;i<8;i++){const a=rot+i*Math.PI/4,rad=i%2?r:R;i?c.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad):c.moveTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad)}c.closePath()}
+function bgLoop(t){
+ if(reduceMo()||document.hidden){bgRun=false;bc.clearRect(0,0,bW,bH);return}
+ const th=curTheme();if(parts.th!==th)bgInit();const d=bD;bc.clearRect(0,0,bW,bH);
+ const dark=th==='dark';bc.globalCompositeOperation=dark?'lighter':'source-over';
+ parts.forEach(o=>{o.y-=o.v*(th==='mermaid'?1.6:1);o.x+=Math.sin(t/1800+o.p)*(th==='mermaid'?.5:.25)*d;if(o.y<-20*d){o.y=bH+20*d;o.x=Math.random()*bW}
+  const a=.25+.45*Math.abs(Math.sin(t/900+o.p));
+  if(th==='ninja'){const g=bc.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*4);g.addColorStop(0,`hsla(${o.k<.35?8:14},85%,52%,${a*.7})`);g.addColorStop(1,'hsla(10,85%,50%,0)');bc.fillStyle=g;bc.beginPath();bc.arc(o.x,o.y,o.r*4,0,6.28);bc.fill()}
+  else if(th==='mermaid'){bc.strokeStyle=`rgba(17,144,128,${a*.5})`;bc.lineWidth=1.2*d;const R=o.r*3.2;bc.beginPath();bc.arc(o.x,o.y,R,0,6.28);bc.stroke();bc.fillStyle=`rgba(255,255,255,${a*.8})`;bc.beginPath();bc.arc(o.x-R*.35,o.y-R*.35,R*.22,0,6.28);bc.fill()}
+  else if(th==='cat'){bc.fillStyle=`rgba(217,102,139,${a*.32})`;heart(bc,o.x,o.y,o.r*4)}
+  else if(th==='dog'){bc.fillStyle=`rgba(176,105,47,${a*.22})`;paw(bc,o.x,o.y,o.r*4.4)}
+  else{const g=bc.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*4);const c=o.k<.3?'242,193,78':dark?'138,162,255':'62,99,221';g.addColorStop(0,`rgba(${c},${a*(dark?.6:.35)})`);g.addColorStop(1,`rgba(${c},0)`);bc.fillStyle=g;bc.beginPath();bc.arc(o.x,o.y,o.r*4,0,6.28);bc.fill()}});
+ bc.globalCompositeOperation='source-over';
+ /* 偶爾飛過的東西：忍者是飛鏢，其他是流星或魚 */
+ if(!flyer&&t-bgT>(th==='ninja'?8000:11000)){const lr=Math.random()<.5,y0=bH*(.12+Math.random()*.5);flyer={x0:lr?-40*d:bW+40*d,y0,x1:lr?bW+40*d:-40*d,y1:y0+bH*(th==='ninja'?.08+Math.random()*.2:.05+Math.random()*.1),t0:t,lr};bgT=t}
+ if(flyer){const p=(t-flyer.t0)/(th==='ninja'?1500:2400);if(p>=1)flyer=null;else{
+  for(let k=6;k>=0;k--){const q=Math.max(0,p-k*.02),x=flyer.x0+(flyer.x1-flyer.x0)*q,y=flyer.y0+(flyer.y1-flyer.y0)*q;
+   if(th==='ninja'){bc.fillStyle=k?`rgba(200,54,29,${(1-k/7)*.45})`:'#c8361d';star4(bc,x,y,(15-k)*d,(4.2-k*.3)*d,t/65);bc.fill();if(!k){bc.fillStyle='#fff';bc.beginPath();bc.arc(x,y,2*d,0,6.28);bc.fill()}}
+   else if(th==='mermaid'){if(!k){bc.save();bc.translate(x,y);if(!flyer.lr)bc.scale(-1,1);bc.fillStyle='rgba(224,70,58,.55)';bc.beginPath();bc.ellipse(0,0,10*d,5*d,0,0,6.28);bc.fill();bc.beginPath();bc.moveTo(-9*d,0);bc.lineTo(-16*d,-5*d);bc.lineTo(-16*d,5*d);bc.closePath();bc.fill();bc.fillStyle='#fff';bc.beginPath();bc.arc(5*d,-1*d,1.3*d,0,6.28);bc.fill();bc.restore()}}
+   else if(th==='cat'||th==='dog'){if(!k){bc.fillStyle=th==='cat'?'rgba(217,102,139,.5)':'rgba(176,105,47,.45)';th==='cat'?heart(bc,x,y,9*d):paw(bc,x,y,9*d)}}
+   else{bc.fillStyle=k?`rgba(242,193,78,${(1-k/7)*.4})`:'#f2c14e';star4(bc,x,y,(9-k)*d,(2.4-k*.2)*d,t/400);bc.fill()}}}}
+ requestAnimationFrame(bgLoop)}
+function bgStart(){if(bgRun||reduceMo())return;if(!parts.length)bgInit();bgRun=true;bgT=performance.now();requestAnimationFrame(bgLoop)}
+addEventListener('resize',()=>{if(parts.length)bgInit()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)bgStart()});
+document.addEventListener('pointerdown',e=>{if(reduceMo())return;const th=curTheme();
+ const add=(el,ms)=>{el.style.left=e.clientX+'px';el.style.top=e.clientY+'px';document.body.appendChild(el);setTimeout(()=>el.remove(),ms)};
+ const burst=(n,cls,dist,html,rot)=>{for(let k=0;k<n;k++){const a=k/n*6.28+Math.random()*.6,dd=dist+Math.random()*dist,p=document.createElement('i');p.className='tapfx '+cls;if(html)p.textContent=html;p.style.setProperty('--dx',Math.cos(a)*dd+'px');p.style.setProperty('--dy',Math.sin(a)*dd+'px');if(rot)p.style.setProperty('--rot',(Math.random()*120-60)+'deg');add(p,950)}};
+ if(th==='ninja'){const c=document.createElement('i');c.className='tapfx cut';c.style.setProperty('--r',(-65+Math.random()*50)+'deg');add(c,520);burst(3,'sk',22)}
+ else if(th==='mermaid'){burst(5,'bub',14)}
+ else if(th==='cat'){const r=document.createElement('i');r.className='tapfx ring';add(r,650);burst(4,'gl',18,'♥',1)}
+ else if(th==='dog'){const r=document.createElement('i');r.className='tapfx ring';add(r,650);burst(3,'gl',18,'🐾',1)}
+ else{const r=document.createElement('i');r.className='tapfx ring';add(r,650);burst(6,'dot',18)}},{passive:true});
+bgStart();
 
 applyTheme();renderTop();renderTabs();go('shelf');cloudInit();initWhatsNew();setTimeout(streakTip,2500);
 </script>
