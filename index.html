@@ -107,6 +107,25 @@
 :root[data-theme="dog"] .book,:root[data-theme="dog"] .chip{border-radius:999px}
 :root[data-theme="dog"] .lv-name::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cellipse cx='4.8' cy='10.5' rx='2.8' ry='5.5' fill='%23e8c8a2' transform='rotate(18 4.8 10.5)'/%3E%3Cellipse cx='19.2' cy='10.5' rx='2.8' ry='5.5' fill='%23e8c8a2' transform='rotate(-18 19.2 10.5)'/%3E%3Cellipse cx='12' cy='13' rx='6.8' ry='7.2' fill='%23fff'/%3E%3Ccircle cx='9.4' cy='11.8' r='1.15' fill='%237b4f2c'/%3E%3Ccircle cx='14.6' cy='11.8' r='1.15' fill='%237b4f2c'/%3E%3Cellipse cx='12' cy='15.4' rx='1.7' ry='1.2' fill='%237b4f2c'/%3E%3Cpath d='M12 16.6v1.4' stroke='%237b4f2c' stroke-width='.8'/%3E%3C/svg%3E") center/contain no-repeat}
 
+:root[data-theme="mermaid"]{--bg:#eaf7fa;--surface:#ffffff;--ink:#1f3a4d;--muted:#5f7c8c;--line:#cde7ee;--accent:#1e8fa8;--accent-bg:#dcf2f6;--pink:#e7798f;--pink-bg:#fde9ee;--gold:#d9a441;--gold-bg:#fbf1dc;--head1:#14527a;--head2:#2aa3b8;--good:#2f9e78;--good-bg:#e1f5ee;--bad:#e06d67;--bad-bg:#fdecea;color-scheme:light}
+:root[data-theme="mermaid"] .c0{--cc:#1e8fa8;--cc-bg:#dcf2f6} :root[data-theme="mermaid"] .c1{--cc:#7c6fe0;--cc-bg:#ebe8fc} :root[data-theme="mermaid"] .c2{--cc:#e7798f;--cc-bg:#fde9ee} :root[data-theme="mermaid"] .c3{--cc:#d9a441;--cc-bg:#fbf1dc} :root[data-theme="mermaid"] .c4{--cc:#3a7bd5;--cc-bg:#e2edfb}
+:root[data-theme="mermaid"] body{background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%231e8fa8' stroke-opacity='.13' stroke-width='1.6'%3E%3Ccircle cx='24' cy='30' r='6'/%3E%3Ccircle cx='36' cy='18' r='3.5'/%3E%3Ccircle cx='120' cy='96' r='7'/%3E%3Ccircle cx='132' cy='82' r='4'/%3E%3Ccircle cx='126' cy='72' r='2.2'/%3E%3Cpath d='M0 140 q10 -8 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0'/%3E%3C/g%3E%3Cg fill='%23e7798f' fill-opacity='.12'%3E%3Cpath d='M70 52 l3 7 7 1 -5 5 1 7 -6 -3.5 -6 3.5 1 -7 -5 -5 7 -1z'/%3E%3Cpath d='M40 104 a10 10 0 0 1 20 0 z'/%3E%3C/g%3E%3C/svg%3E") repeat}
+:root[data-theme="mermaid"] .top{background:linear-gradient(120deg,#14527a,#1e8fa8 55%,#5cc6d0)}
+:root[data-theme="mermaid"] .top::after{content:"";position:absolute;left:0;right:0;bottom:-9px;height:10px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 10' preserveAspectRatio='none'%3E%3Cpath d='M0 0h40v3c-5 0-5 5-10 5S25 3 20 3s-5 5-10 5S5 3 0 3z' fill='%235cc6d0' fill-opacity='.55'/%3E%3C/svg%3E") repeat-x left top/40px 10px}
+:root[data-theme="mermaid"] .card,:root[data-theme="mermaid"] .ch,:root[data-theme="mermaid"] .lesson-item{border-radius:22px;border-width:1.5px;box-shadow:0 4px 14px rgba(30,143,168,.10)}
+:root[data-theme="mermaid"] .btn,:root[data-theme="mermaid"] .book,:root[data-theme="mermaid"] .chip{border-radius:999px}
+:root[data-theme="mermaid"] .btn:not(.soft):not(.ghost){background:linear-gradient(120deg,#1e8fa8,#3fb3c6)}
+:root[data-theme="mermaid"] .opt{border-radius:18px}
+:root[data-theme="mermaid"] .ch-no{border-radius:50%}
+:root[data-theme="mermaid"] .lv-name::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-5px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3C6 3 2.5 8 3 13.5L12 21l9-7.5C21.5 8 18 3 12 3z' fill='%23fff'/%3E%3Cpath d='M12 4.5V20M12 5L7 19M12 5l5 14M12 5L4.4 15M12 5l7.6 10' stroke='%232aa3b8' stroke-width='.9' stroke-linecap='round'/%3E%3Cpath d='M9.6 20.6h4.8L12 22.4z' fill='%23fff'/%3E%3C/svg%3E") center/contain no-repeat}
+:root[data-theme="mermaid"] .today-card{position:relative;margin-top:50px}
+.mascot.mermaid .m-eyes{animation:mBlink 6s ease-in-out infinite}
+.mascot.mermaid .m-fin{transform-box:view-box;transform-origin:126px 54px;animation:mFin 3.2s ease-in-out infinite}
+.mascot.mermaid .m-hair{transform-box:fill-box;transform-origin:0 0;animation:mHair 4.4s ease-in-out infinite}
+.mascot.mermaid .m-bub{transform-box:fill-box;transform-origin:center;animation:mBub 3.6s ease-in infinite;opacity:0}.mascot.mermaid .m-bub.b1{animation-delay:1.2s}.mascot.mermaid .m-bub.b2{animation-delay:2.4s}
+@keyframes mFin{0%,100%{transform:rotate(0)}22%{transform:rotate(-14deg)}40%{transform:rotate(6deg)}55%{transform:rotate(0)}}
+@keyframes mHair{0%,100%{transform:skewX(0)}50%{transform:skewX(-6deg)}}
+@keyframes mBub{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:.9}100%{transform:translateY(-40px) scale(1.1);opacity:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
 /* 小夥伴（貓咪、狗狗）：平塗、無外框；動作慢、有停頓 */
 :root[data-theme="cat"] .today-card,:root[data-theme="dog"] .today-card{position:relative;margin-top:50px}
@@ -834,8 +853,29 @@ function mascotSVG(t){
   +'</g>'
   +'<g fill="'+C+'"><ellipse cx="31" cy="62.5" rx="6.5" ry="3.6"/><ellipse cx="49" cy="62.5" rx="6.5" ry="3.6"/></g>'
   +'</svg>'}
+ if(t==='mermaid'){const H='#2e3470',S='#ffe2cf',T1='#7c8cf0',T2='#a9b8ff',F='#f39ac0';
+  return '<svg viewBox="0 0 150 92" width="150" height="92"><defs><linearGradient id="mmT" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+T1+'"/><stop offset="1" stop-color="'+T2+'"/></linearGradient><linearGradient id="mmF" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="'+T2+'"/><stop offset="1" stop-color="'+F+'"/></linearGradient></defs>'
+  +'<ellipse cx="82" cy="62" rx="54" ry="3.5" fill="#000" opacity=".08"/>'
+  +'<g class="m-fin"><path d="M124 54 C120 44 124 34 133 28 C133 37 132 44 129 51 C135 44 143 41 149 43 C144 47 137 52 129 57Z" fill="url(#mmF)"/><path d="M128 50 C129 42 131 36 133 31 M130 54 C136 49 141 46 146 45" stroke="#fff" stroke-width=".8" opacity=".7" fill="none" stroke-linecap="round"/></g>'
+  +'<g class="m-breath"><path d="M62 47 C82 44 104 49 117 55 C122 57 125 56 127 52 L130 55 C129 60 124 63 114 63 L62 63Z" fill="url(#mmT)"/>'
+  +'<g fill="none" stroke="#fff" stroke-opacity=".45" stroke-width=".9">'+[72,80,88,96,104].map((x,k)=>'<path d="M'+x+' '+(54+k*.6)+' q4 -4 8 0"/><path d="M'+(x+4)+' '+(58.5+k*.5)+' q4 -4 8 0"/>').join('')+'</g>'
+  +'<path d="M44 63 C44 52 50 46 62 46 L66 63Z" fill="'+S+'"/><path d="M47 54 C50 50 57 48 63 48.5 L64.6 56 C58 55.5 52 56 47 58Z" fill="#fff" stroke="#f3c2d2" stroke-width=".8"/><circle cx="56" cy="52.6" r="1.2" fill="#f3c2d2"/></g>'
+  +'<g class="m-head">'
+  +'<path class="m-hair" d="M40 30 C54 28 62 36 66 44 C70 50 78 48 84 50 C76 53 68 52 62 48 C56 44 50 40 44 40Z" fill="'+H+'"/>'
+  +'<ellipse cx="36" cy="40" rx="17" ry="16" fill="'+H+'"/>'
+  +'<circle cx="36" cy="44" r="13.5" fill="'+S+'"/>'
+  +'<path d="M21 46 C19 30 30 25 38 26 C48 27 54 33 52 46 C49 38 45 35 41 35 C38 38 33 39 28 38 C25 40 22 43 21 46Z" fill="'+H+'"/>'
+  +'<g fill="#fff" stroke="#c9d3e6" stroke-width=".5"><circle cx="46.5" cy="30" r="1.6"/><circle cx="49.2" cy="32" r="1.4"/><circle cx="51.2" cy="34.6" r="1.2"/></g>'
+  +'<g class="m-eyes"><ellipse cx="31" cy="45.5" rx="1.7" ry="2" fill="#2a2440"/><ellipse cx="41" cy="45.5" rx="1.7" ry="2" fill="#2a2440"/><circle cx="31.6" cy="44.8" r=".55" fill="#fff"/><circle cx="41.6" cy="44.8" r=".55" fill="#fff"/></g>'
+  +'<ellipse cx="27.6" cy="49.4" rx="2.4" ry="1.4" fill="#f7a1b6" opacity=".7"/><ellipse cx="44.4" cy="49.4" rx="2.4" ry="1.4" fill="#f7a1b6" opacity=".7"/>'
+  +'<path d="M34.4 50.6 q1.6 1.5 3.2 0" fill="none" stroke="#c46b7c" stroke-width="1" stroke-linecap="round"/>'
+  +'</g>'
+  +'<g fill="'+S+'"><ellipse cx="29" cy="62" rx="6.5" ry="3.4"/><ellipse cx="43" cy="62" rx="6" ry="3.2"/></g>'
+  +'<path d="M96 58.6l1.3 2.7 3 .4-2.2 2 .5 3-2.6-1.4-2.6 1.4.5-3-2.2-2 3-.4z" fill="#f6a37a" stroke="#fff" stroke-width=".5" transform="translate(-6 -4) rotate(-12 96 62)"/>'
+  +'<g fill="none" stroke="#5cc6d0" stroke-width="1.1"><circle class="m-bub" cx="18" cy="40" r="2.6"/><circle class="m-bub b1" cx="58" cy="34" r="1.8"/><circle class="m-bub b2" cx="112" cy="44" r="2.2"/></g>'
+  +'</svg>'}
  return ''}
-function addMascot(card){const t=S.theme;if(t!=='cat'&&t!=='dog')return;const m=h('<div class="mascot '+t+'" aria-hidden="true">'+mascotSVG(t)+'</div>');card.prepend(m);
+function addMascot(card){const t=S.theme;if(t!=='cat'&&t!=='dog'&&t!=='mermaid')return;const m=h('<div class="mascot '+t+'" aria-hidden="true">'+mascotSVG(t)+'</div>');card.prepend(m);
  if(matchMedia('(prefers-reduced-motion: reduce)').matches){const s=m.querySelector('svg');if(s.pauseAnimations)s.pauseAnimations()}}
 
 /* ===================== 連續天數的火：每天升級一次，提醒今天續火 ===================== */
@@ -1009,9 +1049,9 @@ function onStreakUp(before,after){const a=fireOf(before),b=fireOf(after);documen
  setTimeout(()=>{if(b.min>1&&b.key!==a.key){celebrate();toast('升級！你的火變成「'+b.name+'」');if(b.t!==a.t)setTimeout(openStreak,900)}else toast(after===1?'點燃今天的小火花！':'火續上了！連續 '+after+' 天')},1300)}
 
 /* ===================== 外觀、設定、新功能說明、有新版本提示（同台股小幫手的做法） ===================== */
-const THEMES=[['auto','跟隨系統',['#f2f5fb','#1f3c7a','#2f6bd8']],['light','淺色',['#f2f5fb','#ffffff','#2f6bd8']],['dark','深色',['#0d1424','#151f35','#6b9cf5']],['ninja','忍者',['#e9dfc8','#1d1a17','#c8361d']],['cat','貓咪',['#fff4f1','#ec92ae','#d9668b']],['dog','狗狗',['#f7f1e6','#a8703f','#3a86c9']]];
+const THEMES=[['auto','跟隨系統',['#f2f5fb','#1f3c7a','#2f6bd8']],['light','淺色',['#f2f5fb','#ffffff','#2f6bd8']],['dark','深色',['#0d1424','#151f35','#6b9cf5']],['ninja','忍者',['#e9dfc8','#1d1a17','#c8361d']],['mermaid','海底人魚',['#eaf7fa','#2aa3b8','#e7798f']],['cat','貓咪',['#fff4f1','#ec92ae','#d9668b']],['dog','狗狗',['#f7f1e6','#a8703f','#3a86c9']]];
 function applyTheme(){const t=S.theme||'auto';if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t)}
-function praise(){const t=S.theme;return t==='cat'?['喵～答對了！','貓咪幫你按讚！','喵嗚，好厲害！']:t==='dog'?['汪！答對了！','狗狗開心搖尾巴！','汪汪，太棒了！']:t==='ninja'?['一擊命中！','忍術成功！','身手不凡！']:['答對了！','漂亮！','完全正確！','你越來越懂了！']}
+function praise(){const t=S.theme;return t==='mermaid'?['答對了，浪花幫你鼓掌！','撿到一顆珍珠！','像海浪一樣順！']:t==='cat'?['喵～答對了！','貓咪幫你按讚！','喵嗚，好厲害！']:t==='dog'?['汪！答對了！','狗狗開心搖尾巴！','汪汪，太棒了！']:t==='ninja'?['一擊命中！','忍術成功！','身手不凡！']:['答對了！','漂亮！','完全正確！','你越來越懂了！']}
 function sheet(id){let b=document.getElementById(id+'Back'),s=document.getElementById(id);if(!s){b=h('<div class="sheet-back" id="'+id+'Back"></div>');s=h('<div class="sheet" id="'+id+'" role="dialog" aria-modal="true"></div>');document.body.append(b,s);b.onclick=()=>closeSheet(id)}return s}
 function openSheet(id){document.getElementById(id).classList.add('show');document.getElementById(id+'Back').classList.add('show')}
 function closeSheet(id){const s=document.getElementById(id);if(!s)return;s.classList.remove('show');document.getElementById(id+'Back').classList.remove('show');if(id==='wnSheet')markNewsSeen()}
@@ -1028,6 +1068,7 @@ function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
+ {id:'2026-11-19f',items:['新外觀：海底人魚！海洋藍配珊瑚粉，背景有泡泡和小海星，上方是海浪','首頁有一隻人魚趴在「今天的任務」上，會眨眼、甩尾巴，旁邊還會冒泡泡','換外觀：按上方的齒輪 → 外觀 → 海底人魚']},
  {id:'2026-11-19e',items:['火改成每天都會升級！每種火有 4 階：一般 → 強化 → 閃耀 → 極致，到第 100 天是極致的鳳凰之火','閃耀會多出放射光芒和四顆星星，極致再加上旋轉的光環和繞圈的光點','點右上角的火，可以看每種火的 4 階，現在的那一格會框起來']},
  {id:'2026-11-19d',items:['每一種火都重新設計，造型都不一樣：火山、紅寶石、瓦斯爐、冰柱、水晶、魔法鍋、櫻花、葉子、雷雲、獎盃、盾牌、月亮、彩虹、極光、星星、銀河、太陽…','「強化」版不再只是加光環，每種火都有自己的升級：火柴盒、燭台、玻璃燈罩、烤棉花糖、噴發的熔岩、飄落的雪花和花瓣、魔法陣、雷雲、金幣、月桂葉…']},
  {id:'2026-11-19c',items:['火改成每 2 天就升級一次！每種火會先出現一般版，再 2 天變成「強化」版，到第 100 天是強化的鳳凰之火','新增 5 種火：紅寶石、水晶、櫻花、雷光、暗影','登入後再打開網站，會馬上顯示已登入，不用等']},
@@ -1049,7 +1090,7 @@ function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
 /* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
-const APP_VER='2026-11-19-1700';
+const APP_VER='2026-11-19-1715';
 /* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
 let updBusy=false;
 async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
