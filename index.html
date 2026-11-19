@@ -372,7 +372,7 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 @keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-12px) translateX(2px);opacity:0}}
 @keyframes smoke{0%,100%{transform:translateY(0) scaleX(1);opacity:.7}50%{transform:translateY(-2px) scaleX(-1);opacity:.35}}
 @keyframes coal{0%,100%{opacity:.45}50%{opacity:1}}
-@keyframes tw{0%,100%{transform:scale(.6);opacity:.4}50%{transform:scale(1.15);opacity:1}}
+@keyframes tw{0%,100%{transform:scale(.8);opacity:.75}50%{transform:scale(1.15);opacity:1}}
 @keyframes wing{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.82)}}
 .fire .spin{transform-box:view-box;transform-origin:14px 17px;animation:spin 14s linear infinite}
 .fire .spin.slow,.fire .rays.slow{animation-duration:24s}.fire .rays.rev{animation:spin 18s linear infinite reverse}.fire .orbit.slowo{animation-duration:9s}
@@ -399,6 +399,13 @@ body.pick-book .tabs{transform:translate(-50%,150%);opacity:0;pointer-events:non
 .fire-tip::before{content:"";position:absolute;right:22px;top:-6px;border:6px solid transparent;border-top:0;border-bottom-color:var(--ink)}
 .fire-hero{display:flex;gap:14px;align-items:center}
 .fire-hero .fire{flex:none;overflow:visible}
+.fire-rows .fr{background:var(--bg);border-radius:14px;padding:8px 10px 6px;margin-bottom:8px}
+.fire-rows .frh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;font-size:14px}
+.fire-rows .frs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;text-align:center;font-size:11px;color:var(--muted,#6b7590)}
+.fire-rows .frs>div{display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0 3px;border-radius:10px}
+.fire-rows .frs>div:not(.got) .fire{filter:grayscale(1);opacity:.32}
+.fire-rows .frs>div.cur{background:var(--card,#fff);box-shadow:0 0 0 2px var(--accent,#2f6bd8)}
+.fire-rows .fr:not(.on) .frh b{opacity:.55}
 .fire-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .fire-grid div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:12px;background:var(--bg);text-align:center;font-size:12px}
 .fire-grid .pl{display:block;font-style:normal;font-size:11px;color:var(--accent,#d9822b)}
@@ -831,10 +838,12 @@ function mascotSVG(t){
 function addMascot(card){const t=S.theme;if(t!=='cat'&&t!=='dog')return;const m=h('<div class="mascot '+t+'" aria-hidden="true">'+mascotSVG(t)+'</div>');card.prepend(m);
  if(matchMedia('(prefers-reduced-motion: reduce)').matches){const s=m.querySelector('svg');if(s.pauseAnimations)s.pauseAnimations()}}
 
-/* ===================== 連續天數的火：每 2 天升級一次，提醒今天續火 ===================== */
+/* ===================== 連續天數的火：每天升級一次，提醒今天續火 ===================== */
 const FIRE_TYPES=[['match','火柴'],['candle','燭火'],['lamp','油燈'],['torch','火把'],['camp','篝火'],['blaze','熊熊烈火'],['lava','熔岩之火'],['ruby','紅寶石火焰'],['blue','藍色火焰'],['ice','冰晶火焰'],['crystal','水晶火焰'],['purple','紫色火焰'],['sakura','櫻花火焰'],['emerald','翡翠火焰'],['thunder','雷光火焰'],['gold','黃金火焰'],['platinum','白金火焰'],['shadow','暗影火焰'],['rainbow','彩虹火焰'],['aurora','極光火焰'],['star','星火'],['galaxy','銀河火焰'],['sun','太陽之火'],['holy','聖火'],['phoenix','鳳凰之火']];
-/* 每 2 天升級一次：每種火先出現一般版，再 2 天變成「強化」版（火花、光點更多），到第 100 天是強化的鳳凰之火 */
-const FIRES=[{min:0,key:'ember',name:'熄滅的火種'},{min:1,key:'spark',name:'小火花'}].concat(...FIRE_TYPES.map((t,k)=>[{min:2+4*k,key:t[0],name:t[1]},{min:4+4*k,key:t[0]+'+',name:t[1]+'・強化'}]));
+/* 每天升級一次：每種火有 4 階（一般 → 強化 → 閃耀 → 極致），到第 100 天是極致的鳳凰之火 */
+const FIRE_STAGE=[['',''],['+','強化'],['*','閃耀'],['!','極致']];
+const FIRES=[{min:0,key:'ember',name:'熄滅的火種',t:-1},{min:1,key:'spark',name:'小火花',t:-1}];
+FIRE_TYPES.forEach((t,k)=>(k===FIRE_TYPES.length-1?[0,1,3]:[0,1,2,3]).forEach(st=>FIRES.push({min:FIRES.length,key:t[0]+FIRE_STAGE[st][0],name:t[1]+(st?'・'+FIRE_STAGE[st][1]:''),t:k,st})));
 /* 暫時設定：右上角的火固定顯示「聖火」。要改回原本的規則，把這行改成 null */
 const FIRE_OVERRIDE='holy';
 function fireOf(d){let f=FIRES[0];FIRES.forEach(x=>{if(d>=x.min)f=x});return f}
@@ -945,13 +954,19 @@ const FIRE_ART={
    front:'<g stroke="#fff4bf" stroke-width=".35"><path d="M14 .4l-1 3.2h2z" fill="#ffd24d"/><path d="M11.2 1.4l.4 3 1.2-1z" fill="#ff8a2e"/><path d="M16.8 1.4l-.4 3-1.2-1z" fill="#ff8a2e"/></g>'}}};
 function fireSVG(key,size){const id='fg'+(++fireUid);
  if(key==='ember')return '<svg class="fire ember" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true"><path class="smoke" d="M14 17c-2-3 2-5 0-8s2-5 0-7" fill="none" stroke="#a9a3a0" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="14" cy="23" rx="6" ry="2.6" fill="#6b6560"/><circle class="coal" cx="14" cy="22.4" r="1.6" fill="#ff8a3c"/></svg>';
- const boost=key.endsWith('+');if(boost)key=key.slice(0,-1);
+ const stage={'+':1,'*':2,'!':3}[key.slice(-1)]||0;if(stage)key=key.slice(0,-1);const boost=stage>0;
+ const tIdx=FIRE_TYPES.findIndex(t=>t[0]===key);
  const base=FIRE_ART[key]||FIRE_ART.spark,B=boost?(base.boost||{}):{},v=x=>typeof x==='function'?x(id):(x||'');
  const c=Object.assign({},base,B);['back','under','over','front'].forEach(k=>c[k]=v(base[k])+v(B[k]));if(B.underR)c.under=v(B.underR)+v(B.under);
  const LG=(gid,stops)=>'<linearGradient id="'+gid+'" x1="0" y1="1" x2="0" y2="0">'+stops.map(s=>'<stop offset="'+s[0]+'" stop-color="'+s[1]+'"/>').join('')+'</linearGradient>';
  const sc=c.sc||1,ty=c.ty||0;let defs='',back='';
  const oFill=c.grad?(defs+=LG(id+'o',c.grad),'url(#'+id+'o)'):c.o;
- if(c.glow){defs+='<radialGradient id="'+id+'g"><stop offset="0" stop-color="'+c.glow+'" stop-opacity="'+(boost?.75:.6)+'"/><stop offset=".55" stop-color="'+c.glow+'" stop-opacity=".18"/><stop offset="1" stop-color="'+c.glow+'" stop-opacity="0"/></radialGradient>';back+='<circle class="glow'+(c.pulse?' pulse':'')+'" cx="14" cy="'+(c.gy||17)+'" r="'+((c.glowR||13)+(boost?1.5:0))+'" fill="url(#'+id+'g)"/>'}
+ if(c.glow){defs+='<radialGradient id="'+id+'g"><stop offset="0" stop-color="'+c.glow+'" stop-opacity="'+(boost?.75:.6)+'"/><stop offset=".55" stop-color="'+c.glow+'" stop-opacity=".18"/><stop offset="1" stop-color="'+c.glow+'" stop-opacity="0"/></radialGradient>';back+='<circle class="glow'+(c.pulse?' pulse':'')+'" cx="14" cy="'+(c.gy||17)+'" r="'+((c.glowR||13)+stage*1.2)+'" fill="url(#'+id+'g)"/>'}
+ const acc=c.acc||c.spc||c.glow||'#ffc04d',stc=c.starC||c.o||c.glow||acc;
+ if(stage>=2)back+='<g opacity=".55">'+fRays(8,2.5,15,.15,[acc],'rays rev',17)+'</g>';
+ if(stage>=3){defs+='<linearGradient id="'+id+'rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+stc+'"/><stop offset=".5" stop-color="'+acc+'"/><stop offset="1" stop-color="'+stc+'"/></linearGradient>';
+  
+  back+='<g class="ring"><circle cx="14" cy="17" r="12.4" fill="none" stroke="'+acc+'" stroke-width="2.4" opacity=".25"/><circle cx="14" cy="17" r="12.4" fill="none" stroke="url(#'+id+'rg)" stroke-width="1.2" stroke-dasharray="5.5 2"/>'+[45,135,225,315].map(a=>{const x=14+Math.cos(a*Math.PI/180)*12.4,y=17+Math.sin(a*Math.PI/180)*12.4;return '<path d="M'+fN(x)+' '+fN(y-1.8)+'l1.35 1.8-1.35 1.8-1.35-1.8z" fill="'+stc+'" stroke="#fff" stroke-width=".45"/>'}).join('')+'</g><circle class="ring r2" cx="14" cy="17" r="13.9" fill="none" stroke="'+stc+'" stroke-width=".7" stroke-dasharray=".7 1.7" stroke-linecap="round"/>'}
  back+=c.back;
  if(c.wings){defs+=LG(id+'w',[[0,'#d8261a'],[.5,'#ff7a24'],[1,'#ffd24d']]);const wing='M14 18C10 17 6 14 3 8c2 .4 3 1.4 4 2.6C6.6 8 6.8 6 7.6 4.6c1 2 2 3.6 3 4.6.2-2 .8-3.4 1.6-4.4.4 3 1.2 6.4 2.8 9.2z';
   const wp='<path d="'+wing+'" fill="url(#'+id+'w)" stroke="#fff1b8" stroke-width=".45" stroke-linejoin="round"/>';
@@ -964,17 +979,24 @@ function fireSVG(key,size){const id='fg'+(++fireUid);
  body+=flame('main'+(c.hue===1?' hue':c.hue===2?' hue2':''),sc,14,28+ty,0)+c.over;
  if(c.halo)body+='<ellipse class="halo" cx="14" cy="'+fN(Math.max(1.6,28+ty-25*sc-1.4))+'" rx="5" ry="1.6" fill="none" stroke="#ffc61a" stroke-width="1.1"/>';
  if(c.coal)body+='<ellipse class="coal" cx="14" cy="23.2" rx="3" ry="1.2" fill="#ffb347"/>';
- let front=c.front;const sx=[10,18,14,8,20,12,6,22],spc=c.spc||'#ffc04d';for(let k=0;k<(c.sp||0);k++)front+='<circle class="sp s'+k+'" cx="'+sx[k]+'" cy="'+fN(28+ty-21*sc)+'" r="'+(k%2?.8:1.1)+'" fill="'+spc+'"/>';
- return '<svg class="fire '+key+(boost?' boost':'')+'" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true">'+(defs?'<defs>'+defs+'</defs>':'')+back+body+front+'</svg>'}
+ let front=c.front;
+ const glam=(x,y,r,k)=>'<g class="tw t'+k+'"><circle cx="'+x+'" cy="'+y+'" r="'+fN(r*1.15)+'" fill="'+acc+'" opacity=".35"/>'+fStar(x,y,r,stc)+'<circle cx="'+x+'" cy="'+y+'" r="'+fN(r*.3)+'" fill="#fff"/></g>';
+ const TW=[[3.2,5],[24.8,4.2],[2.4,20.6],[25.6,19.8]];
+ if(stage>=2)TW.forEach((p,k)=>front+=glam(p[0],p[1],[3,2.6,2.2,2][k],k));else if(tIdx>=5)front+=glam(TW[0][0],TW[0][1],1.5,0)+glam(TW[3][0],TW[3][1],1.2,2);
+ if(stage>=3){let o='';[0,1,2].forEach(k=>{const a=k/3*Math.PI*2-Math.PI/2,x=fN(14+Math.cos(a)*12.4),y=fN(17+Math.sin(a)*12.4);o+='<circle cx="'+x+'" cy="'+y+'" r="1.9" fill="'+acc+'" opacity=".4"/><circle cx="'+x+'" cy="'+y+'" r="1.05" fill="#fff" stroke="'+stc+'" stroke-width=".6"/>'});front+='<g class="orbit slowo">'+o+'</g>'}
+ if(stage>=2)c.sp=Math.min(8,(c.sp||0)+2);
+ const sx=[10,18,14,8,20,12,6,22],spc=c.spc||'#ffc04d';for(let k=0;k<(c.sp||0);k++)front+='<circle class="sp s'+k+'" cx="'+sx[k]+'" cy="'+fN(28+ty-21*sc)+'" r="'+(k%2?.8:1.1)+'" fill="'+spc+'"/>';
+ return '<svg class="fire '+key+(boost?' boost':'')+(stage>1?' st'+stage:'')+'" viewBox="0 0 28 28" width="'+size+'" height="'+size+'" aria-hidden="true">'+(defs?'<defs>'+defs+'</defs>':'')+back+body+front+'</svg>'}
 
 function streakChip(){const d=curStreak(),f=fireOf(d),dt=doneToday(),k=FIRE_OVERRIDE||f.key;return '<button class="chip streak'+(dt?'':' cold')+'" data-streak aria-label="連續 '+d+' 天，'+f.name+'">'+fireSVG(k,22)+'<span class="num">'+d+' 天</span></button>'}
 function openStreak(){const d=curStreak(),f=fireOf(d),nx=nextFire(d),dt=doneToday();const s=sheet('fireSheet');
  s.innerHTML='<div class="fire-hero">'+fireSVG(FIRE_OVERRIDE||f.key,96)+'<div><h2>連續 '+d+' 天</h2><div class="muted">現在是「'+f.name+'」</div></div></div>'
  +'<div class="fb '+(dt?'ok':'no')+'"><b class="t">'+(dt?'今天的火已經續上了':'今天還沒續火')+'</b><span>'+(dt?'明天再做題目或複習閃卡，就能繼續累積。':'做 1 題練習、模擬考，或複習 1 張閃卡，就能續火。只打開網站不算喔。')+'</span></div>'
  +(nx?'<p>再 <b class="num">'+(nx.min-d)+'</b> 天，就會升級成「'+nx.name+'」。</p>':'<p>你已經到最高級的火了！</p>')
- +'<div class="fire-grid">'+FIRES.slice(1).map(x=>'<div class="'+(d>=x.min?'got':'')+'">'+fireSVG(x.key,40)+'<b>'+x.name.replace('・強化','<i class="pl">強化</i>')+'</b><span class="small muted">'+x.min+' 天</span></div>').join('')+'</div>'
+ +'<div class="fire-rows">'+[{n:'小火花',list:[FIRES[1]]}].concat(FIRE_TYPES.map((t,k)=>({n:t[1],list:FIRES.filter(x=>x.t===k)}))).map(g=>{const a=g.list[0].min,b=g.list[g.list.length-1].min;
+   return '<div class="fr'+(d>=a?' on':'')+'"><div class="frh"><b>'+g.n+'</b><span class="small muted">第 '+a+(b>a?'–'+b:'')+' 天</span></div><div class="frs">'+g.list.map(x=>'<div class="'+(d>=x.min?'got':'')+(f.min===x.min?' cur':'')+'">'+fireSVG(x.key,46)+'<span>'+(x.st?FIRE_STAGE[x.st][1]:(x.t<0?'第 1 天':'一般'))+'</span></div>').join('')+'</div></div>'}).join('')+'</div>'
  +'<button class="btn block" data-ok>知道了</button>';
- s.querySelector('[data-ok]').onclick=()=>closeSheet('fireSheet');openSheet('fireSheet')}
+ s.querySelector('[data-ok]').onclick=()=>closeSheet('fireSheet');openSheet('fireSheet');const cu=s.querySelector('.frs .cur');if(cu)setTimeout(()=>{s.scrollTop=Math.max(0,cu.closest('.fr').offsetTop-s.clientHeight/2)},60)}
 function streakTip(){if(doneToday())return;let k='';try{k=sessionStorage.getItem('acc-tip')||''}catch(e){}if(k===today())return;
  const d=curStreak(),nx=nextFire(d);let msg;
  if(d>0&&nx&&nx.min===d+1)msg='今天做完題目，火就會升級成「'+nx.name+'」喔！';
@@ -984,7 +1006,7 @@ function streakTip(){if(doneToday())return;let k='';try{k=sessionStorage.getItem
  const el=h('<button class="fire-tip">'+esc(msg)+'</button>');el.style.top=(r.bottom+10)+'px';el.style.right=Math.max(8,innerWidth-r.right-6)+'px';el.onclick=()=>{el.remove();openStreak()};document.body.appendChild(el);
  requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400)},7000);try{sessionStorage.setItem('acc-tip',today())}catch(e){}}
 function onStreakUp(before,after){const a=fireOf(before),b=fireOf(after);document.querySelectorAll('.fire-tip').forEach(x=>x.remove());
- setTimeout(()=>{if(b.min>1&&b.key!==a.key){celebrate();toast('升級！你的火變成「'+b.name+'」');setTimeout(openStreak,900)}else toast(after===1?'點燃今天的小火花！':'火續上了！連續 '+after+' 天')},1300)}
+ setTimeout(()=>{if(b.min>1&&b.key!==a.key){celebrate();toast('升級！你的火變成「'+b.name+'」');if(b.t!==a.t)setTimeout(openStreak,900)}else toast(after===1?'點燃今天的小火花！':'火續上了！連續 '+after+' 天')},1300)}
 
 /* ===================== 外觀、設定、新功能說明、有新版本提示（同台股小幫手的做法） ===================== */
 const THEMES=[['auto','跟隨系統',['#f2f5fb','#1f3c7a','#2f6bd8']],['light','淺色',['#f2f5fb','#ffffff','#2f6bd8']],['dark','深色',['#0d1424','#151f35','#6b9cf5']],['ninja','忍者',['#e9dfc8','#1d1a17','#c8361d']],['cat','貓咪',['#fff4f1','#ec92ae','#d9668b']],['dog','狗狗',['#f7f1e6','#a8703f','#3a86c9']]];
@@ -1006,6 +1028,7 @@ function openSettings(){const s=sheet('setSheet');const cur=S.theme||'auto';
  s.querySelector('[data-close]').onclick=()=>closeSheet('setSheet');openSheet('setSheet')}
 /* 每次改版在 NEWS 最上面加一筆（id 要比上一筆新） */
 const NEWS=[
+ {id:'2026-11-19e',items:['火改成每天都會升級！每種火有 4 階：一般 → 強化 → 閃耀 → 極致，到第 100 天是極致的鳳凰之火','閃耀會多出放射光芒和四顆星星，極致再加上旋轉的光環和繞圈的光點','點右上角的火，可以看每種火的 4 階，現在的那一格會框起來']},
  {id:'2026-11-19d',items:['每一種火都重新設計，造型都不一樣：火山、紅寶石、瓦斯爐、冰柱、水晶、魔法鍋、櫻花、葉子、雷雲、獎盃、盾牌、月亮、彩虹、極光、星星、銀河、太陽…','「強化」版不再只是加光環，每種火都有自己的升級：火柴盒、燭台、玻璃燈罩、烤棉花糖、噴發的熔岩、飄落的雪花和花瓣、魔法陣、雷雲、金幣、月桂葉…']},
  {id:'2026-11-19c',items:['火改成每 2 天就升級一次！每種火會先出現一般版，再 2 天變成「強化」版，到第 100 天是強化的鳳凰之火','新增 5 種火：紅寶石、水晶、櫻花、雷光、暗影','登入後再打開網站，會馬上顯示已登入，不用等']},
  {id:'2026-11-19b',items:['可以用 Google 登入了！在「選擇課本」頁按「用 Google 登入」，進度會存在帳號裡，換手機、iPad 都能接著讀']},
@@ -1026,7 +1049,7 @@ function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
 /* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
-const APP_VER='2026-11-19-1630';
+const APP_VER='2026-11-19-1700';
 /* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
 let updBusy=false;
 async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
