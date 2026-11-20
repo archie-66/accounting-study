@@ -1041,8 +1041,8 @@ const FIRE_TYPES=[['match','火柴'],['candle','燭火'],['lamp','油燈'],['tor
 const FIRE_STAGE=[['',''],['+','強化'],['*','閃耀'],['!','極致']];
 const FIRES=[{min:0,key:'ember',name:'熄滅的火種',t:-1},{min:1,key:'spark',name:'小火花',t:-1}];
 FIRE_TYPES.forEach((t,k)=>(k===FIRE_TYPES.length-1?[0,1,3]:[0,1,2,3]).forEach(st=>FIRES.push({min:FIRES.length,key:t[0]+FIRE_STAGE[st][0],name:t[1]+(st?'・'+FIRE_STAGE[st][1]:''),t:k,st})));
-/* 暫時設定：右上角的火固定顯示「聖火」。要改回原本的規則，把這行改成 null */
-const FIRE_OVERRIDE='holy';
+/* 暫時設定：右上角的火固定顯示第 89 天的「銀河火焰・極致」。要改回原本的規則，把這行改成 null */
+const FIRE_OVERRIDE='galaxy!';
 function fireOf(d){let f=FIRES[0];FIRES.forEach(x=>{if(d>=x.min)f=x});return f}
 function nextFire(d){return FIRES.find(x=>x.min>d)}
 function doneToday(){return S.last===today()}
@@ -1250,7 +1250,7 @@ function initWhatsNew(){let seen='';try{seen=localStorage.getItem(NEWS_KEY)||''}
  if(seen===NEWS[0].id)return;if(!seen&&!RETURNING){markNewsSeen();return}setTimeout(()=>showWhatsNew(false),1200)}
 /* 有新版本：定期比對網站檔案的版本標記，有變就跳出提示 */
 /* 版本號：每次上傳新版都要同時改這裡和 version.json（兩邊一樣） */
-const APP_VER='2026-11-19-1820';
+const APP_VER='2026-11-20-1120';
 /* 有新版本：比對網站上的 version.json 和這個頁面自己的版本號，不一樣就提示更新（舊的暫存頁也抓得到） */
 let updBusy=false;
 async function checkUpdate(){if(updBusy||location.protocol==='file:'||!location.hostname.endsWith('github.io')||document.getElementById('updBar'))return;updBusy=true;
